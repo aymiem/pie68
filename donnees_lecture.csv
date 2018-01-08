@@ -1,0 +1,5 @@
+nom des fichiers de lecture;
+csv param;paramInit.csv
+csv situation initiale;sitInit.csv
+csv solution;solution.csv
+fin;
