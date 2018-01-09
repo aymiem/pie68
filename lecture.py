@@ -64,6 +64,7 @@ def lectureCategorie(path,listeIndices,categorie):
     return liste2
 
 def creationListeAvion(l):
+    #bonjour
     listeAvion=[]
     for i in l:
         j=len(i)
