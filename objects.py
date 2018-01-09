@@ -1,6 +1,3 @@
-def main():
-    D601 = avion("D601", "2000_D", ["MIDS", "Scarabé/Comsec"], 0, 8, 1200, 0, 27, 2775, 5155.5, 278)
-    print(D601)
 
 class avion:
     def __init__(self,nom, type_avion, capacite,
@@ -13,8 +10,6 @@ class avion:
         self.atterissage=atterissage
         self.heures_absolues=heures_absolues
         self.proch_maint=proch_maint
-
-
     def __str__(self):
         return self.nom
 
@@ -45,14 +40,10 @@ class mission:
         self.nb_avion=nb_avion
         self.type_avion=type_avion
 
-class parametre:
-    def __init__(self,moisInit,anInit,moisFin,anFin):
-        self.moisInit=moisInit
-        self.anInit=anInit
-        self.moisFin=moisFin
-        self.anFin=anFin
+    def __str__(self):
+        return self.nom
 
-
+""" classes non utilisées
 class ressource:
     def __init__(self,nom,capa_indus_mois,capa_indus_an,*args):
         self.nom=nom
@@ -69,6 +60,4 @@ class stock:
 class interdiction:
     def __init__(self):
         pass
-
-
-if __name__ == '__main__': main()
+"""

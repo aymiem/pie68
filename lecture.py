@@ -1,5 +1,6 @@
 import csv
 from objects import *
+from constantes import *
 import pandas as pd
 
 def lecture(pathCSV):
@@ -15,27 +16,21 @@ def lecture(pathCSV):
     lecture_l_mt = lectureCategorie(path, listeInd, "maintenance")
 
     # creation des objets à partir des données récupérées
-    param_init=affectationParam(lecture_l_p)    # dates de la simulation ****Done****
-    l_a=creationListeAvion(lecture_l_a)    # liste des avions ****Done****
-    l_m=creationListeMission(lecture_l_m)   # liste des missions ****Done****
+    affectationParam(lecture_l_p)    # dates de la simulation et autres paramètres
+    l_a=creationListeAvion(lecture_l_a)    # liste des avions
+    l_m=creationListeMission(lecture_l_m)   # liste des missions
     l_mt = creationListeMaintenance(lecture_l_mt)   # liste des maintenances
-    for a in l_a:
-        print(a.nom,a.capacite)
-    for m in l_m:
-        print(m.nom, m.capa_avion)
+
+    # Lecture csv de la situation initiale / rebouclage
     df= lectureDF(l_a,nom_fichier[2])
-    #print(df.index)
     y=df.as_matrix()
-    #y[0][0]='valeur'
-    #print(type(y))
     index=df.index
     df1=pd.DataFrame(y,index=index,columns=l_a)
-    #print(type(df1.columns[0]))
-    #print(df1)
-    capaciteMission(l_a[0],l_m[0])
 
-    return [l_a,l_m,l_mt,param_init,df1,nom_fichier]
 
+    return [l_a,l_m,l_mt,df1,nom_fichier]
+
+# lectures des indices des différentes catégories du CSV (n de la prmiere et dernire ligne de la catégorie dans le csv)
 def indexCategories(path):
     listeIndex=[]
     with open(path) as f:
@@ -46,6 +41,7 @@ def indexCategories(path):
                listeIndex.append(nb)
     return listeIndex
 
+# lectures des différentes catégories du CSV (lecture brute des données)
 def lectureCategorie(path,listeIndices,categorie):
     liste1=[]
     with open(path, newline='') as f:
@@ -63,60 +59,65 @@ def lectureCategorie(path,listeIndices,categorie):
             liste2=liste1[listeIndices[1]:listeIndices[2]-1]
     return liste2
 
+# creation de la liste des objets avions
 def creationListeAvion(l):
-    #bonjour
     listeAvion=[]
     for i in l:
         j=len(i)
         listeCapa =[]
-        for k in range(8,j):
-            if i[k] != '':
+        for k in range(7,j):
+            if i[k] != '' or i[k] != '0':
                 listeCapa.append(i[k])
+        listeCapa=list(filter(None, listeCapa))
         listeAvion.append(avion(i[0],i[1],listeCapa,float(i[2]),float(i[3]),float(i[4]),float(i[5]),i[6]))
     return listeAvion
 
+# Creation de la liste des objets maintenances
 def creationListeMaintenance(l):
     listeMaintenance=[]
     for i in l:
         listeMaintenance.append(maintenance(i[1],i[2],float(i[4]),float(i[5]),float(i[6]),float(i[7])))
     return listeMaintenance
 
+# Creation de la liste des objets missions
 def creationListeMission(l):
     listeMission=[]
     for i in l:
         listeCapa = []
         for k in range(9, len(i)):
-            if i[k]!='99':
+            if i[k]!='99'and i[k]!='':
                 listeCapa.append(i[k])
+        listeCapa = list(filter(None, listeCapa))
         listeMission.append(mission(i[0],int(i[1]),int(i[2]),float(i[3]),float(i[4]),float(i[5]),float(i[6]),i[8],listeCapa,int(i[7])))
     return listeMission
-def affectationParam(l):
 
+# Creation de l'objet paramètre
+def affectationParam(l):
     listeParam=[]
     for i in l:
-        listeParam.append(i[1])
-    p=parametre(int(listeParam[0]),int(listeParam[1]),int(listeParam[2]),int(listeParam[3]))
-    return p
+        listeParam.append(int(i[1]))
+    parametre.moisInit = listeParam[0]
+    parametre.anInit=listeParam[1]
+    parametre.moisFin=listeParam[2]
+    parametre.anFin=listeParam[3]
+    parametre.puParMois=listeParam[4]
+    parametre.stockageTotal=listeParam[5]
+    parametre.entreeSTKparMois=listeParam[6]
+    parametre.strategie=listeParam[7]
+    parametre.anticipMaint=listeParam[8]
 
+# lecture CSV de la situation initiale / rebouclage
 def lectureDF(l,s):
     path=s
     dataframeInit=pd.read_csv(path,sep=';',header=0,index_col=0,skiprows=[0,1,2,3])
     t=dataframeInit.T
     return t
-def capaciteMission(a,m): # checks if the capacities required by a mission are satisfied by the airplane
-    l2=m.capa_avion
-    l1=a.capacite
-    if set(l1)<set(l2):
-        v=True
-    else: v=False
-    print(v)
 
+# lecture fichier qui contient les noms des différents csv
 def lecture_fichier(p):
     liste_nom=[]
-    with open('donnees_lecture.csv', newline='') as f:
+    with open(p, newline='') as f:
         reader = csv.reader(f,delimiter=';')
         for row in reader:
             liste_nom.append(row[1])
     return liste_nom
-
-if __name__ == '__main__':lecture('donnees_lecture.csv')
