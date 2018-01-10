@@ -13,13 +13,14 @@ def programme():
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
     d=lectureEntrees(x) # Lecture des fichiers d'entrées
     df=dataframe(d) # Création du dataframe
-    indicateurs = Init_Indicateurs(d)
-    MpotH, NbrMaint = indicateurs
-    NbrMaint, MpotH, Maint_var = remplir(d,df, MpotH, NbrMaint) # remplissage du dataframe
+    
     indic = dict()
-    indic["Min_et_moy_potH"] = [MpotH["min_somme"],MpotH["moy_somme"]]
-    #indic['NbrMaint'] = NbrMaint
-    indic["Maint_var"] = Maint_var
+    
+    indic = Init_Indicateurs(d, indic)
+    
+    indic = remplir(d,df,indic) # remplissage du dataframe
+    
+    
     #indic['MpotH'] = MpotH
     
     df = ecriture(d,df,indic) # export des données en CSV
@@ -29,7 +30,7 @@ def programme():
     
     return indic, df
 
-def remplir(d, df, MpotH, NbrMaint): # Fonction pour remplir le dataframe
+def remplir(d, df, indic): # Fonction pour remplir le dataframe
 
     # Creation de trois listes utilisées dans le fichier indicateur de sortie 'indicateurs.csv'
     #liste_nbh_metropole = []
@@ -45,7 +46,7 @@ def remplir(d, df, MpotH, NbrMaint): # Fonction pour remplir le dataframe
         print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
 
         # gestion des affectations missions
-        Remplir_Indicateurs(d, df, MpotH, NbrMaint, t)
+        Remplir_Indicateurs(d, df, indic, t)
         opex = 1
         remplir_mission(d, t, df, opex) # Affectation des opex
         opex = 0
@@ -54,8 +55,12 @@ def remplir(d, df, MpotH, NbrMaint): # Fonction pour remplir le dataframe
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
         remplir_autres(d, t, df, h) # Gestion des avions qui ne sont ni en maint ni en mission
 
-    MpotH["min_somme"] = min(MpotH["somme"]) # L'indicateur est le min de la somme des pot
-    MpotH["moy_somme"] = np.mean(MpotH["somme"]) # L'indicateur est la moyenne de la somme des pot
+    for t in range(d["temps"] - 3, d["temps"]):
+        Remplir_Indicateurs(d, df, indic, t)
+        
+        
+    indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
+    indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
 
 #    Calcul de la variance du nombre d'avions en maintenance
 #    moy = mean(NbrMaint)
@@ -63,9 +68,10 @@ def remplir(d, df, MpotH, NbrMaint): # Fonction pour remplir le dataframe
 #    for t in (1,d["temps"]-3):
 #        ecart(t) = (NbrMaint(t) - moy)*(NbrMaint(t)-moy)
 #    var = mean(ecart) #indicateur -> variance du nombre d'avions en maintenance
-    Maint_var = np.var(np.asarray(NbrMaint))
+    indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"]))
+    indic["Max_maint"] = np.max(indic["NbrMaint"])
     
-    return NbrMaint, MpotH, Maint_var
+    return indic
 
 def lectureEntrees(path):
     # Appel de la fonction lecture, en paramètre :path

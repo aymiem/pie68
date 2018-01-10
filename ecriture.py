@@ -12,6 +12,9 @@ def ecriture_donnees(indic):
         #spamwriter.writerow(['pas de temps']+list(range(1, t-3)))
         #spamwriter.writerow(['nombre d\'avions en maintenance']+ l1)
         #spamwriter.writerow(['mip']+ l3)
-        spamwriter.writerow(['minimun et moyenne potentiel horaire'] + indic["Min_et_moy_potH"])
-        spamwriter.writerow(['variance maint'] + [indic["Maint_var"]])
+        spamwriter.writerow(['moyenne potentiel horaire, à maximiser'] + [indic["MpotH"]["moy_somme"]])
+        spamwriter.writerow(['minimun potentiel horaire, à maximiser'] + [indic["MpotH"]["min_somme"]])
+        spamwriter.writerow(['variance maint, à minimiser'] + [indic["Maint_var"]])
+        spamwriter.writerow(['max maint, contrainte de capacité à ne pas dépasser'] + [indic["Max_var"]])
+        
         #spamwriter.writerow(['nombre d\'heures en metropole']+ l2)
