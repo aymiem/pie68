@@ -6,8 +6,10 @@ def solution_to_csv(df,nom_fichier):
     df.T.to_csv(nom_fichier, sep=';')
 
 # Creation d'un fichier indicateurs.csv # NON utilisé
-def ecriture_donnees(indic):
-    with open('indicateurs.csv', 'w') as csvfile:
+def ecriture_donnees(indic,nom_fichier):
+    num = nom_fichier[8:10]
+    nom = "indicateurs"+num+".csv"
+    with open(nom, 'w') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=';',lineterminator = '\n')
         #spamwriter.writerow(['pas de temps']+list(range(1, t-3)))
         #spamwriter.writerow(['nombre d\'avions en maintenance']+ l1)

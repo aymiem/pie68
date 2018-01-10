@@ -171,7 +171,7 @@ def remplir_autres(d,t,df,h):
 def ecriture(d,df,indic):
     # Appel de la fonction solution_to_csv pour exporter les donneés
     solution_to_csv(df, d["nom_ficher"][3])
-    ecriture_donnees(indic)
+    ecriture_donnees(indic,d["nom_ficher"][3])
     
     return df
 
