@@ -1,3 +1,5 @@
-moyenne potentiel horaire;6428.203125
-minimun potentiel horaire;3821.0
-variance maint;0.546630859375
+moyenne potentiel horaire, à maximiser;6430.046875
+minimun potentiel horaire, à maximiser;3819.0
+variance maint, à minimiser;0.546630859375
+max maint, contrainte de capacité à ne pas dépasser;2
+potentiel perdu, à minimiser;839.0
