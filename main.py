@@ -57,7 +57,7 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
 
     for t in range(d["temps"] - 3, d["temps"]):
         Remplir_Indicateurs(d, df, indic, t)
-        
+    
         
     indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
     indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
@@ -70,7 +70,7 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
 #    var = mean(ecart) #indicateur -> variance du nombre d'avions en maintenance
     indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"]))
     indic["Max_maint"] = np.max(indic["NbrMaint"])
-    
+        
     return indic
 
 def lectureEntrees(path):

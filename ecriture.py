@@ -15,6 +15,8 @@ def ecriture_donnees(indic):
         spamwriter.writerow(['moyenne potentiel horaire, à maximiser'] + [indic["MpotH"]["moy_somme"]])
         spamwriter.writerow(['minimun potentiel horaire, à maximiser'] + [indic["MpotH"]["min_somme"]])
         spamwriter.writerow(['variance maint, à minimiser'] + [indic["Maint_var"]])
-        spamwriter.writerow(['max maint, contrainte de capacité à ne pas dépasser'] + [indic["Max_var"]])
+        spamwriter.writerow(['max maint, contrainte de capacité à ne pas dépasser'] + [indic["Max_maint"]])
+        spamwriter.writerow(['potentiel perdu, à minimiser'] + [indic["PotPerdu"]])
+    
         
         #spamwriter.writerow(['nombre d\'heures en metropole']+ l2)
