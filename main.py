@@ -58,6 +58,7 @@ def modif_mission(d,t,df):
 
 def remplir_mission(d,t,df,opex):
     for m in d["listeMission"]:
+        #print(m)
         # calcul des dates de début et de fin de la mission
         t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
         t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
@@ -70,14 +71,15 @@ def remplir_mission(d,t,df,opex):
             if nbmiss < m.nb_avion:
                 # Si le le nombre d'avions en missions est inférieur au besoin,
                 # choix de la durée de l'affectation en mission. De quatre à un mois
+                affectationChoix = constantes.typechoix
                 if t_fin - t >= 5:
-                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 4, t, d["listeMission"], opex)
+                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 4, t, d["listeMission"], opex,affectationChoix)
                 if (t_fin - t == 4 or t_fin - t == 2):
-                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 3, t, d["listeMission"], opex)
+                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 3, t, d["listeMission"], opex,affectationChoix)
                 if (t_fin - t == 3 or t_fin - t == 1):
-                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 2, t, d["listeMission"], opex)
+                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 2, t, d["listeMission"], opex,affectationChoix)
                 if t_fin - t == 0:
-                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 1, t, d["listeMission"], opex)
+                    affectationMission(m, d["listeAvion"], nbmiss, df.xs, 1, t, d["listeMission"], opex,affectationChoix)
 
 
 

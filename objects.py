@@ -1,4 +1,3 @@
-
 class avion:
     def __init__(self,nom, type_avion, capacite,
                  pot_mois, pot_horaire, atterissage,heures_absolues,proch_maint):
