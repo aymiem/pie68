@@ -8,7 +8,10 @@ def solution_to_csv(df,nom_fichier):
 # Creation d'un fichier indicateurs.csv # NON utilisé
 def ecriture_donnees(indic,nom_fichier):
     num = nom_fichier[8:10]
-    nom = "indicateurs"+num+".csv"
+    if num == "0.":
+        nom = "indicateurs0.csv"
+    else:
+        nom = "indicateurs"+num+".csv"
     with open(nom, 'w') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=';',lineterminator = '\n')
         #spamwriter.writerow(['pas de temps']+list(range(1, t-3)))

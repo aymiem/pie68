@@ -41,9 +41,19 @@ def programme():
     print(df_indic)
     
     for ind in df_indic.columns:
-        df_indic = df_indic.sort_values(by=[ind])
-        df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1))
-        df_indic
+        if (ind == "max_maint"):
+            # Rg 1 si maintenance max <= 18
+            df_indic[ind+"_rg"] = df_indic[ind]/18 + (df_indic[ind]/18 - 1)*10
+        else:
+            if (ind == "var_maint") or (ind == "pot_perdu" ):
+                df_indic = df_indic.sort_values(by=[ind])
+            else:
+                df_indic = df_indic.sort_values(by=[ind], ascending=False)
+            
+            df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1))
+        
+        print(df_indic)
+    
     
     print(df_indic)
         
