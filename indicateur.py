@@ -33,6 +33,7 @@ def Init_Indicateurs(d, indic):
     indic["nbrAvionFree"] = nbrAvionFree
     indic["avionDispo"]= [0] * ( d["temps"] - 4)
     indic["min_dispo"] = 0
+    indic["PotPerdu"] = 0
     
     return indic
     
@@ -49,8 +50,12 @@ def Remplir_Indicateurs(d, df, indic, t):
                 indic["FlightTime"][nomAvion] += indic["MpotH"][nomAvion][t-2]-a.pot_horaire 
             
         indic["MpotH"]["somme"][t-1] += indic["MpotH"][nomAvion][t-1] # On fait la somme des pot. sur tous les avions à chaque période
-
+        #indic["PotMois"][nomAvion].append(a.pot_mois)
 
         if str(df.xs(t)[a])[0] == "V":
             indic["NbrMaint"][t-1] += 1
             indic["PotCalTot"] -= 1
+
+        if t>1:
+            if indic["MpotH"][nomAvion][t-2] < indic["MpotH"][nomAvion][t-1]:
+                indic["PotPerdu"] += indic["MpotH"][nomAvion][t-2]

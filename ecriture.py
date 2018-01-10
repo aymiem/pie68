@@ -20,5 +20,6 @@ def ecriture_donnees(indic,nom_fichier):
         spamwriter.writerow(['max_maint'] + [indic["Max_maint"]]) #max maint, contrainte de capacité à ne pas dépasser
         spamwriter.writerow(['pot_cal_tot'] + [indic["PotCalTot"]]) #Disponibilité totale planifié, soit le nombre 
                                                          #total de créneau moins le nombre de créneau occupé par une maintenance
+        spamwriter.writerow(['pot_perdu'] + [indic["PotPerdu"]]) #Potentiel perdu à minimiser
         #spamwriter.writerow(['nombre d\'heures en metropole']+ l2)
         spamwriter.writerow(['min_dispo'] + [indic["min_dispo"]]) # nbr d'avion dispo (mission + entrainement), à maximiser
