@@ -51,14 +51,11 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
         remplir_mission(d, t, df, opex) # Affectation des opex
         opex = 0
         remplir_mission(d, t, df, opex) # Affectation des missions en métrople
-        modif_mission(d, t, df) # modification des potentiels missions
+        modif_mission(d, t, df, indic) # modification des potentiels missions
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
-        remplir_autres(d, t, df, h) # Gestion des avions qui ne sont ni en maint ni en mission
+        remplir_autres(d, t, df, h, indic) # Gestion des avions qui ne sont ni en maint ni en mission
 
-    for t in range(d["temps"] - 3, d["temps"]):
-        Remplir_Indicateurs(d, df, indic, t)
-        
-        
+
     indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
     indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
 
@@ -70,6 +67,14 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
 #    var = mean(ecart) #indicateur -> variance du nombre d'avions en maintenance
     indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"]))
     indic["Max_maint"] = np.max(indic["NbrMaint"])
+    indic["FlightTime_var"] = np.var(
+            np.fromiter(iter(indic["FlightTime"].values()), dtype=int)
+            )
+    
+    for t in range(1, d["temps"]-3):
+        indic["avionDispo"][t-1] = indic["nbrAvionMission"][t-1] + indic["nbrAvionFree"][t-1]
+    
+    indic["min_dispo"] = np.min(indic["avionDispo"])
     
     return indic
 
@@ -86,10 +91,10 @@ def lectureEntrees(path):
     #print(parametre.strategie)
     return dictionnaire
 
-def modif_mission(d,t,df):
+def modif_mission(d,t,df, indic):
     for a in d["listeAvion"]:
         for m in d["listeMission"]:
-            modifPot(m, df, a, t)  # modification des potentiels (avions affectés manuellement inclus)
+            modifPot(m, df, a, t, indic)  # modification des potentiels (avions affectés manuellement inclus)
 
 def remplir_mission(d,t,df,opex):
     for m in d["listeMission"]:
@@ -150,7 +155,7 @@ def remplir_maintenance(d,t,df,mi,mip):
                 mi = mi + 1
                 mip = mip + 1
 
-def remplir_autres(d,t,df,h):
+def remplir_autres(d,t,df,h, indic):
     # fonction pour gerer les avions ni en mission ni en maintenances
     for a in d["listeAvion"]:
         if pd.isnull(df.xs(t)[a]) or ((df.xs(t)[a]) == 'BL'): # les avions dont le potentiel calendaire change
@@ -159,6 +164,7 @@ def remplir_autres(d,t,df,h):
         if (pd.isnull(df.xs(t)[a]) and a.pot_horaire >= parametre.puParMois): # les avions dont le potentiel horaire change
             a.pot_horaire = a.pot_horaire - parametre.puParMois
             h = h + parametre.puParMois
+            indic["nbrAvionFree"][t-1] += 1
         elif (pd.isnull(df.xs(t)[a]) and a.pot_horaire < parametre.puParMois): # les avions qui n'ont plus de potentiel horaire
             # sont marqué dans le dataframe par '-'
             df.xs(t)[a] = ("-")
