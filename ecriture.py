@@ -6,17 +6,23 @@ def solution_to_csv(df,nom_fichier):
     df.T.to_csv(nom_fichier, sep=';')
 
 # Creation d'un fichier indicateurs.csv # NON utilisé
-def ecriture_donnees(indic):
-    with open('indicateurs.csv', 'w') as csvfile:
+def ecriture_donnees(indic,nom_fichier):
+    num = nom_fichier[8:10]
+    if num == "0.":
+        nom = "indicateurs0.csv"
+    else:
+        nom = "indicateurs"+num+".csv"
+    with open(nom, 'w') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=';',lineterminator = '\n')
         #spamwriter.writerow(['pas de temps']+list(range(1, t-3)))
         #spamwriter.writerow(['nombre d\'avions en maintenance']+ l1)
         #spamwriter.writerow(['mip']+ l3)
-        spamwriter.writerow(['moyenne potentiel horaire, à maximiser'] + [indic["MpotH"]["moy_somme"]])
-        spamwriter.writerow(['minimun potentiel horaire, à maximiser'] + [indic["MpotH"]["min_somme"]])
-        spamwriter.writerow(['variance maint, à minimiser'] + [indic["Maint_var"]])
-        spamwriter.writerow(['max maint, contrainte de capacité à ne pas dépasser'] + [indic["Max_maint"]])
-        spamwriter.writerow(['potentiel perdu, à minimiser'] + [indic["PotPerdu"]])
-    
-        
+        spamwriter.writerow(['moy_pot_hor'] + [indic["MpotH"]["moy_somme"]]) #moyenne potentiel horaire, à maximiser
+        spamwriter.writerow(['min_pot_hor'] + [indic["MpotH"]["min_somme"]])  #minimun potentiel horaire, à maximiser
+        spamwriter.writerow(['var_maint'] + [indic["Maint_var"]]) #variance maint, à minimiser
+        spamwriter.writerow(['max_maint'] + [indic["Max_maint"]]) #max maint, contrainte de capacité à ne pas dépasser
+        spamwriter.writerow(['pot_cal_tot'] + [indic["PotCalTot"]]) #Disponibilité totale planifié, soit le nombre 
+                                                         #total de créneau moins le nombre de créneau occupé par une maintenance
+        spamwriter.writerow(['pot_perdu'] + [indic["PotPerdu"]]) #Potentiel perdu à minimiser
         #spamwriter.writerow(['nombre d\'heures en metropole']+ l2)
+        spamwriter.writerow(['min_dispo'] + [indic["min_dispo"]]) # nbr d'avion dispo (mission + entrainement), à maximiser

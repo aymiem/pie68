@@ -1,0 +1,9 @@
+
+   1ere génération/population initiale
+
+solution0 : solution avec avions triés par cravate dans "choixAvion" + lisage
+solution10 à solution19 : solutions avec avions triés de façon random dans "choixAvion" + lissage
+
+   2eme génération
+
+solution20 à solution29 : solutions élaborées par mutation de la population initiale
