@@ -4,6 +4,8 @@ import pandas as pd
 from lecture import *
 from ecriture import *
 from constantes import *
+from indicateur import *
+import numpy as np
 
 def programme():
     print('Lancement du programme ')
@@ -11,10 +13,17 @@ def programme():
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
     d=lectureEntrees(x) # Lecture des fichiers d'entrées
     df=dataframe(d) # Création du dataframe
-    remplir(d,df) # remplissage du dataframe
-    ecriture(d,df) # export des données en CSV
+    indicateurs = Init_Indicateurs(d)
+    MpotH, NbrMaint = indicateurs
+    NbrMaint, MpotH, Maint_var = remplir(d,df, MpotH, NbrMaint) # remplissage du dataframe
+    df = ecriture(d,df) # export des données en CSV
+#        with open('dict.csv', 'rb') as csv_file:
+#        reader = csv.reader(csv_file)
+#        MpotH = dict(reader)
+    
+    return NbrMaint, MpotH, Maint_var, df
 
-def remplir(d, df): # Fonction pour remplir le dataframe
+def remplir(d, df, MpotH, NbrMaint): # Fonction pour remplir le dataframe
 
     # Creation de trois listes utilisées dans le fichier indicateur de sortie 'indicateurs.csv'
     #liste_nbh_metropole = []
@@ -30,6 +39,7 @@ def remplir(d, df): # Fonction pour remplir le dataframe
         print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
 
         # gestion des affectations missions
+        Remplir_Indicateurs(d, df, MpotH, NbrMaint, t)
         opex = 1
         remplir_mission(d, t, df, opex) # Affectation des opex
         opex = 0
@@ -37,6 +47,18 @@ def remplir(d, df): # Fonction pour remplir le dataframe
         modif_mission(d, t, df) # modification des potentiels missions
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
         remplir_autres(d, t, df, h) # Gestion des avions qui ne sont ni en maint ni en mission
+
+    MpotH["min_somme"] = min(MpotH["somme"]) # L'indicateur est le min de la somme des pot
+
+#    Calcul de la variance du nombre d'avions en maintenance
+#    moy = mean(NbrMaint)
+#    ecart = [] * ( d["temps"] - 3 )
+#    for t in (1,d["temps"]-3):
+#        ecart(t) = (NbrMaint(t) - moy)*(NbrMaint(t)-moy)
+#    var = mean(ecart) #indicateur -> variance du nombre d'avions en maintenance
+    Maint_var = np.var(np.asarray(NbrMaint))
+    
+    return NbrMaint, MpotH, Maint_var
 
 def lectureEntrees(path):
     # Appel de la fonction lecture, en paramètre :path
@@ -140,7 +162,7 @@ def remplir_autres(d,t,df,h):
 def ecriture(d,df):
     # Appel de la fonction solution_to_csv pour exporter les donneés
     solution_to_csv(df, d["nom_ficher"][3])
-    print(df)
+    return df
 
 def dataframe(d):
     # Association entre la matrice de rebouclage (si non  vide) et le pas de temps
@@ -152,4 +174,4 @@ def dataframe(d):
     return df
 
 
-if __name__ == '__main__': programme()
+if __name__ == '__main__': NbrMaint, MpotH, Maint_var, df = programme()
