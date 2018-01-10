@@ -1,10 +1,13 @@
 import pandas as pd
+import random
+
 
 # creation d'une liste des avions pouvant accomplir la mision
 def besoinEnMission(m,l_m, l_a, nbmiss, affect,nb,t,i):
     liste = []
     for a in l_a:
         #nb mois * potdemandé/mois + 100 à la place des 600 (demande DGA)
+        #print(m.type_avion)
         if (m.opex == i and m.type_avion == a.type_avion and capaciteMission(a,m)
             and a.pot_horaire >=(nb*m.pu+100)  and isFree(a,t,nb,affect) and isFree(a,t,-2,affect)):
             if t<=2:
@@ -25,18 +28,33 @@ def capaciteMission(a,m):
     return set(l2)<=set(l1)
 
 # creation d'une liste ordonnée des avions pouvant accomplir la mision (CRITERE: CRAVATE)
-def choixAvion(liste):
-    l_cravate = sorted(liste, key=cravate)
-    return l_cravate
+def choixAvion(liste,choix):
+    
+    if choix == 0:
+        listeOrdonnee = sorted(liste, key=cravate)
+        #print("nb d'avions disp pour choix", len(listeOrdonnee))
+        
+    else:
+        listeOrdonnee = sorted(liste, key=lambda *args: random.random())
+        
+    return listeOrdonnee
+
+
 
 
 # Troncature de la liste choixAvions au nombre necessaire d'avions pour la mission m
 # puis affectation des missions dans le dataframe sous le format (nom_mission$pot_utilisé)
 # la modification du potentiel de l'avion est ralisé avec la fonction modifPot.
-def affectationMission(m, listeAvion, nbmiss, data, nb, t,listeMission,i):
+def affectationMission(m, listeAvion, nbmiss, data, nb, t,listeMission,i,choix):
     listeAlpha = besoinEnMission(m,listeMission, listeAvion, nbmiss, data,nb,t,i)
-    listeBeta = choixAvion(listeAlpha)
+    
+    #print(type(listeAlpha),listeAlpha)
+    listeBeta = choixAvion(listeAlpha,choix)
+    
+    #print(type(listeBeta),listeBeta)
     listeGamma = listeBeta[0:m.nb_avion - nbmiss]
+    #print("nb d'avions necessaires pour la mission", m.nb_avion)
+    #print("nb d'avions deja affectes pour la mission", nbmiss)
     for i in range(0, nb):
         data(t + i)[listeGamma] = (m.nom+"$"+str(int(m.pu)))
     return

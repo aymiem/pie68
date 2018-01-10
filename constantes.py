@@ -2,6 +2,7 @@ class constantes:
     path = 'donnees_lecture.csv'
     strategie_cravate = 1
     strategie_lissage = 2
+    typechoix = 1
 
 class parametre:
     # initialisation des parametres du programme
@@ -15,3 +16,4 @@ class parametre:
     entreeSTKparMois = 0
     strategie = 0
     anticipMaint = 0
+    
