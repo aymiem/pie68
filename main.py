@@ -16,12 +16,18 @@ def programme():
     indicateurs = Init_Indicateurs(d)
     MpotH, NbrMaint = indicateurs
     NbrMaint, MpotH, Maint_var = remplir(d,df, MpotH, NbrMaint) # remplissage du dataframe
-    df = ecriture(d,df) # export des données en CSV
+    indic = dict()
+    indic["Min_et_moy_potH"] = [MpotH["min_somme"],MpotH["moy_somme"]]
+    #indic['NbrMaint'] = NbrMaint
+    indic["Maint_var"] = Maint_var
+    #indic['MpotH'] = MpotH
+    
+    df = ecriture(d,df,indic) # export des données en CSV
 #        with open('dict.csv', 'rb') as csv_file:
 #        reader = csv.reader(csv_file)
 #        MpotH = dict(reader)
     
-    return NbrMaint, MpotH, Maint_var, df
+    return indic, df
 
 def remplir(d, df, MpotH, NbrMaint): # Fonction pour remplir le dataframe
 
@@ -49,6 +55,7 @@ def remplir(d, df, MpotH, NbrMaint): # Fonction pour remplir le dataframe
         remplir_autres(d, t, df, h) # Gestion des avions qui ne sont ni en maint ni en mission
 
     MpotH["min_somme"] = min(MpotH["somme"]) # L'indicateur est le min de la somme des pot
+    MpotH["moy_somme"] = np.mean(MpotH["somme"]) # L'indicateur est la moyenne de la somme des pot
 
 #    Calcul de la variance du nombre d'avions en maintenance
 #    moy = mean(NbrMaint)
@@ -159,9 +166,11 @@ def remplir_autres(d,t,df,h):
                 h = h + parametre.puParMois
                 df.xs(t)[a] = ""
 
-def ecriture(d,df):
+def ecriture(d,df,indic):
     # Appel de la fonction solution_to_csv pour exporter les donneés
     solution_to_csv(df, d["nom_ficher"][3])
+    ecriture_donnees(indic)
+    
     return df
 
 def dataframe(d):
@@ -174,4 +183,5 @@ def dataframe(d):
     return df
 
 
-if __name__ == '__main__': NbrMaint, MpotH, Maint_var, df = programme()
+#if __name__ == '__main__': NbrMaint, MpotH, Maint_var, df = programme()
+if __name__ == '__main__': indic, df = programme()
