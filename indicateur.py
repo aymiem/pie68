@@ -25,6 +25,7 @@ def Init_Indicateurs(d, indic):
     
     PotCalTot = len(d["listeAvion"])*(d["temps"])
     
+
     indic["MpotH"] = MpotH
     indic["NbrMaint"] = NbrMaint
     indic["PotCalTot"] = PotCalTot
@@ -43,14 +44,13 @@ def Remplir_Indicateurs(d, df, indic, t):
         nomAvion = a.nom
         indic["MpotH"][nomAvion].append(a.pot_horaire) # On rajoute la dernière valeur à la liste
         
-        if (t>1) :
+        if (t>1):
             if (indic["MpotH"][nomAvion][t-2]-a.pot_horaire > 0) :
                 indic["FlightTime"][nomAvion] += indic["MpotH"][nomAvion][t-2]-a.pot_horaire 
             
         indic["MpotH"]["somme"][t-1] += indic["MpotH"][nomAvion][t-1] # On fait la somme des pot. sur tous les avions à chaque période
-        
+
+
         if str(df.xs(t)[a])[0] == "V":
             indic["NbrMaint"][t-1] += 1
             indic["PotCalTot"] -= 1
-    
-        

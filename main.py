@@ -54,8 +54,8 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
         modif_mission(d, t, df, indic) # modification des potentiels missions
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
         remplir_autres(d, t, df, h, indic) # Gestion des avions qui ne sont ni en maint ni en mission
-
-
+    
+        
     indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
     indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
 
