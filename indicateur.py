@@ -17,7 +17,7 @@ def Init_Indicateurs(d, indic):
 
     NbrMaint = [0] * ( d["temps"] - 1)
     
-    PotCalTot = len(d["listeAvion"])*d["temps"]
+    PotCalTot = len(d["listeAvion"])*(d["temps"]+1)
     
     indic["MpotH"] = MpotH
     indic["NbrMaint"] = NbrMaint
