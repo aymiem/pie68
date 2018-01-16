@@ -21,35 +21,42 @@ def programme():
     for file in os.listdir(os.getcwd()): # Pour les fichiers du dossier courant
         if file.endswith(".csv") and file.startswith("indicateurs"+generation):
             listeFiles.append(file)
-            print(listeFiles)
             
     if generation == "1":
         listeFiles.append("indicateurs0.csv")
-        print(listeFiles)
+    
+    print(listeFiles)
     
     
     dfs = []
-    #print(pd.read_csv("indicateurs10.csv",sep=";",header=None))
     for nom_fichier in listeFiles:
         df_loc = pd.read_csv(nom_fichier,sep=";",header=None,index_col=0)
-        df_loc.loc[2]=[nom_fichier,0]
+        df_loc.loc["solution"]=[nom_fichier[11:13].replace(".","")]
         df_loc=df_loc.transpose()
-        print(df_loc)
         dfs.append(df_loc)
-    
+        
     df_indic = pd.concat(dfs,ignore_index=True)
+    df_indic = df_indic.set_index('solution')
+    
+    print(df_indic)
+    
+    for ind in df_indic.columns:
+        if (ind == "max_maint"):
+            # Rg 1 si maintenance max <= 18
+            df_indic[ind+"_rg"] = df_indic[ind]/18 + (df_indic[ind]/18 - 1)*10
+        else:
+            if (ind == "var_maint") or (ind == "pot_perdu" ):
+                df_indic = df_indic.sort_values(by=[ind])
+            else:
+                df_indic = df_indic.sort_values(by=[ind], ascending=False)
+            
+            df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1))
+        
+        print(df_indic)
+    
     
     print(df_indic)
         
-        
-#    # Lecture des données de chaque categorie dans le fichier csv
-#    listeInd=indexCategories(path)
-#    lecture_l_p = lectureCategorie(path, listeInd, "parametres")
-#    lecture_l_a = lectureCategorie(path, listeInd, "avion")
-#    lecture_l_m = lectureCategorie(path, listeInd, "mission")
-#    lecture_l_mt = lectureCategorie(path, listeInd, "maintenance")
-    
-    
     
     
 if __name__ == '__main__': indic, df = programme()
