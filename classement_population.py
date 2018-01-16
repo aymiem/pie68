@@ -10,12 +10,16 @@ from objects import *
 from constantes import *
 import pandas as pd
 
-
 def programme():
+    
+    gen = input("Donner le numero de la generation (1 pour population initiale):")
+    
+    return classement(gen)
+
+
+def classement(generation):
     print('Lancement du programme ')
 
-    generation = input('Donner le numero de la generation (1 pour population initiale):')
-    print(type(generation))
     listeFiles = [] 
     # liste des fichiers de type "indicateursXX.csv" de la génération étudiée à lire
     for file in os.listdir(os.getcwd()): # Pour les fichiers du dossier courant
@@ -50,13 +54,10 @@ def programme():
             else:
                 df_indic = df_indic.sort_values(by=[ind], ascending=False)
             
-            df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1))
-        
-        print(df_indic)
-    
+            df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1))    
     
     print(df_indic)
         
+    return df_indic
     
-    
-if __name__ == '__main__': indic, df = programme()
+if __name__ == '__main__': df = programme()
