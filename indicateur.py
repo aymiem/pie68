@@ -11,17 +11,24 @@ def Init_Indicateurs(d, indic):
     
     MpotH = dict()
     indic["FlightTime"] = dict()
+    indic["tauxRempMission"]= dict()
+    indic["RempMission"] = dict()
             
     for a in d["listeAvion"]:
         nomAvion = a.nom
         MpotH[nomAvion] = [] #On crée une liste vide pour le potentiel horaire de chaque avion
         indic["FlightTime"][nomAvion] = 0 #On crée une liste vide pour le temps de vol réalisé de chaque avion
     
-    MpotH["somme"] = [0] * (d["temps"] - 4) #On crée une liste qui sera la somme des pot. sur chaque période
+    for m in d["listeMission"]: #Pour chaque mission, on calculera le nombre d'avion affecter à chaque période à cette mission
+        mission = m.nom
+        indic["tauxRempMission"][mission] = [0] * ( d["temps"] - 3)
+        indic["RempMission"][mission] = 0
+        
+    MpotH["somme"] = [0] * (d["temps"] - 3) #On crée une liste qui sera la somme des pot. sur chaque période
 
-    NbrMaint = [0] * ( d["temps"] - 4)
-    nbrAvionMission = [0] * ( d["temps"] - 4)
-    nbrAvionFree = [0] * ( d["temps"] - 4)
+    NbrMaint = [0] * ( d["temps"] - 3)
+    nbrAvionMission = [0] * ( d["temps"] - 3)
+    nbrAvionFree = [0] * ( d["temps"] - 3)
     
     PotCalTot = len(d["listeAvion"])*(d["temps"])
     
@@ -31,9 +38,10 @@ def Init_Indicateurs(d, indic):
     indic["PotCalTot"] = PotCalTot
     indic["nbrAvionMission"] = nbrAvionMission
     indic["nbrAvionFree"] = nbrAvionFree
-    indic["avionDispo"]= [0] * ( d["temps"] - 4)
+    indic["avionDispo"]= [0] * ( d["temps"] - 3)
     indic["min_dispo"] = 0
     indic["PotPerdu"] = 0
+    
     
     return indic
     
