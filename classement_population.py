@@ -10,12 +10,16 @@ from objects import *
 from constantes import *
 import pandas as pd
 
-
 def programme():
+    
+    gen = input("Donner le numero de la generation (1 pour population initiale):")
+    
+    return classement(gen)
+
+
+def classement(generation):
     print('Lancement du programme ')
 
-    generation = input('Donner le numero de la generation (1 pour population initiale):')
-    print(type(generation))
     listeFiles = [] 
     # liste des fichiers de type "indicateursXX.csv" de la génération étudiée à lire
     for file in os.listdir(os.getcwd()): # Pour les fichiers du dossier courant
@@ -26,7 +30,6 @@ def programme():
         listeFiles.append("indicateurs0.csv")
     
     print(listeFiles)
-    
     
     dfs = []
     for nom_fichier in listeFiles:
@@ -40,23 +43,37 @@ def programme():
     
     print(df_indic)
     
+    # Attribution d'une note entre 0 et 1 de chaque individu pour chaque indicateur
+    # par normalisation : xj' = (xj − minj)/(maxj − minj))
     for ind in df_indic.columns:
         if (ind == "max_maint"):
-            # Rg 1 si maintenance max <= 18
-            df_indic[ind+"_rg"] = df_indic[ind]/18 + (df_indic[ind]/18 - 1)*10
+            # Rg 1 si maintenance max > 18
+            df_indic[ind+"_rg"] = df_indic[ind]/18 - (df_indic[ind]/18 - 1)
         else:
-            if (ind == "var_maint") or (ind == "pot_perdu" ):
-                df_indic = df_indic.sort_values(by=[ind])
-            else:
-                df_indic = df_indic.sort_values(by=[ind], ascending=False)
+            if min(df_indic[ind]) != max(df_indic[ind]) :
+                if (ind == "var_maint") or (ind == "pot_perdu" ) :
+                    #df_indic = df_indic.sort_values(by=[ind])
+                    df_indic[ind+"_rg"] = 1 - (df_indic[ind]-min(df_indic[ind]))/(max(df_indic[ind])-min(df_indic[ind]))
+                else:
+                    #df_indic = df_indic.sort_values(by=[ind], ascending=False)
+                    df_indic[ind+"_rg"] = (df_indic[ind]-min(df_indic[ind]))/(max(df_indic[ind])-min(df_indic[ind]))
+                #df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1)) 
             
-            df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1))
+            else : # Si indic constant pour toute solution, non pris en compte dans le calcul du fitness
+                df_indic[ind+"_rg"] = 1 - df_indic[ind]/max(df_indic[ind])
+             
         
-        print(df_indic)
-    
-    
     print(df_indic)
         
+    return df_indic
+
+def Roulette_wheel_selection(df_classement):
+    # selection basee sur une fonction fitness
+    # combinaison linéaire des rangs par indicateurs
+    df_RWS = df_classement
+    # on définit ici les poids des indicateurs
+    df_RWS["fitness"] = 
+    return 0
     
     
-if __name__ == '__main__': indic, df = programme()
+if __name__ == '__main__': df = programme()
