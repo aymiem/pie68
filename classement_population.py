@@ -36,8 +36,6 @@ def programme():
         df_loc=df_loc.transpose()
         print(df_loc)
         dfs.append(df_loc)
-        
-        
     
     df_indic = pd.concat(dfs,ignore_index=True)
     
