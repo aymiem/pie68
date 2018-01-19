@@ -6,7 +6,7 @@ def solution_to_csv(df,nom_fichier):
     df.T.to_csv(nom_fichier, sep=';')
 
 # Creation d'un fichier indicateurs.csv # NON utilisé
-def ecriture_donnees(indic,nom_fichier):
+def ecriture_donnees(listMission,indic,nom_fichier):
     num = nom_fichier[8:10]
     if num == "0.":
         nom = "indicateurs0.csv"
@@ -26,3 +26,6 @@ def ecriture_donnees(indic,nom_fichier):
         spamwriter.writerow(['pot_perdu'] + [indic["PotPerdu"]]) #Potentiel perdu à minimiser
         #spamwriter.writerow(['nombre d\'heures en metropole']+ l2)
         spamwriter.writerow(['min_dispo'] + [indic["min_dispo"]]) # nbr d'avion dispo (mission + entrainement), à maximiser
+        
+        for m in listMission:
+                    spamwriter.writerow(['remp_'+m.nom] + [indic["RempMission"][m.nom]]) # pourcentage de remplissage de la mission sur sa période, objectif = 1
