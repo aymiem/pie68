@@ -24,7 +24,7 @@ def Init_Indicateurs(d, indic):
         indic["tauxRempMission"][mission] = [0] * ( d["temps"] - 3)
         indic["RempMission"][mission] = 0
         
-    MpotH["somme"] = [0] * (d["temps"] - 3) #On crée une liste qui sera la somme des pot. sur chaque période
+    MpotH["somme"] = [0] * (d["temps"] - 4) #On crée une liste qui sera la somme des pot. sur chaque période
 
     NbrMaint = [0] * ( d["temps"] - 3)
     nbrAvionMission = [0] * ( d["temps"] - 3)
@@ -38,7 +38,7 @@ def Init_Indicateurs(d, indic):
     indic["PotCalTot"] = PotCalTot
     indic["nbrAvionMission"] = nbrAvionMission
     indic["nbrAvionFree"] = nbrAvionFree
-    indic["avionDispo"]= [0] * ( d["temps"] - 3)
+    indic["avionDispo"]= [0] * ( d["temps"] - 4)
     indic["min_dispo"] = 0
     indic["PotPerdu"] = 0
     
