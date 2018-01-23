@@ -14,7 +14,7 @@ from selection_operator import evaluation_fitness, Roulette_wheel_selection
 
 # Module permettant de classer les individus d'une même génération 
 
-def programme():
+def classement_population():
     print('Lancement du programme ') 
     
     gen = input("Donner le numero de la generation (1 pour population initiale):")
@@ -97,5 +97,3 @@ def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
     print(num_sol)
     print("solution" + num_sol + ".csv")
     return "solution" + num_sol + ".csv"
-    
-if __name__ == '__main__': df_c = programme()
