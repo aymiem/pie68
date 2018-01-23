@@ -10,18 +10,27 @@ from objects import *
 from constantes import *
 import pandas as pd
 import numpy as np
+from selection_operator import evaluation_fitness, Roulette_wheel_selection
+
+# Module permettant de classer les individus d'une même génération 
 
 def programme():
     print('Lancement du programme ') 
     
     gen = input("Donner le numero de la generation (1 pour population initiale):")
-    df_c = classement(gen)
-    df_e = evaluation(df_c)
+    df_c = rankings(gen)
+    choix_indiv_rg(df_c, gen, "pot_perdu", 0)
+    choix_indiv_rg(df_c, gen, "pot_perdu", 1)
+    choix_indiv_rg(df_c, gen, "pot_perdu", 0.5)
+    df_e = evaluation_fitness(df_c)
     
     return Roulette_wheel_selection(df_e,3)
 
 
-def classement(generation):
+def rankings(generation):
+    # input : numero de la generation pour laquelle on doit attribuer un rg par indicateur
+    # output : dataframe avec les solutions/individus en index et donnant les valeurs 
+    #          des indicateurs et les un score/rg par indicateur
 
     listeFiles = [] 
     # liste des fichiers de type "indicateursXX.csv" de la génération étudiée à lire
@@ -43,8 +52,7 @@ def classement(generation):
         
     df_indic = pd.concat(dfs,ignore_index=True)
     df_indic = df_indic.set_index('solution')
-    
-    
+       
     # Attribution d'une note entre 0 et 1 de chaque individu pour chaque indicateur
     # par normalisation : xj' = (xj − minj)/(maxj − minj))
     for ind in df_indic.columns:
@@ -65,42 +73,29 @@ def classement(generation):
             else : # Si indic constant pour toute solution, non pris en compte dans le calcul du fitness
                 df_indic[ind+"_rg"] = 1 - df_indic[ind]/max(df_indic[ind])
              
-        
     print(df_indic)
-        
     return df_indic
 
-def evaluation(df_classement):
-    # evalue la fonction fitness
-    # combinaison linéaire des rangs par indicateurs
-    df_RWS = df_classement
-    # on récupère ici les poids des indicateurs
-    df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
 
-    df_RWS["fitness"] = np.zeros(len(df_RWS))
+def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
+    # renvoit une solution ayant un niveau choisi pour un indicateur donné
+    
+    # inputs : df_indic, la dataframe des indicateurs pour les individus d'une génération après évaluation des rangs
+    #         generation, le numero de la generation etudiee
+    #         nom_indic, le nom de l'indicateur sur lequel on évalue les individus
+    #         niveau_sol, le rang de l'individu cherché vis à vis de l'indicateur choisi
+    # Si niveau_sol = 1, la fonction renvoit la meilleure solution pour l'indicateur choisi
+    # Si niveau_sol = 0, elle renvoit la pire solution et sinon elle renvoit une solution intermédiaire
 
-    for nom_indic in list(df_poids.index):
-        df_RWS["fitness"] = df_RWS["fitness"] + np.asarray(df_RWS[nom_indic+"_rg"])*(df_poids.loc[nom_indic,"poids"])
-        print(df_RWS)
-    return df_RWS.sort_values(by=["fitness"], ascending=False)
-
-def Roulette_wheel_selection(df_classement, N): 
-    # N est le nombre de membres choisis pour créer la génération suivante 
-    # selection basee sur le fitness d'une population
-    df = df_classement
-    f_sum = sum(df["fitness"])
-    df["proba"] = df["fitness"]/f_sum
-    p_sum = sum(df["proba"])
-    print(df)
-    chosen_sol = []
-    while len(chosen_sol) < N:
-        rd_nb = np.random.random(1)[0]
-        print(rd_nb)
-        if len(list(df[df.proba >= rd_nb].index.values)) <= N :
-            chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)
-        else:
-            chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)[0:N]
-        print(chosen_sol)
-    return chosen_sol
+    ind_rg = nom_indic + "_rg"
+    if (niveau_sol == 0) :
+        num_sol = list(df_indic.sort_values(by=[ind_rg]).index.values)[0]
+    elif (niveau_sol == 1) :
+        num_sol = list(df_indic.sort_values(by=[ind_rg],ascending=False).index.values)[0]
+    else :
+        num_sol = list(df_indic.sort_values(by=[ind_rg],ascending=False).index.values)[int(len(df_indic)/2)]
+    print(num_sol)
+    print("solution" + num_sol + ".csv")
+    return "solution" + num_sol + ".csv"
     
 if __name__ == '__main__': df_c = programme()
