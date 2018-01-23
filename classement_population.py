@@ -17,6 +17,7 @@ def programme():
     gen = input("Donner le numero de la generation (1 pour population initiale):")
     df_c = classement(gen)
     
+    
     return Roulette_wheel_selection(df_c)
 
 
@@ -43,9 +44,11 @@ def classement(generation):
     df_indic = pd.concat(dfs,ignore_index=True)
     df_indic = df_indic.set_index('solution')
     
+    
     # Attribution d'une note entre 0 et 1 de chaque individu pour chaque indicateur
     # par normalisation : xj' = (xj − minj)/(maxj − minj))
     for ind in df_indic.columns:
+        
         if (ind == "max_maint"):
             # Rg 1 si maintenance max > 18
             df_indic[ind+"_rg"] = df_indic[ind]/18 - (df_indic[ind]/18 - 1)
@@ -82,4 +85,4 @@ def Roulette_wheel_selection(df_classement):
     return df_RWS.sort_values(by=["fitness"])
     
     
-if __name__ == '__main__': df = programme()
+if __name__ == '__main__': df_c = programme()
