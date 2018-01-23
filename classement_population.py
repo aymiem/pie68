@@ -9,16 +9,19 @@ import csv
 from objects import *
 from constantes import *
 import pandas as pd
+import numpy as np
 
 def programme():
+    print('Lancement du programme ') 
     
     gen = input("Donner le numero de la generation (1 pour population initiale):")
+    df_c = classement(gen)
+    df_e = evaluation(df_c)
     
-    return classement(gen)
+    return Roulette_wheel_selection(df_e,3)
 
 
 def classement(generation):
-    print('Lancement du programme ')
 
     listeFiles = [] 
     # liste des fichiers de type "indicateursXX.csv" de la génération étudiée à lire
@@ -41,11 +44,11 @@ def classement(generation):
     df_indic = pd.concat(dfs,ignore_index=True)
     df_indic = df_indic.set_index('solution')
     
-    print(df_indic)
     
     # Attribution d'une note entre 0 et 1 de chaque individu pour chaque indicateur
     # par normalisation : xj' = (xj − minj)/(maxj − minj))
     for ind in df_indic.columns:
+        
         if (ind == "max_maint"):
             # Rg 1 si maintenance max > 18
             df_indic[ind+"_rg"] = df_indic[ind]/18 - (df_indic[ind]/18 - 1)
@@ -67,13 +70,37 @@ def classement(generation):
         
     return df_indic
 
-def Roulette_wheel_selection(df_classement):
-    # selection basee sur une fonction fitness
+def evaluation(df_classement):
+    # evalue la fonction fitness
     # combinaison linéaire des rangs par indicateurs
     df_RWS = df_classement
-    # on définit ici les poids des indicateurs
-    df_RWS["fitness"] = 
-    return 0
+    # on récupère ici les poids des indicateurs
+    df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
+
+    df_RWS["fitness"] = np.zeros(len(df_RWS))
+
+    for nom_indic in list(df_poids.index):
+        df_RWS["fitness"] = df_RWS["fitness"] + np.asarray(df_RWS[nom_indic+"_rg"])*(df_poids.loc[nom_indic,"poids"])
+        print(df_RWS)
+    return df_RWS.sort_values(by=["fitness"], ascending=False)
+
+def Roulette_wheel_selection(df_classement, N): 
+    # N est le nombre de membres choisis pour créer la génération suivante 
+    # selection basee sur le fitness d'une population
+    df = df_classement
+    f_sum = sum(df["fitness"])
+    df["proba"] = df["fitness"]/f_sum
+    p_sum = sum(df["proba"])
+    print(df)
+    chosen_sol = []
+    while len(chosen_sol) < N:
+        rd_nb = np.random.random(1)[0]
+        print(rd_nb)
+        if len(list(df[df.proba >= rd_nb].index.values)) <= N :
+            chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)
+        else:
+            chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)[0:N]
+        print(chosen_sol)
+    return chosen_sol
     
-    
-if __name__ == '__main__': df = programme()
+if __name__ == '__main__': df_c = programme()

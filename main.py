@@ -22,9 +22,6 @@ def programme():
     
     indic = remplir(d,df,indic) # remplissage du dataframe
     
-    
-    #indic['MpotH'] = MpotH
-    
     df = ecriture(d,df,indic) # export des données en CSV
 #        with open('dict.csv', 'rb') as csv_file:
 #        reader = csv.reader(csv_file)
@@ -48,11 +45,11 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
         print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
 
         # gestion des affectations missions
-        Remplir_Indicateurs(d, df, indic, t)
+        Remplir_Indicateurs(d, df, indic, t) #remplissage des indicateurs
         opex = 1
-        remplir_mission(d, t, df, opex) # Affectation des opex
+        remplir_mission(d, t, df, opex, indic) # Affectation des opex
         opex = 0
-        remplir_mission(d, t, df, opex) # Affectation des missions en métrople
+        remplir_mission(d, t, df, opex, indic) # Affectation des missions en métrople
         modif_mission(d, t, df, indic) # modification des potentiels missions
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
         remplir_autres(d, t, df, h, indic) # Gestion des avions qui ne sont ni en maint ni en mission
@@ -67,8 +64,8 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
 #    for t in (1,d["temps"]-3):
 #        ecart(t) = (NbrMaint(t) - moy)*(NbrMaint(t)-moy)
 #    var = mean(ecart) #indicateur -> variance du nombre d'avions en maintenance
-    indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"]))
-    indic["Max_maint"] = np.max(indic["NbrMaint"])
+    indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"])) #Calcul de la variance du nombre d'avion en maintenance
+    indic["Max_maint"] = np.max(indic["NbrMaint"]) #Calcul du max d'avion en maintenance (normalement égal à la contrainte imposé au code)
     indic["FlightTime_var"] = np.var(
             np.fromiter(iter(indic["FlightTime"].values()), dtype=int)
             )
@@ -77,6 +74,13 @@ def remplir(d, df, indic): # Fonction pour remplir le dataframe
         indic["avionDispo"][t-1] = indic["nbrAvionMission"][t-1] + indic["nbrAvionFree"][t-1]
     
     indic["min_dispo"] = np.min(indic["avionDispo"])
+    
+    
+    for m in d["listeMission"]:
+        t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
+        t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
+        indic["RempMission"][m.nom] = np.mean(indic["tauxRempMission"][m.nom][int(t_deb) : int(t_fin)])
+
     
     return indic
 
@@ -98,14 +102,16 @@ def modif_mission(d,t,df, indic):
         for m in d["listeMission"]:
             modifPot(m, df, a, t, indic)  # modification des potentiels (avions affectés manuellement inclus)
 
-def remplir_mission(d,t,df,opex):
+def remplir_mission(d,t,df,opex,indic):
     for m in d["listeMission"]:
-        #print(m)
         # calcul des dates de début et de fin de la mission
         t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
         t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
+         
+        nbmiss = 0 #nombre d'avions affecté à la mission m à l'instant t
+         
         if (t_deb <= t <= t_fin):
-            nbmiss = 0 #nombre d'avions affecté à la mission m à l'instant t
+           
             for a in d["listeAvion"]: # On parcourt le dataframe pour calculer nbmiss
                 if str(df.xs(t)[a]).split("$")[0] == m.nom:
                     nbmiss = nbmiss + 1
@@ -116,14 +122,26 @@ def remplir_mission(d,t,df,opex):
                 affectationChoix = constantes.typechoix
                 if t_fin - t >= 5:
                     affectationMission(m, d["listeAvion"], nbmiss, df.xs, 4, t, d["listeMission"], opex,affectationChoix)
+#                    indic["tauxRempMission"][m.nom][t] += 1 #on ajoute 1 au remplissage de la mission m pour toute la durée de la mission 
+#                    indic["tauxRempMission"][m.nom][t+1] += 1
+#                    indic["tauxRempMission"][m.nom][t+2] += 1
+#                    indic["tauxRempMission"][m.nom][t+3] += 1
+#                     
                 if (t_fin - t == 4 or t_fin - t == 2):
                     affectationMission(m, d["listeAvion"], nbmiss, df.xs, 3, t, d["listeMission"], opex,affectationChoix)
+                    
                 if (t_fin - t == 3 or t_fin - t == 1):
                     affectationMission(m, d["listeAvion"], nbmiss, df.xs, 2, t, d["listeMission"], opex,affectationChoix)
+                    
                 if t_fin - t == 0:
                     affectationMission(m, d["listeAvion"], nbmiss, df.xs, 1, t, d["listeMission"], opex,affectationChoix)
-
-
+        
+        nbmiss = 0           
+        for a in d["listeAvion"]: # On reparcourt le dataframe pour recalculer le nombre affectés
+                if str(df.xs(t)[a]).split("$")[0] == m.nom:
+                    nbmiss = nbmiss + 1
+                    
+        indic["tauxRempMission"][m.nom][t] = nbmiss/m.nb_avion #on enregistre le remplissage de la mission
 
 def remplir_maintenance(d,t,df,mi,mip):
     # Calcul nb de maintenance à i'intant t (affectation à la main ou algo)
@@ -185,7 +203,7 @@ def remplir_autres(d,t,df,h, indic):
 def ecriture(d,df,indic):
     # Appel de la fonction solution_to_csv pour exporter les donneés
     solution_to_csv(df, d["nom_ficher"][3])
-    ecriture_donnees(indic,d["nom_ficher"][3])
+    ecriture_donnees(d["listeMission"],indic,d["nom_ficher"][3])
     
     return df
 
@@ -199,5 +217,4 @@ def dataframe(d):
     return df
 
 
-#if __name__ == '__main__': NbrMaint, MpotH, Maint_var, df = programme()
 if __name__ == '__main__': indic, df = programme()
