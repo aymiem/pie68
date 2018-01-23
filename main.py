@@ -101,6 +101,7 @@ def modif_mission(d,t,df, indic):
             modifPot(m, df, a, t, indic)  # modification des potentiels (avions affectés manuellement inclus)
 
 def remplir_mission(d,t,df,opex,indic):
+    print(constantes.typechoix)
     for m in d["listeMission"]:
         # calcul des dates de début et de fin de la mission
         t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
