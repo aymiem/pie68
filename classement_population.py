@@ -44,9 +44,11 @@ def classement(generation):
     df_indic = pd.concat(dfs,ignore_index=True)
     df_indic = df_indic.set_index('solution')
     
+    
     # Attribution d'une note entre 0 et 1 de chaque individu pour chaque indicateur
     # par normalisation : xj' = (xj − minj)/(maxj − minj))
     for ind in df_indic.columns:
+        
         if (ind == "max_maint"):
             # Rg 1 si maintenance max > 18
             df_indic[ind+"_rg"] = df_indic[ind]/18 - (df_indic[ind]/18 - 1)
@@ -101,4 +103,4 @@ def Roulette_wheel_selection(df_classement, N):
         print(chosen_sol)
     return chosen_sol
     
-if __name__ == '__main__': df = programme()
+if __name__ == '__main__': df_c = programme()

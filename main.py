@@ -215,5 +215,4 @@ def dataframe(d):
     return df
 
 
-#if __name__ == '__main__': NbrMaint, MpotH, Maint_var, df = programme()
 if __name__ == '__main__': indic, df = programme()
