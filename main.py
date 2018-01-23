@@ -6,6 +6,8 @@ from ecriture import *
 from constantes import *
 from indicateur import *
 import numpy as np
+from sklearn import decomposition
+from sklearn.decomposition import PCA
 
 def programme():
     print('Lancement du programme ')

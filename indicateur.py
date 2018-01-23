@@ -5,7 +5,8 @@ import numpy as np
 from lecture import *
 from ecriture import *
 from constantes import *
-
+from sklearn import decomposition
+from sklearn.decomposition import PCA
 
 def Init_Indicateurs(d, indic):
     
