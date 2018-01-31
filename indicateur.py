@@ -41,7 +41,9 @@ def Init_Indicateurs(d, indic):
     indic["avionDispo"]= [0] * ( d["temps"] - 4)
     indic["min_dispo"] = 0
     indic["PotPerdu"] = 0
-    
+    indic["listPotPerdu"] = []
+    indic["moyPotPerdu"] = 0
+    indic["varPotPerdu"] = 0
     
     return indic
     
@@ -67,3 +69,7 @@ def Remplir_Indicateurs(d, df, indic, t):
         if t>1:
             if indic["MpotH"][nomAvion][t-2] < indic["MpotH"][nomAvion][t-1]:
                 indic["PotPerdu"] += indic["MpotH"][nomAvion][t-2]
+                indic["listPotPerdu"].append(indic["MpotH"][nomAvion][t-2])
+    
+    indic["varPotPerdu"] = np.var(indic["listPotPerdu"])
+    indic["moyPotPerdu"] = np.mean(indic["listPotPerdu"])
