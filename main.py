@@ -8,14 +8,16 @@ from indicateur import *
 import numpy as np
 from sklearn import decomposition
 from sklearn.decomposition import PCA
+import time
 
 def programme():
     print('Lancement du programme ')
-
+    
+    tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
     d=lectureEntrees(x) # Lecture des fichiers d'entrées
     df=dataframe(d) # Création du dataframe
-    
+
     mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
     
     indic = dict()
@@ -26,7 +28,7 @@ def programme():
 #        with open('dict.csv', 'rb') as csv_file:
 #        reader = csv.reader(csv_file)
 #        MpotH = dict(reader)
-    
+    print(time.time() - tt )
     return indic, df
 
 def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
@@ -38,6 +40,16 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     
     # Initialisation du dataframe d'affectation avions en mission
     avions_affectes = pd.DataFrame(np.zeros((d['temps'],len(d["listeMission"]))), columns = [m.nom for m in d["listeMission"]])
+    
+    tt = time.time()
+    for avion in d["listeAvion"]:
+        for t in range(d['temps']):
+            if isinstance(df.xs(t+1)[avion],str):
+                if df.xs(t+1)[avion][0] != "V":
+                    print(avion.nom, "est affecté à", df.xs(t+1)[avion])
+                    avions_affectes[df.xs(t+1)[avion]][t] += 1
+    #print(avions_affectes)
+    print(time.time() - tt)
 
     for t in range(1, d["temps"] - 3):
         h,mi,mip= 0,0,0
@@ -106,7 +118,7 @@ def modif_mission(d,t,df, indic, m_h):
             modifPot(m, df, a, t, indic, m_h)  # modification des potentiels (avions affectés manuellement inclus)
 
 def remplir_mission(d,t,df,opex,indic, avions_affectes):
-    print(constantes.typechoix)
+
     for m in d["listeMission"]:
         # calcul des dates de début et de fin de la mission
         t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
@@ -178,6 +190,7 @@ def remplir_maintenance(d,t,df,mi,mip):
                     mip = mip + 1
                     affectMaint(a, t, df, d["listeMaintenance"])
                     print(a, "affecté", df.xs(t)[a][0])
+                    
            #    if t == 1:
            #        mip = mip + 1
            #        affectMaint(a, t, df, d["listeMaintenance"])
@@ -206,16 +219,24 @@ def remplir_maintenance(d,t,df,mi,mip):
 def remplir_autres(d,t,df,h, indic, mission_heures):
     # fonction pour gerer les avions ni en mission ni en maintenances
     for a in d["listeAvion"]:
-        if pd.isnull(df.xs(t)[a]) or ((df.xs(t)[a]) == 'BL'): # les avions dont le potentiel calendaire change
+        if (df.xs(t)[a]) == 'BL':
             a.pot_mois = a.pot_mois - 1
-
-        if (pd.isnull(df.xs(t)[a]) and a.pot_horaire >= parametre.puParMois): # les avions dont le potentiel horaire change
-            a.pot_horaire = a.pot_horaire - parametre.puParMois
-            h = h + parametre.puParMois
-            indic["nbrAvionFree"][t-1] += 1
-        elif (pd.isnull(df.xs(t)[a]) and a.pot_horaire < parametre.puParMois): # les avions qui n'ont plus de potentiel horaire
-            # sont marqué dans le dataframe par '-'
-            df.xs(t)[a] = ("-")
+        if pd.isnull(df.xs(t)[a]) : # les avions dont le potentiel calendaire change
+            a.pot_mois = a.pot_mois - 1
+            if a.pot_horaire >= parametre.puParMois : # les avions dont le potentiel horaire change
+                a.pot_horaire = a.pot_horaire - parametre.puParMois
+                h = h + parametre.puParMois
+                indic["nbrAvionFree"][t-1] += 1
+            elif a.pot_horaire < parametre.puParMois : # les avions qui n'ont plus de potentiel horaire
+                # sont marqué dans le dataframe par '-'
+                df.xs(t)[a] = ("-")
+        #if (pd.isnull(df.xs(t)[a]) and a.pot_horaire >= parametre.puParMois): # les avions dont le potentiel horaire change
+        #    a.pot_horaire = a.pot_horaire - parametre.puParMois
+        #    h = h + parametre.puParMois
+        #    indic["nbrAvionFree"][t-1] += 1
+        #elif (pd.isnull(df.xs(t)[a]) and a.pot_horaire < parametre.puParMois): # les avions qui n'ont plus de potentiel horaire
+        #    # sont marqué dans le dataframe par '-'
+        #    df.xs(t)[a] = ("-")
         elif pd.isnull(df.xs(t)[a]) == False and df.xs(t)[a] == "": #! str(df.xs(t)[a]).split('$')[0] == "":
             # prise en compte des modifications manuelles des potentiels horaires.
             # if int(df.xs(t)[a].split('$')[1]) <= a.pot_horaire: # la valeur marqué est inférieur au pot reestant de l'avion
