@@ -44,28 +44,30 @@ def choixAvion(liste,choix):
 
 # Troncature de la liste choixAvions au nombre necessaire d'avions pour la mission m
 # puis affectation des missions dans le dataframe sous le format (nom_mission$pot_utilisé)
-# la modification du potentiel de l'avion est ralisé avec la fonction modifPot.
-def affectationMission(m, listeAvion, nbmiss, data, nb, t,listeMission,i,choix):
-    listeAlpha = besoinEnMission(m,listeMission, listeAvion, nbmiss, data,nb,t,i)
+# la modification du potentiel de l'avion est realisé avec la fonction modifPot.
+def affectationMission(m, listeAvion, a_a, data, nb, t,listeMission,i,choix):
+    listeAlpha = besoinEnMission(m,listeMission, listeAvion, a_a , data,nb,t,i)
     
     #print(type(listeAlpha),listeAlpha)
     listeBeta = choixAvion(listeAlpha,choix)
     
     #print(type(listeBeta),listeBeta)
-    listeGamma = listeBeta[0:m.nb_avion - nbmiss]
+    listeGamma = listeBeta[0:m.nb_avion - a_a]
     #print("nb d'avions necessaires pour la mission", m.nb_avion)
     #print("nb d'avions deja affectes pour la mission", nbmiss)
     for i in range(0, nb):
-        data(t + i)[listeGamma] = (m.nom+"$"+str(int(m.pu)))
-    return
+        data(t + i)[listeGamma] = m.nom #+"$"+str(int(m.pu)))
+    return len(listeGamma)
 
 # la modification des potentiels s'effectue separement de l'affectation (pour prendre en compte le rebouclage)
 # la fonction modifPot permet de modifier le pot. Elle enlève du potentiel la valeur indiquée dans la cellule
 # correspandate dans le dataframe.
-def modifPot(m,data,a,t, indic):
+def modifPot(m,data,a,t, indic, m_h):
     #for a in listeAvion:
-    if str(data.xs(t)[a]).split("$")[0] == m.nom:
-        a.pot_horaire -= int((data.xs(t)[a]).split("$")[1])
+    #!  if str(df.xs(t)[a]).split("$")[0] == m.nom:
+    if data.xs(t)[a] == m.nom:  #!            
+        #! a.pot_horaire -= int((data.xs(t)[a]).split("$")[1])
+        a.pot_horaire -= m_h[m.nom]
         a.pot_mois -= 1
         indic["nbrAvionMission"][t-1] += 1 
             #if (a.nom)=='D602':
@@ -83,15 +85,27 @@ def listeMaint(listeMaintenance,a): # renvoie la liste des maintenances correspo
     return l_maint
 
 def affectMaint(a, t, df, listeMaintenance):
-    if t > 1:
-        if str(df.xs(t)[a])[0] == "V" and str(df.xs(t - 1)[a])[0] != "V": # maintenance à la main
-            l_maint=listeMaint(listeMaintenance, a)
-            for i in range(0, len(l_maint)):
-                if a.proch_maint == l_maint[i].nom:
-                    a.pot_mois = l_maint[i].gain_mois
-                    a.pot_horaire = l_maint[i].gain_heures
-                    a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
-                    break
+    if a.type_avion == "2000_C":
+        l_maint = listeMaintenance[0:6]
+    if a.type_avion == "2000_D":
+        l_maint = listeMaintenance[6:12]
+    if a.type_avion == "2000_5":
+        l_maint = listeMaintenance[12:18]
+    if a.type_avion == "2000_B":
+        l_maint = listeMaintenance[18:24]
+    return l_maint
+
+def affectMaint(a, t, df, listeMaintenance):
+    if t > 1:  #! str()
+        if isinstance(df.xs(t)[a],str):
+            if df.xs(t)[a][0] == "V" and df.xs(t - 1)[a][0] != "V": # maintenance à la main
+                l_maint=listeMaint(listeMaintenance, a)
+                for i in range(0, len(l_maint)):
+                    if a.proch_maint == l_maint[i].nom:
+                        a.pot_mois = l_maint[i].gain_mois
+                        a.pot_horaire = l_maint[i].gain_heures
+                        a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
+                        break
         else:  # maintenance programmé par l'algorithme
             l_maint=listeMaint(listeMaintenance, a)
             for i in range(0,len(l_maint)):
@@ -102,15 +116,16 @@ def affectMaint(a, t, df, listeMaintenance):
                     a.pot_horaire = l_maint[i].gain_heures
                     a.proch_maint = l_maint[(i+1)%len(l_maint)].nom
                     break
-    if t==1 :
-        if str(df.xs(t)[a])[0] == "V": # maintenance à la main
-            l_maint=listeMaint(listeMaintenance, a)
-            for i in range(0, len(l_maint)):
-                if a.proch_maint == l_maint[i].nom:
-                    a.pot_mois = l_maint[i].gain_mois
-                    a.pot_horaire = l_maint[i].gain_heures
-                    a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
-                    break
+    if t==1 : #! str()
+        if isinstance(df.xs(t)[a],str):
+            if df.xs(t)[a][0] == "V": # maintenance à la main
+                l_maint=listeMaint(listeMaintenance, a)
+                for i in range(0, len(l_maint)):
+                    if a.proch_maint == l_maint[i].nom:
+                        a.pot_mois = l_maint[i].gain_mois
+                        a.pot_horaire = l_maint[i].gain_heures
+                        a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
+                        break
         else: # maintenance programmé par l'algorithme
             l_maint=listeMaint(listeMaintenance, a)
             for i in range(0, len(l_maint)):
