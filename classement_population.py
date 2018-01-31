@@ -94,6 +94,5 @@ def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
         num_sol = list(df_indic.sort_values(by=[ind_rg],ascending=False).index.values)[0]
     else :
         num_sol = list(df_indic.sort_values(by=[ind_rg],ascending=False).index.values)[int(len(df_indic)/2)]
-    print(num_sol)
-    print("solution" + num_sol + ".csv")
-    return "solution" + num_sol + ".csv"
+    
+    return num_sol

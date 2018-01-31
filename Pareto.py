@@ -30,7 +30,7 @@ def programme():
     plt.bar(np.arange(len(pca.explained_variance_ratio_))+0.5, pca.explained_variance_ratio_)
     plt.title("Variance expliquée")
     
-    axis_list = [pca.components_.T]    
+    axis_list = [pca.components_.T]
     
     X_reduced = pca.transform(data)
     plt.figure(figsize=(10,4))

@@ -21,7 +21,7 @@ def initialisation() :
         
         new_rows = [] 
         changes = {   # un dictionnaire du changement a effectuer 
-                'solution0' : 'solution1'+str(i), 
+                'solution0' : 'solution1'+str(i)}
 
         with open('donnees_lecture.csv', 'r') as f:
             reader = csv.reader(f) 
@@ -32,11 +32,11 @@ def initialisation() :
                     new_row = [ x.replace(key, value) for x in new_row ] 
                 new_rows.append(new_row) # ajoute les nouvelles lignes
 
-        with open('test.csv', 'w') as f:
+        with open('donnees_lecture.csv', 'w') as f:
             # Ecrase les anciennes lignes par les nouvelles
             writer = csv.writer(f)
             writer.writerows(new_rows)
             
         programme()
-
-    
+        
+initialisation()
