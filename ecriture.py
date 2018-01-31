@@ -25,5 +25,5 @@ def ecriture_donnees(listMission,indic,nom_fichier):
         spamwriter.writerow(['moy_pot_perdu'] + [indic["moyPotPerdu"]]) #Potentiel perdu moyen
         spamwriter.writerow(['min_dispo'] + [indic["min_dispo"]]) # nbr d'avion dispo (mission + entrainement), à maximiser
         
-        for m in listMission:
-                    spamwriter.writerow(['remp_'+m.nom] + [indic["RempMission"][m.nom]]) # pourcentage de remplissage de la mission sur sa période, objectif = 1
+        #for m in listMission:
+        #           spamwriter.writerow(['remp_'+m.nom] + [indic["RempMission"][m.nom]]) # pourcentage de remplissage de la mission sur sa période, objectif = 1
