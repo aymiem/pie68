@@ -119,6 +119,7 @@ def remplir_mission(d,t,df,opex,indic):
                 # Si le le nombre d'avions en missions est inférieur au besoin,
                 # choix de la durée de l'affectation en mission. De quatre à un mois
                 affectationChoix = constantes.typechoix
+                
                 if t_fin - t >= 5:
                     affectationMission(m, d["listeAvion"], nbmiss, df.xs, 4, t, d["listeMission"], opex,affectationChoix)
 #                    indic["tauxRempMission"][m.nom][t] += 1 #on ajoute 1 au remplissage de la mission m pour toute la durée de la mission 
