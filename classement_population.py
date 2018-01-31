@@ -8,17 +8,27 @@ from lecture import *
 import csv
 from objects import *
 from constantes import *
+from Pareto import *
 import pandas as pd
 import numpy as np
 
 def programme():
     print('Lancement du programme ') 
     
-    gen = input("Donner le numero de la generation (1 pour population initiale):")
-    df_c = classement(gen)
-    df_e = evaluation(df_c)
+    dataPareto = pd.DataFrame()
     
-    return Roulette_wheel_selection(df_e,3)
+    gen = '1'
+    #gen = input("Donner le numero de la generation (1 pour population initiale):")
+    df_c = classement(gen)
+    
+    df_e = evaluation(df_c)
+        
+    dataPareto = addGeneration(df_c, dataPareto)
+    
+    drawPareto(dataPareto)   
+
+    
+    return dataPareto
 
 
 def classement(generation):
@@ -81,7 +91,7 @@ def evaluation(df_classement):
 
     for nom_indic in list(df_poids.index):
         df_RWS["fitness"] = df_RWS["fitness"] + np.asarray(df_RWS[nom_indic+"_rg"])*(df_poids.loc[nom_indic,"poids"])
-        print(df_RWS)
+        #print(df_RWS)
     return df_RWS.sort_values(by=["fitness"], ascending=False)
 
 def Roulette_wheel_selection(df_classement, N): 
@@ -91,16 +101,16 @@ def Roulette_wheel_selection(df_classement, N):
     f_sum = sum(df["fitness"])
     df["proba"] = df["fitness"]/f_sum
     p_sum = sum(df["proba"])
-    print(df)
+    #print(df)
     chosen_sol = []
     while len(chosen_sol) < N:
         rd_nb = np.random.random(1)[0]
-        print(rd_nb)
+        #print(rd_nb)
         if len(list(df[df.proba >= rd_nb].index.values)) <= N :
             chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)
         else:
             chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)[0:N]
-        print(chosen_sol)
+        #print(chosen_sol)
     return chosen_sol
     
-if __name__ == '__main__': df_c = programme()
+if __name__ == '__main__': coucou = programme()
