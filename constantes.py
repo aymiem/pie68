@@ -2,7 +2,7 @@ class constantes:
     path = 'donnees_lecture.csv'
     strategie_cravate = 1
     strategie_lissage = 2
-    typechoix = 0
+    typechoix = 1
 
 class parametre:
     # initialisation des parametres du programme
