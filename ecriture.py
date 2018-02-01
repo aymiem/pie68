@@ -27,3 +27,42 @@ def ecriture_donnees(listMission,indic,nom_fichier):
         
         #for m in listMission:
         #           spamwriter.writerow(['remp_'+m.nom] + [indic["RempMission"][m.nom]]) # pourcentage de remplissage de la mission sur sa période, objectif = 1
+
+def nom_fichier_sortie(generation, num_in_gen):
+    # Fonction qui écrit à nouveau le fichier donnees_lecture.csv pour changer 
+    # le nom du futur individu que l'on veut créer.
+    # generation : dans [1..N], c'est le numéro de la génération de l'individu à créer
+    # num_in_gen : dans [0..9], c'est le numéro de l'individu dans la génération    
+    
+    print("solution à créer :", num_in_gen, " de la generation ", generation)
+        
+    new_rows = [] # liste des lignes du fichier ré-écrit
+    
+    # création du dictionnaire du changement a effectuer
+    if num_in_gen == 0:
+        if generation == 1: # cas transcription de solution0 à solution10
+            changes = { 
+                    'solution0' : 'solution1'+str(num_in_gen)
+                    }       
+        else : # cas général de changement de generation
+            changes = {   
+                    'solution'+str(generation-1)+"9" : 'solution'+str(generation)+str(num_in_gen)
+                    }        
+    else: # cas entre deux individus de la meme generation
+        changes = {   
+            'solution'+str(generation)+str(num_in_gen - 1) : 'solution'+str(generation)+str(num_in_gen)
+                }          
+            
+    with open('donnees_lecture.csv', 'r') as f:
+        reader = csv.reader(f) 
+        for row in reader:     # pour chaque ligne
+            new_row = row      # on copie la ligne
+            for key, value in changes.items(): 
+                # et on modifie le nom du fichier enregistré
+                new_row = [ x.replace(key, value) for x in new_row ] 
+            new_rows.append(new_row) # ajoute les nouvelles lignes
+
+    with open('donnees_lecture.csv', 'w', newline='') as f:
+        # Ecrase les anciennes lignes par les nouvelles
+        writer = csv.writer(f)
+        writer.writerows(new_rows)

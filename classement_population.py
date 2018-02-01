@@ -8,7 +8,7 @@ from lecture import *
 import csv
 from objects import *
 from constantes import *
-from Pareto import *
+from Pareto import addGeneration, drawPareto
 import pandas as pd
 import numpy as np
 from selection_operator import evaluation_fitness, Roulette_wheel_selection
@@ -18,15 +18,10 @@ from selection_operator import evaluation_fitness, Roulette_wheel_selection
 def classement_population():
     # Classement visuel par front de Pareto
     dataPareto = pd.DataFrame()
-    
     gen = '1'
-    #gen = input("Donner le numero de la generation (1 pour population initiale):")
     df_c = classement_population_tab(gen)
-    
-    df_e = evaluation(df_c)
-        
-    dataPareto = addGeneration(df_c, dataPareto)
-    
+    df_e = evaluation_fitness(df_c)   
+    dataPareto = addGeneration(df_e, dataPareto)
     drawPareto(dataPareto) 
     
     return dataPareto
@@ -35,9 +30,6 @@ def classement_population_tab():
     
     gen = input("Donner le numero de la generation (1 pour population initiale):")
     df_c = rankings(gen)
-    choix_indiv_rg(df_c, gen, "pot_perdu", 0)
-    choix_indiv_rg(df_c, gen, "pot_perdu", 1)
-    choix_indiv_rg(df_c, gen, "pot_perdu", 0.5)
     df_e = evaluation_fitness(df_c)
     return df_e
 
@@ -56,7 +48,7 @@ def rankings(generation):
     if generation == "1":
         listeFiles.append("indicateurs0.csv")
     
-    print(listeFiles)
+    #print(listeFiles)
     
     dfs = []
     for nom_fichier in listeFiles:
@@ -88,7 +80,7 @@ def rankings(generation):
             else : # Si indic constant pour toute solution, non pris en compte dans le calcul du fitness
                 df_indic[ind+"_rg"] = 1 - df_indic[ind]/max(df_indic[ind])
              
-    print(df_indic)
+    #print(df_indic)
     return df_indic
 
     #for nom_indic in list(df_poids.index):

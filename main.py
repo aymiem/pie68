@@ -32,11 +32,6 @@ def programme(is_init, dataframe_gen):
     return indic, df
 
 def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
-
-    # Creation de trois listes utilisées dans le fichier indicateur de sortie 'indicateurs.csv'
-    #liste_nbh_metropole = []
-    #liste_nb_maintenance = []
-    #liste_nb_maintenance_p = []
     
     # Initialisation du dataframe d'affectation avions en mission
     avions_affectes = pd.DataFrame(np.zeros((d['temps'],len(d["listeMission"]))), columns = [m.nom for m in d["listeMission"]])
@@ -48,7 +43,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
                 if df.xs(t+1)[avion][0] != "V":
                     print(avion.nom, "est affecté à", df.xs(t+1)[avion])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
-    #print(avions_affectes)
+                    
     print(time.time() - tt)
 
     for t in range(1, d["temps"] - 3):
@@ -68,7 +63,6 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         modif_mission(d, t, df, indic, mission_heures) # modification des potentiels missions
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
         remplir_autres(d, t, df, h, indic, mission_heures) # Gestion des avions qui ne sont ni en maint ni en mission
-    
         
     indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
     indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
@@ -96,7 +90,6 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
         indic["RempMission"][m.nom] = np.mean(indic["tauxRempMission"][m.nom][int(t_deb) : int(t_fin)])
 
-    
     return indic
 
 def lectureEntrees(path):
