@@ -10,14 +10,13 @@ from sklearn import decomposition
 from sklearn.decomposition import PCA
 import time
 
-def programme():
+def programme(is_init, dataframe_gen):
     print('Lancement du programme ')
     
     tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
-    d=lectureEntrees(x) # Lecture des fichiers d'entrées
-    df=dataframe(d) # Création du dataframe
-
+    d=lectureEntrees(x)# Lecture des fichiers d'entrées
+    df=(dataframe(d) if is_init == True else dataframe_gen) # Création du dataframe
     mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
     
     indic = dict()
@@ -263,6 +262,3 @@ def dataframe(d):
     else:
         df = pd.DataFrame(ndarraySitInit, index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
     return df
-
-
-if __name__ == '__main__': indic, df = programme()

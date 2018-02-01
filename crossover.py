@@ -146,9 +146,8 @@ def new_sitInit(plane,n,planing,dic,gen):
     return df
  
 #Genere les sitInit en fonction des param choisis
-def generateur(plane,n_plan,n_fix,dic,gen):
-    
+def generateur(plane,n_plan,n_fix,dic):
+    dfs = []
     for m in range(n_plan):
-        new_sitInit(plane,n_fix,m,dic,gen)
-        
-if __name__ == '__main__': indic, df = programme()
+        dfs.append(new_sitInit(plane,n_fix,m,dic,gen))
+    return dfs

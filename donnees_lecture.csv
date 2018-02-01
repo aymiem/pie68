@@ -1,5 +1,13 @@
+<<<<<<< HEAD
+nom des fichiers de lecture;
+csv param;paramInit.csv
+csv situation initiale;sitInit.csv
+csv solution;solution10.csv
+fin;
+=======
 nom des fichiers de lecture;
 csv param;paramInit.csv
 csv situation initiale;sitInit.csv
 csv solution;solution19.csv
 fin;
+>>>>>>> 8db762da01049691f83d6ede252763b8df6e5ddf

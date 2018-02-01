@@ -11,15 +11,16 @@ def initialisation() :
     
     # création solution0 avec stratégie d'affectation "cravate"
     constantes.typechoix = 0
-    programme()
+    programme(True, 0)
 
     # creation des solution 10 a 19 de la generation 1
     constantes.typechoix = 1 # stratégie d'affectation en mission aléatoire
     
     for i in range(10):
-        print(i)
+        print("planning", i)
         
         new_rows = [] 
+        
         if i==0:
             changes = {   # un dictionnaire du changement a effectuer 
                 'solution0' : 'solution1'+str(i)
@@ -28,7 +29,7 @@ def initialisation() :
             changes = {   # un dictionnaire du changement a effectuer 
                 'solution1'+str(i-1) : 'solution1'+str(i)
                 }          
-
+            
         with open('donnees_lecture.csv', 'r') as f:
             reader = csv.reader(f) 
             for row in reader:     # pour chaque ligne
@@ -42,8 +43,4 @@ def initialisation() :
             # Ecrase les anciennes lignes par les nouvelles
             writer = csv.writer(f)
             writer.writerows(new_rows)
-        
-            
-        programme()
-
-    
+        programme(True, 0)

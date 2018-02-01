@@ -28,14 +28,9 @@ def programme2():
 def addGeneration(df, dataPareto):
     
     dataPareto = dataPareto.append(df.loc[:, ['var_maint', 'pot_perdu']])
-    
     return dataPareto
-    
 
 def drawPareto(data):
-    
-    
-    
     #Tracé du Pareto
     plt.show()
     plt.figure(figsize=(10,4))

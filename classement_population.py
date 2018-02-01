@@ -14,33 +14,32 @@ import numpy as np
 from selection_operator import evaluation_fitness, Roulette_wheel_selection
 
 # Module permettant de classer les individus d'une même génération 
-
-def programme():
-    print('Lancement du programme ') 
     
-<<<<<<< HEAD
+def classement_population():
+    # Classement visuel par front de Pareto
     dataPareto = pd.DataFrame()
     
     gen = '1'
     #gen = input("Donner le numero de la generation (1 pour population initiale):")
-    df_c = classement(gen)
+    df_c = classement_population_tab(gen)
     
     df_e = evaluation(df_c)
         
     dataPareto = addGeneration(df_c, dataPareto)
     
-    drawPareto(dataPareto)   
+    drawPareto(dataPareto) 
+    
+    return dataPareto
 
-=======
+def classement_population_tab():
+    
     gen = input("Donner le numero de la generation (1 pour population initiale):")
     df_c = rankings(gen)
     choix_indiv_rg(df_c, gen, "pot_perdu", 0)
     choix_indiv_rg(df_c, gen, "pot_perdu", 1)
     choix_indiv_rg(df_c, gen, "pot_perdu", 0.5)
     df_e = evaluation_fitness(df_c)
->>>>>>> f7f364e57d93ee1f0754e5cbd4a8ab59202392d4
-    
-    return dataPareto
+    return df_e
 
 
 def rankings(generation):
@@ -92,32 +91,11 @@ def rankings(generation):
     print(df_indic)
     return df_indic
 
+    #for nom_indic in list(df_poids.index):
+    #    df_RWS["fitness"] = df_RWS["fitness"] + np.asarray(df_RWS[nom_indic+"_rg"])*(df_poids.loc[nom_indic,"poids"])
+    #    #print(df_RWS)
+    #return df_RWS.sort_values(by=["fitness"], ascending=False)
 
-<<<<<<< HEAD
-    for nom_indic in list(df_poids.index):
-        df_RWS["fitness"] = df_RWS["fitness"] + np.asarray(df_RWS[nom_indic+"_rg"])*(df_poids.loc[nom_indic,"poids"])
-        #print(df_RWS)
-    return df_RWS.sort_values(by=["fitness"], ascending=False)
-
-def Roulette_wheel_selection(df_classement, N): 
-    # N est le nombre de membres choisis pour créer la génération suivante 
-    # selection basee sur le fitness d'une population
-    df = df_classement
-    f_sum = sum(df["fitness"])
-    df["proba"] = df["fitness"]/f_sum
-    p_sum = sum(df["proba"])
-    #print(df)
-    chosen_sol = []
-    while len(chosen_sol) < N:
-        rd_nb = np.random.random(1)[0]
-        #print(rd_nb)
-        if len(list(df[df.proba >= rd_nb].index.values)) <= N :
-            chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)
-        else:
-            chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)[0:N]
-        #print(chosen_sol)
-    return chosen_sol
-=======
 def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
     # renvoit une solution ayant un niveau choisi pour un indicateur donné
     
@@ -137,7 +115,5 @@ def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
         num_sol = list(df_indic.sort_values(by=[ind_rg],ascending=False).index.values)[int(len(df_indic)/2)]
     print(num_sol)
     print("solution" + num_sol + ".csv")
-    return "solution" + num_sol + ".csv"
->>>>>>> f7f364e57d93ee1f0754e5cbd4a8ab59202392d4
     
-if __name__ == '__main__': coucou = programme()
+    return num_sol
