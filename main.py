@@ -10,14 +10,14 @@ from sklearn import decomposition
 from sklearn.decomposition import PCA
 import time
 
-def programme():
+def programme(is_init, dataframe_gen):
     print('Lancement du programme ')
     
     tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
-    d=lectureEntrees(x) # Lecture des fichiers d'entrées
-    df=dataframe(d) # Création du dataframe
-
+    d=lectureEntrees(x)# Lecture des fichiers d'entrées
+    df=(dataframe(d) if is_init == True else dataframe_gen) # Création du dataframe
+    
     mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
     
     indic = dict()
@@ -32,11 +32,6 @@ def programme():
     return indic, df
 
 def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
-
-    # Creation de trois listes utilisées dans le fichier indicateur de sortie 'indicateurs.csv'
-    #liste_nbh_metropole = []
-    #liste_nb_maintenance = []
-    #liste_nb_maintenance_p = []
     
     # Initialisation du dataframe d'affectation avions en mission
     avions_affectes = pd.DataFrame(np.zeros((d['temps'],len(d["listeMission"]))), columns = [m.nom for m in d["listeMission"]])
@@ -48,7 +43,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
                 if df.xs(t+1)[avion][0] != "V":
                     print(avion.nom, "est affecté à", df.xs(t+1)[avion])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
-    #print(avions_affectes)
+                    
     print(time.time() - tt)
 
     for t in range(1, d["temps"] - 3):
@@ -68,7 +63,6 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         modif_mission(d, t, df, indic, mission_heures) # modification des potentiels missions
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
         remplir_autres(d, t, df, h, indic, mission_heures) # Gestion des avions qui ne sont ni en maint ni en mission
-    
         
     indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
     indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
@@ -96,7 +90,6 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
         indic["RempMission"][m.nom] = np.mean(indic["tauxRempMission"][m.nom][int(t_deb) : int(t_fin)])
 
-    
     return indic
 
 def lectureEntrees(path):
@@ -110,6 +103,33 @@ def lectureEntrees(path):
     dictionnaire["temps"] = 12 * (parametre.anFin - annee) + (parametre.moisFin - mois)
     print("Lecture des données terminée")
     #print(parametre.strategie)
+    
+        #Création d'un csv permettant de faire la transformation du calendrier en dataframe avec des nombres
+    
+    dicoMatricule= dict()
+    for a in dictionnaire["listeAvion"]:
+        nomAvion = a.nom
+        dicoMatricule[a.nom] = a.type_avion
+    
+    dicoAssociation= dict()
+    nbrMission = 1101
+    for i in dictionnaire["listeMission"]:
+        nomMission = i.nom
+        dicoAssociation[nomMission] = nbrMission
+        nbrMission += 1
+        
+    nbrMaintenance = 1001        
+    for i in dictionnaire["listeMaintenance"]:   
+        nomMaintenance = i.nom
+        dicoAssociation[nomMaintenance] = nbrMaintenance
+        nbrMaintenance += 1
+    
+    dM = pd.DataFrame(list(dicoMatricule.items()), columns=['nomAvion', 'typeAvion'])
+    dA = pd.DataFrame(list(dicoAssociation.items()), columns=['nom', 'numero'])
+    
+    dM.T.to_csv("NomToType", sep=';')
+    dA.T.to_csv("Transformation", sep=';')
+
     return dictionnaire
 
 def modif_mission(d,t,df, indic, m_h):
@@ -190,7 +210,7 @@ def remplir_maintenance(d,t,df,mi,mip):
                     mip = mip + 1
                     affectMaint(a, t, df, d["listeMaintenance"])
                     print(a, "affecté", df.xs(t)[a][0])
-                    
+
            #    if t == 1:
            #        mip = mip + 1
            #        affectMaint(a, t, df, d["listeMaintenance"])
@@ -263,6 +283,3 @@ def dataframe(d):
     else:
         df = pd.DataFrame(ndarraySitInit, index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
     return df
-
-
-if __name__ == '__main__': indic, df = programme()
