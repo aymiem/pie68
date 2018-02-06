@@ -10,7 +10,7 @@ from selection_operateur import fitness_ope_indiv, fitness_lis_indiv
 def mutation(parents_gen, parent_num, child_num, ope):
     
     tt = time.time()
-    parent = "solution"+parents_gen+str(parent_num) # nom du parente
+    parent = "solution"+parents_gen+parent_num # nom du parente
     df = lectureDF(parent)
     
     # Lors de la première tentative de mutation à partir de l'individu "parent_num"
@@ -20,7 +20,9 @@ def mutation(parents_gen, parent_num, child_num, ope):
     # précédente dans ce cas.
     nom_fichier_sortie(parents_gen+1, str(child_num))
     
-    for iter in range(4):
+    changes = False
+    
+    for iteration in range(4):
         # choix aléatoire de la taille de la matrice des mutations
         size_changes = len(df.index) - np.random.randint(1,len(df.index))
         df.iloc[size_changes:, size_changes:] = pd.DataFrame(index=df.iloc[size_changes:, \
@@ -31,9 +33,11 @@ def mutation(parents_gen, parent_num, child_num, ope):
         
         # si on trouve une meilleure solution on sort de la boucle et on renvoit la solution
         if is_better(parent, new_indic, ope):
+            changes = True
             break
+        
     print(time.time() - tt, "secondes pour la mutation")
-    return new_indic, new_df
+    return changes
 
             
 def is_better(parent_name, indics_enfant, operationnel):
