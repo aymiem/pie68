@@ -17,7 +17,7 @@ def initialisation() :
     # creation des solution 10 a 19 de la generation 1
     constantes.typechoix = 1 # stratégie d'affectation en mission aléatoire
     
-    for i in range(5):
+    for i in range(10):
         print("Création du planning 1", i)
         
         nom_fichier_sortie(1, i)

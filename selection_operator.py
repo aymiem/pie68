@@ -16,6 +16,8 @@ def fitness_operationnel(df_classement):
     # on récupère les poids des indicateurs
     df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
     
+    df_RWS["fitness_ope"] = np.zeros(len(df_RWS))
+    
     # somme pondérée des scores par indicateurs - normalisée et à maximiser
     df_RWS["fitness_ope"] = - np.asarray(df_RWS["moy_pot_perdu"])*(df_poids.loc["moy_pot_perdu","poids"]) \
             + np.asarray(df_RWS["min_pot_perdu"])*(df_poids.loc["min_pot_perdu","poids"]) \
@@ -49,8 +51,10 @@ def fitness_lissage(df_classement):
     df_RWS = df_classement
     df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
     
+    df_RWS["fitness_lis"] = np.zeros(len(df_RWS))
+    
     # somme pondérée des scores par indicateurs - normalisée et à maximiser
-    for nom_indic in ["maint_var", "delta_maint"]:
+    for nom_indic in ["var_maint", "delta_maint"]:
         df_RWS["fitness_lis"] = df_RWS["fitness_lis"] - np.asarray(df_RWS[nom_indic])*(df_poids.loc[nom_indic,"poids"])
     
     print(df_RWS)

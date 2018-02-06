@@ -127,7 +127,9 @@ def new_sitInit(plane,n,planing,dic,gen):
     
     shutil.copy("sitInit.csv", "sitInittemp.csv")
     df = pd.read_csv("sitInittemp.csv",sep=";",header=None)
-
+    
+    print(dic)
+    
     for i in range(n):
         key=random.choice(list(dic))
         df.loc[index-1,int(key)]= dic[key]
