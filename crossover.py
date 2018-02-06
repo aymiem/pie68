@@ -9,29 +9,33 @@ import random
 from classement_population import choix_indiv_rg
 from classement_population import rankings
 
-def programme():
 
-    print('Lancement du programme ')
+def crossover(parents_gen, ope):
+    
+    #ope: True/False
 
     #prend 3 plannings en entrée (meilleur, moyen et pire)
     
-    indicateurs = ["pot_perdu","var_maint"]
+    indicateurs = ["fitness_ope","fitness_lis"] 
     
-
-    for indic in indicateurs:
+    if ope == True :
+        indic = indicateurs[0]
         
-        gen="1"
-        df_c = rankings(gen)
-        a_meilleur= choix_indiv_rg(df_c, gen, indic, 1)
-        a_moyen= choix_indiv_rg(df_c, gen, indic, 0.5)
-        a_pire = choix_indiv_rg(df_c, gen, indic, 0)
-        sel_gene_1 = [a_meilleur,a_moyen,a_pire]
-    
-        #Meilleur avion en fonction de l'indicateur choisi et dictionnaire avec temps et mission/maint ou on a une difference entre les 3 plannings
-        avion, dic_chg = calculs(sel_gene_1)
-       
-        #genere les deux plannings 
-        generateur(avion,2,2,dic_chg,gen)
+    else:
+        indic = indicateurs[1]
+        
+    gen=parents_gen
+    df_c = rankings(gen)
+    a_meilleur= choix_indiv_rg(df_c, gen, indic, 1)
+    a_moyen= choix_indiv_rg(df_c, gen, indic, 0.5)
+    a_pire = choix_indiv_rg(df_c, gen, indic, 0)
+    sel_gene_1 = [a_meilleur,a_moyen,a_pire]
+
+    #Meilleur avion en fonction de l'indicateur choisi et dictionnaire avec temps et mission/maint ou on a une difference entre les 3 plannings
+    avion, dic_chg = calculs(sel_gene_1)
+   
+    #genere les deux plannings 
+    generateur(avion,2,2,dic_chg,gen)
     
  #Calcule l'avion qui a le plus d'influence pour l'indicateur choisi   
 def calculs(sel):
@@ -42,6 +46,7 @@ def calculs(sel):
         print('analyse planning '  + num)
         
         df[num] = pd.read_csv('solution'+str(num)+'.csv', sep =";")
+        #df[num] = transf_Mission2Numb(str(num))
         
         #Transformation des noms des missions et maint en numeros pour pouvoir calculer des covariances
         #Pas "automatique" pour l'instant, le sera avec ce qu'a fait Guillaume
@@ -146,8 +151,8 @@ def new_sitInit(plane,n,planing,dic,gen):
     return df
  
 #Genere les sitInit en fonction des param choisis
-def generateur(plane,n_plan,n_fix,dic,gen):
+def generateur(plane,n_plan,n_fix,dic,gene):
     dfs = []
     for m in range(n_plan):
-        dfs.append(new_sitInit(plane,n_fix,m,dic,gen))
+        dfs.append(new_sitInit(plane,n_fix,m,dic,gene))
     return dfs
