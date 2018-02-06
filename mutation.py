@@ -4,7 +4,7 @@ from lecture import lectureDF
 from main import programme
 from ecriture import nom_fichier_sortie
 import time
-from selection_operateur import fitness_ope_indiv, fitness_lis_indiv
+from selection_operator import fitness_ope_indiv, fitness_lis_indiv
 
 
 def mutation(parents_gen, parent_num, child_num, ope):

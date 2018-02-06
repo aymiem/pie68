@@ -90,7 +90,7 @@ def lectureEntrees(path):
     dicoAssociation= dict()
     nbrMission = 1101
     for i in dictionnaire["listeMission"]:
-        nomMission = ''.join(i.nom,'$',string(i.pu))
+        nomMission = ''.join((i.nom,'$',str(i.pu)))
         dicoAssociation[nomMission] = nbrMission
         nbrMission += 1
         
