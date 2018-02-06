@@ -16,10 +16,10 @@ def programme(is_init, dataframe_gen):
     tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
     d=lectureEntrees(x)# Lecture des fichiers d'entrées
-    print("Impression de d")
-    print(d)
+    print(d["df1"])
     if is_init == False :
-        d["df1"] = dataframe_gen
+        print(dataframe_gen.transpose())
+        d["df1"] = dataframe_gen.transpose()
         
     df=dataframe(d)  # Création du dataframe
     
@@ -95,7 +95,7 @@ def lectureEntrees(path):
     dicoAssociation= dict()
     nbrMission = 1101
     for i in dictionnaire["listeMission"]:
-        nomMission = ''.join((i.nom,'$',str(i.pu)))
+        nomMission = i.nom
         dicoAssociation[nomMission] = nbrMission
         nbrMission += 1
         

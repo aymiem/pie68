@@ -8,6 +8,7 @@ import shutil
 import random
 from classement_population import choix_indiv_rg
 from classement_population import rankings
+from transf import transf_NumbtoMission, transf_Mission2Numb
 
 
 def crossover(input_list, children_gen):
@@ -31,17 +32,19 @@ def calculs(sel):
 
     for num in sel :
         
-        print('analyse planning '  + num)
+        print('analyse planning ' + num)
         
-        df[num] = pd.read_csv('solution'+str(num)+'.csv', sep =";")
-        #df[num] = transf_Mission2Numb(str(num))
+        #df[num] = pd.read_csv('solution'+str(num)+'.csv', sep =";")
+        df[num] = transf_Mission2Numb('solution'+str(num)+'.csv')
         
         #Transformation des noms des missions et maint en numeros pour pouvoir calculer des covariances
         #Pas "automatique" pour l'instant, le sera avec ce qu'a fait Guillaume
-        df[num] = df[num].replace(['NANCY_D','NDJAMENA_D','LUXEUIL_5F',"NIAMEY_D","ORANGE_C","DJIBOUTI_5F","MARSAN_5F","CHAMMAL_D","MARSAN_D","MARSAN_C","NIAMEY_C","ORANGE_B","V5","V10","V15","V20","V25","V30","-"],[1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,1019]) 
-        df[num] = df[num].fillna(0)
+        #df[num] = df[num].replace(['NANCY_D','NDJAMENA_D','LUXEUIL_5F',"NIAMEY_D","ORANGE_C","DJIBOUTI_5F","MARSAN_5F","CHAMMAL_D","MARSAN_D","MARSAN_C","NIAMEY_C","ORANGE_B","V5","V10","V15","V20","V25","V30","-"],[1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,1019]) 
+        #df[num] = df[num].replace(['NANCY_D','NDJAMENA_D',"NIAMEY_D","CHAMMAL_D","MARSAN_D","V5","V10","V15","V20","V25","V30","-"],[1001,1002,1004,1008,1009,1013,1014,1015,1016,1017,1018,1019]) 
+
+        #df[num] = df[num].fillna(0)
         #print(df[num])
-        
+    print(df)
     #Calcul du nb total d'avions
     total_rows = len(df[sel[0]])
     #print(total_rows)
@@ -132,13 +135,15 @@ def new_sitInit(plane,n,planing,dic,gen):
     
     for i in range(n):
         key=random.choice(list(dic))
-        df.loc[index-1,int(key)]= dic[key]
+        df.loc[index-1,int(key)]= int(key)
     #print(df)
     #df.set_value(index-1, 34,)
     
-    df.to_csv("sitInit_"+str(gen) +"_"+ str(planing) + ".csv",sep=";",index=False,header=None)
+    dataframe = transf_NumbtoMission(df)
     
-    return df
+    dataframe.to_csv("sitInit_"+str(gen) +"_"+ str(planing) + ".csv",sep=";",index=False,header=None)
+    
+    return dataframe
  
 #Genere les sitInit en fonction des param choisis
 def generateur(plane,n_plan,n_fix,dic,gene):

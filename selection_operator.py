@@ -70,8 +70,8 @@ def fitness_lis_indiv(solution):
     else:
         df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         
-    # Calcul de l'indic aggrégé de maintenance : à minimiser  
-    f_value = 0.5*df_indics.loc["var_maint"] + 0.5*df_indics.loc["delta_maint"]
+    # Calcul de l'indic aggrégé de maintenance : à maximiser  
+    f_value = - 0.5*df_indics.loc["var_maint"] - 0.5*df_indics.loc["delta_maint"]
     return f_value   
     
 
