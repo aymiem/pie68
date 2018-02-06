@@ -35,7 +35,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     
     # Initialisation du dataframe d'affectation avions en mission
     avions_affectes = pd.DataFrame(np.zeros((d['temps'],len(d["listeMission"]))), columns = [m.nom for m in d["listeMission"]])
-    
+    # boucle de parcourt nécessaire pour lecture d'une éventuelle modif manuelle de sitInit
     tt = time.time()
     for avion in d["listeAvion"]:
         for t in range(d['temps']):

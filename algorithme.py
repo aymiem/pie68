@@ -27,25 +27,24 @@ def capaciteMission(a,m):
     l1=a.capacite
     return set(l2)<=set(l1)
 
-# creation d'une liste ordonnée des avions pouvant accomplir la mision (CRITERE: CRAVATE)
+# creation d'une liste des avions pouvant accomplir la mission 
 def choixAvion(liste,choix):
     
-    if choix == 0:
+    if choix == 0: # liste ordonnee par le critère : CRAVATE
         listeOrdonnee = sorted(liste, key=cravate)
-        #print("nb d'avions disp pour choix", len(listeOrdonnee))
         
-    else:
+    else: # liste triée de façon aléatoire pour obtenir des solutions différentes
         listeOrdonnee = sorted(liste, key=lambda *args: random.random())
-        
+
     return listeOrdonnee
 
 
 
 
 # Troncature de la liste choixAvions au nombre necessaire d'avions pour la mission m
-# puis affectation des missions dans le dataframe sous le format (nom_mission$pot_utilisé)
-# la modification du potentiel de l'avion est realisé avec la fonction modifPot.
-def affectationMission(m, listeAvion, a_a, data, nb, t,listeMission,i,choix):
+# puis affectation des missions dans le dataframe sous le format (nom_mission)
+# la modification du potentiel de l'avion est realisée avec la fonction modifPot.
+def affectationMission(m, listeAvion, avions_aff, data, nb, t, listeMission, i, choix):
     listeAlpha = besoinEnMission(m,listeMission, listeAvion, a_a , data,nb,t,i)
     
     #print(type(listeAlpha),listeAlpha)
