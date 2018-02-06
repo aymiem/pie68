@@ -52,6 +52,8 @@ def transf_Mission2Numb(pathSolution):
     
     nom.append('-')
     
+    dicoTransformation[''] = 500
+    
     #Transformation du csv en dataframe
     df = pd.read_csv(pathSolution, sep = ';')
     array = df.values
@@ -67,7 +69,7 @@ def transf_Mission2Numb(pathSolution):
                         
     df1 = pd.DataFrame(array)
                         
-    return df1
+    return df1, dicoTransformation
 
 def transf_NumbtoMission(df):
     
@@ -116,10 +118,9 @@ def transf_NumbtoMission(df):
     array = df.values
     
     for i in range(0,len(nom)):
-        for m in d["listeMission"]:
-            if (m.nom == nom[i]):
-                array[array == dicoTransformation[nom[i]]] = nom[i]
-                array[array == 500] = float('nan')
+        for m in nom:
+            array[array == dicoTransformation[m]] = m
+            array[array == 500] = float('nan')
         
     df1 = pd.DataFrame(array)
                         

@@ -35,7 +35,7 @@ def calculs(sel):
         print('analyse planning ' + num)
         
         #df[num] = pd.read_csv('solution'+str(num)+'.csv', sep =";")
-        df[num] = transf_Mission2Numb('solution'+str(num)+'.csv')
+        df[num], dic_miss = transf_Mission2Numb('solution'+str(num)+'.csv')
         
         #Transformation des noms des missions et maint en numeros pour pouvoir calculer des covariances
         #Pas "automatique" pour l'instant, le sera avec ce qu'a fait Guillaume
@@ -44,7 +44,7 @@ def calculs(sel):
 
         #df[num] = df[num].fillna(0)
         #print(df[num])
-    print(df)
+    #print(df , dic_miss)
     #Calcul du nb total d'avions
     total_rows = len(df[sel[0]])
     #print(total_rows)
@@ -93,9 +93,9 @@ def calculs(sel):
     #print(result)
     
     #Dictonnaire missions/numero
-    missions = ["NaN",'NANCY_D','NDJAMENA_D','LUXEUIL_5F',"NIAMEY_D","ORANGE_C","DJIBOUTI_5F","MARSAN_5F","CHAMMAL_D","MARSAN_D","MARSAN_C","NIAMEY_C$50","ORANGE_B$23","V5","V10","V15","V20","V25","V30","-"]
-    numero = [0,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,1019]
-    dic_miss = dict(zip(missions, numero))
+    #missions = ["NaN",'NANCY_D','NDJAMENA_D','LUXEUIL_5F',"NIAMEY_D","ORANGE_C","DJIBOUTI_5F","MARSAN_5F","CHAMMAL_D","MARSAN_D","MARSAN_C","NIAMEY_C$50","ORANGE_B$23","V5","V10","V15","V20","V25","V30","-"]
+    #numero = [0,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,1019]
+    #dic_miss = dict(zip(missions, numero))
     
     #On regarde à quel pas de temps il y'a une difference pour cet avion pour les 3 plannings
     dic_chg = {}
@@ -109,7 +109,7 @@ def calculs(sel):
       
     #Supprime ls - et NaN du dictionnaire, necessaire par la suite                         
     for k,v in list(dic_chg.items()):
-        if (v == '-') or (v == 'NaN'):
+        if (v == '-') or (v == ''):
            del dic_chg[k]
            
     return (avion, dic_chg)
@@ -117,7 +117,7 @@ def calculs(sel):
 #Creation des nouveaux sitInit.cscv
 def new_sitInit(plane,n,planing,dic,gen):
     #read csv, and split on "," the line
-    csv_file = csv.reader(open('sitInit.csv', "r"), delimiter=";")
+    csv_file = csv.reader(open('sitInitD.csv', "r"), delimiter=";")
     index = 1
     #loop through csv list
     for row in csv_file:
@@ -128,10 +128,10 @@ def new_sitInit(plane,n,planing,dic,gen):
              break
         else : index += 1
     
-    shutil.copy("sitInit.csv", "sitInittemp.csv")
+    shutil.copy("sitInitD.csv", "sitInittemp.csv")
     df = pd.read_csv("sitInittemp.csv",sep=";",header=None)
     
-    print(dic)
+    #print(dic)
     
     for i in range(n):
         key=random.choice(list(dic))
@@ -140,6 +140,9 @@ def new_sitInit(plane,n,planing,dic,gen):
     #df.set_value(index-1, 34,)
     
     dataframe = transf_NumbtoMission(df)
+    
+    #print('dataframe mission')
+    #print(dataframe)
     
     dataframe.to_csv("sitInit_"+str(gen) +"_"+ str(planing) + ".csv",sep=";",index=False,header=None)
     

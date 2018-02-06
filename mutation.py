@@ -10,15 +10,16 @@ from selection_operator import fitness_ope_indiv, fitness_lis_indiv
 def mutation(parents_gen, parent_num, child_num, ope):
     
     tt = time.time()
-    parent = "solution"+parents_gen+parent_num # nom du parente
-    df = lectureDF(parent)
+    parent = "solution"+parents_gen+parent_num+".csv" # nom du parente
+    
+    df = pd.read_csv(parent,sep=';',header=0,index_col=0)
     
     # Lors de la première tentative de mutation à partir de l'individu "parent_num"
     # on met à jour le nom du fichier de sortie pour enregistrer une nouvelle solution
     # Après tant que is_better renvoit False, on itère jusqu'à trouver une meilleure
     # solution au sens de l'indicateur aggrégé choisi. On ré-écrit sur la solution 
     # précédente dans ce cas.
-    nom_fichier_sortie(parents_gen+1, str(child_num))
+    nom_fichier_sortie(int(parents_gen)+1, child_num)
     
     changes = False
     
@@ -28,6 +29,14 @@ def mutation(parents_gen, parent_num, child_num, ope):
         df.iloc[size_changes:, size_changes:] = pd.DataFrame(index=df.iloc[size_changes:, \
                size_changes:].index, columns=df.iloc[size_changes:,size_changes:].columns)
         print("pourcentage de mutation :", size_changes*100/(len(df.index)*len(df.columns)))
+        
+        dummy_df = pd.DataFrame(0, index = range(5), columns = df.columns.values)
+        df = pd.concat([dummy_df, df])
+        dummy_df = np.zeros(len(df))
+        df.insert(0, value = dummy_df, column = '0')
+                
+        print("mutation_df :", df)
+        
         # mutation         
         new_indic, new_df = programme(False, df)
         

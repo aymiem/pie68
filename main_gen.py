@@ -24,7 +24,7 @@ def programme_gen(max_iter, max_time):
     ## Initialisation 
     start = tt.default_timer() # timer
     elapsed = 0    
-    initialisation()
+    #initialisation()
     ranked = rankings("1") #premiere génération
     dataPareto = pd.DataFrame()
     dataPareto = addGeneration(ranked, dataPareto)
@@ -37,14 +37,14 @@ def programme_gen(max_iter, max_time):
         best_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 1)
         worst_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0)
         med_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0.5)
-        
+                
         sitInit_ope = crossover([best_ope, med_ope, worst_ope], gen)
         
         indiv=0
         for x in sitInit_ope:
             nom_fichier_sortie(gen,indiv)
             programme(False, x)
-            i+=1
+            indiv+=1
     
         best_lis = choix_indiv_rg(ranked, gen_str, "fitness_lis", 1)
         worst_lis = choix_indiv_rg(ranked, gen_str, "fitness_lis", 0)
@@ -55,19 +55,20 @@ def programme_gen(max_iter, max_time):
         for x in sitInit_lis:
             nom_fichier_sortie(gen,indiv)
             programme(False, x)
-            i+=1
+            indiv+=1
+        
         
         nom_fichier_sortie(gen, 4)
-        changes_ope = mutation(str(gen-1), best_ope[1], 4, True)
+        changes_ope = mutation(str(gen-1), str(best_ope), 4, True)
         
         nom_fichier_sortie(gen, 5)
-        changes_lis = mutation(str(gen-1), best_lis[1], 5, False)
+        changes_lis = mutation(str(gen-1), str(best_lis), 5, False)
         
         if changes_ope == True: 
-            os.rename("solution"+best_ope+".csv", "solution"+gen_str+"6"+".csv")
+            os.rename("solution"+str(gen-1)+best_ope+".csv", "solution"+gen_str+"6"+".csv")
 
         if changes_lis == True: 
-            os.rename("solution"+best_lis+".csv", "solution"+gen_str+"7"+".csv")
+            os.rename("solution"+str(gen-1)+best_lis+".csv", "solution"+gen_str+"7"+".csv")
         
         ranked = rankings(gen_str)
         dataPareto = addGeneration(ranked, dataPareto)
