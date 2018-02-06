@@ -79,10 +79,14 @@ def Roulette_wheel_selection(df_classement, N, ope):
     # et de cross-over. Cette selection est basee sur le fitness des individus d'une population
     df = df_classement
     if ope == True :
-    f_sum = sum(df["fitness"])
-    df["proba"] = df["fitness"]/f_sum
+        f_sum = sum(df["fitness_ope"])
+        df["proba"] = df["fitness_ope"]/f_sum
+    else :
+        f_sum = sum(df["fitness_lis"])
+        df["proba"] = df["fitness_lis"]/f_sum        
+    
     p_sum = sum(df["proba"])
-    print(df)
+
     chosen_sol = []
     while len(chosen_sol) < N:
         rd_nb = np.random.random(1)[0]
@@ -92,4 +96,5 @@ def Roulette_wheel_selection(df_classement, N, ope):
         else:
             chosen_sol = chosen_sol + list(df[df.proba >= rd_nb].index.values)[0:N]
         print(chosen_sol)
+        
     return chosen_sol
