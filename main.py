@@ -82,15 +82,15 @@ def lectureEntrees(path):
     
         #Création d'un csv permettant de faire la transformation du calendrier en dataframe avec des nombres
     
-    dicoMatricule= dict()
-    for a in dictionnaire["listeAvion"]:
-        nomAvion = a.nom
-        dicoMatricule[a.nom] = a.type_avion
+#    dicoMatricule= dict()
+#    for a in dictionnaire["listeAvion"]:
+#        nomAvion = a.nom
+#        dicoMatricule[a.nom] = a.type_avion
     
     dicoAssociation= dict()
     nbrMission = 1101
     for i in dictionnaire["listeMission"]:
-        nomMission = i.nom
+        nomMission = ''.join(i.nom,'$',string(i.pu))
         dicoAssociation[nomMission] = nbrMission
         nbrMission += 1
         
@@ -100,10 +100,10 @@ def lectureEntrees(path):
         dicoAssociation[nomMaintenance] = nbrMaintenance
         nbrMaintenance += 1
     
-    dM = pd.DataFrame(list(dicoMatricule.items()), columns=['nomAvion', 'typeAvion'])
+#    dM = pd.DataFrame(list(dicoMatricule.items()), columns=['nomAvion', 'typeAvion'])
     dA = pd.DataFrame(list(dicoAssociation.items()), columns=['nom', 'numero'])
     
-    dM.T.to_csv("NomToType", sep=';')
+#    dM.T.to_csv("NomToType", sep=';')
     dA.T.to_csv("Transformation", sep=';')
 
     return dictionnaire

@@ -7,23 +7,24 @@ Created on Tue Jan 23 11:26:53 2018
 import csv
 import pandas as pd
 import numpy as np
+from objects import *
 
 def transf_Mission2Numb(pathSolution):
     
-    #Lecture pour avoir le type de l'avion en fonction de son nom
-    
-    nomAvion = []
-    typeAvion =[]
-    
-    f = open('NomToType')
-    csv_f = csv.reader(f, delimiter = ';')
-    row1 = next(csv_f)
-    row2 = next(csv_f)
-    nomAvion = row2
-    del nomAvion[0]
-    row3 = next(csv_f)
-    typeAvion = row3
-    del typeAvion[0]
+#    #Lecture pour avoir le type de l'avion en fonction de son nom
+#    
+#    nomAvion = []
+#    typeAvion =[]
+#    
+#    f = open('NomToType')
+#    csv_f = csv.reader(f, delimiter = ';')
+#    row1 = next(csv_f)
+#    row2 = next(csv_f)
+#    nomAvion = row2
+#    del nomAvion[0]
+#    row3 = next(csv_f)
+#    typeAvion = row3
+#    del typeAvion[0]
 
     
     #Lecture pour avoir le numéro associé au nom de mission
@@ -61,29 +62,29 @@ def transf_Mission2Numb(pathSolution):
                 array[row,column] = 500
             else:
                 for j in range(0,len(nom)):
-                    if (array[row,column].split("$")[0] == nom[j]):
+                    if (array[row,column] == nom[j]):
                         array[row,column] = dicoTransformation[nom[j]]
                         
     df1 = pd.DataFrame(array)
                         
     return df1
 
-def transf_NumbtoMission(df, d):
+def transf_NumbtoMission(df):
     
     #Lecture pour avoir le type de l'avion en fonction de son nom
     
-    nomAvion = []
-    typeAvion =[]
-    
-    f = open('NomToType')
-    csv_f = csv.reader(f, delimiter = ';')
-    row1 = next(csv_f)
-    row2 = next(csv_f)
-    nomAvion = row2
-    del nomAvion[0]
-    row3 = next(csv_f)
-    typeAvion = row3
-    del typeAvion[0]
+#    nomAvion = []
+#    typeAvion =[]
+#    
+#    f = open('NomToType')
+#    csv_f = csv.reader(f, delimiter = ';')
+#    row1 = next(csv_f)
+#    row2 = next(csv_f)
+#    nomAvion = row2
+#    del nomAvion[0]
+#    row3 = next(csv_f)
+#    typeAvion = row3
+#    del typeAvion[0]
 
     
     #Lecture pour avoir le numéro associé au nom de mission
@@ -117,7 +118,7 @@ def transf_NumbtoMission(df, d):
     for i in range(0,len(nom)):
         for m in d["listeMission"]:
             if (m.nom == nom[i]):
-                array[array == dicoTransformation[nom[i]]] = ''.join(nom[i],'$',str(m.pu))
+                array[array == dicoTransformation[nom[i]]] = nom[i]
                 array[array == 500] = float('nan')
         
     df1 = pd.DataFrame(array)
