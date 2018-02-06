@@ -41,7 +41,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         for t in range(d['temps']):
             if isinstance(df.xs(t+1)[avion],str):
                 if df.xs(t+1)[avion][0] != "V":
-                    print(avion.nom, "est affecté à", df.xs(t+1)[avion])
+                     #print(avion.nom, "est affecté à", df.xs(t+1)[avion])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
                     
     print(time.time() - tt)
@@ -52,10 +52,10 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         # mi: nombre d'avions en stockage à l'instant t
         # mip: nombre les nouvelles entrées en stockage à l'instant t
 
-        print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
+        #print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
 
         # gestion des affectations missions
-        Remplir_Indicateurs(d, df, indic, t) #remplissage des indicateurs
+        Remplir_Indicateurs_temporels(d, df, indic, t) #remplissage des indicateurs
         opex = 1
         remplir_mission(d, t, df, opex, indic, avions_affectes) # Affectation des opex
         opex = 0
@@ -64,32 +64,8 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
         remplir_autres(d, t, df, h, indic, mission_heures) # Gestion des avions qui ne sont ni en maint ni en mission
         
-    indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
-    indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
-
-#    Calcul de la variance du nombre d'avions en maintenance
-#    moy = mean(NbrMaint)
-#    ecart = [] * ( d["temps"] - 3 )
-#    for t in (1,d["temps"]-3):
-#        ecart(t) = (NbrMaint(t) - moy)*(NbrMaint(t)-moy)
-#    var = mean(ecart) #indicateur -> variance du nombre d'avions en maintenance
-    indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"])) #Calcul de la variance du nombre d'avion en maintenance
-    indic["Max_maint"] = np.max(indic["NbrMaint"]) #Calcul du max d'avion en maintenance (normalement égal à la contrainte imposé au code)
-    indic["FlightTime_var"] = np.var(
-            np.fromiter(iter(indic["FlightTime"].values()), dtype=int)
-            )
+    Remplir_Indicateurs_globaux(d, df, indic)
     
-    for t in range(1, d["temps"]-3):
-        indic["avionDispo"][t-1] = indic["nbrAvionMission"][t-1] + indic["nbrAvionFree"][t-1]
-    
-    indic["min_dispo"] = np.min(indic["avionDispo"])
-    
-    
-    for m in d["listeMission"]:
-        t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
-        t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
-        indic["RempMission"][m.nom] = np.mean(indic["tauxRempMission"][m.nom][int(t_deb) : int(t_fin)])
-
     return indic
 
 def lectureEntrees(path):
@@ -209,7 +185,7 @@ def remplir_maintenance(d,t,df,mi,mip):
                 if (t > 1 and df.xs(t - 1)[a][0] != "V") or ( t == 1): #str
                     mip = mip + 1
                     affectMaint(a, t, df, d["listeMaintenance"])
-                    print(a, "affecté", df.xs(t)[a][0])
+                    #print(a, "affecté", df.xs(t)[a][0])
 
            #    if t == 1:
            #        mip = mip + 1

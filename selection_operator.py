@@ -56,7 +56,6 @@ def fitness_lissage(df_classement):
     print(df_RWS)
     return df_RWS.sort_values(by=["fitness_lis"], ascending=False)
 
-
 def fitness_lis_indiv(solution):
     # evalue un score (ou fitness) de 2 indicateurs liés à la maintenance et
     # aggrégés : maint_var, delta_maint, pour les individus d'une même génération

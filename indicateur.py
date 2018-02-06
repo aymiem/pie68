@@ -31,25 +31,24 @@ def Init_Indicateurs(d, indic):
     nbrAvionMission = [0] * ( d["temps"] - 3)
     nbrAvionFree = [0] * ( d["temps"] - 3)
     
-    PotCalTot = len(d["listeAvion"])*(d["temps"])
+    #PotCalTot = len(d["listeAvion"])*(d["temps"])
     
 
     indic["MpotH"] = MpotH
     indic["NbrMaint"] = NbrMaint
-    indic["PotCalTot"] = PotCalTot
+    #indic["PotCalTot"] = PotCalTot
     indic["nbrAvionMission"] = nbrAvionMission
     indic["nbrAvionFree"] = nbrAvionFree
     indic["avionDispo"]= [0] * ( d["temps"] - 4)
     indic["min_dispo"] = 0
-    indic["PotPerdu"] = 0
     indic["listPotPerdu"] = []
     indic["moyPotPerdu"] = 0
-    indic["varPotPerdu"] = 0
+    indic["minPotPerdu"] = 0
     
     return indic
     
     
-def Remplir_Indicateurs(d, df, indic, t):
+def Remplir_Indicateurs_temporels(d, df, indic, t):
     
     
     for a in d["listeAvion"]:
@@ -65,12 +64,32 @@ def Remplir_Indicateurs(d, df, indic, t):
 
         if str(df.xs(t)[a])[0] == "V":
             indic["NbrMaint"][t-1] += 1
-            indic["PotCalTot"] -= 1
+            #indic["PotCalTot"] -= 1
 
         if t>1:
             if indic["MpotH"][nomAvion][t-2] < indic["MpotH"][nomAvion][t-1]:
-                indic["PotPerdu"] += indic["MpotH"][nomAvion][t-2]
                 indic["listPotPerdu"].append(indic["MpotH"][nomAvion][t-2])
-    
-    indic["varPotPerdu"] = np.var(indic["listPotPerdu"])
+
+def Remplir_Indicateurs_globaux(d, df, indic):
+    indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
+    indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
+    indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"])) #Calcul de la variance du nombre d'avion en maintenance
+    indic["Min_maint"] = min(indic["NbrMaint"]) #Calcul du min d'avion en maintenanc
+    indic["Max_maint"] = max(indic["NbrMaint"]) #Calcul du max d'avion en maintenance (normalement égal à la contrainte imposé au code)
+    indic["delta_maint"] = indic["Max_maint"] - indic["Min_maint"]
+    indic["minPotPerdu"] = min(indic["listPotPerdu"])
     indic["moyPotPerdu"] = np.mean(indic["listPotPerdu"])
+    indic["FlightTime_var"] = np.var(
+            np.fromiter(iter(indic["FlightTime"].values()), dtype=int)
+            )
+    
+    for t in range(1, d["temps"]-3):
+        indic["avionDispo"][t-1] = indic["nbrAvionMission"][t-1] + indic["nbrAvionFree"][t-1]
+    
+    indic["min_dispo"] = np.min(indic["avionDispo"])
+    
+    
+    for m in d["listeMission"]:
+        t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
+        t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
+        indic["RempMission"][m.nom] = np.mean(indic["tauxRempMission"][m.nom][int(t_deb) : int(t_fin)])

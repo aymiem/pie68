@@ -69,16 +69,21 @@ def rankings(generation):
             df_indic[ind+"_rg"] = df_indic[ind]/18 - (df_indic[ind]/18 - 1)
         else:
             if min(df_indic[ind]) != max(df_indic[ind]) :
-                if (ind == "var_maint") or (ind == "pot_perdu" ) :
+                #Objectifs à minimiser
+                if (ind == "var_maint") or (ind == "moy_pot_perdu" ) or (ind == "delta_nbmaint") :
                     #df_indic = df_indic.sort_values(by=[ind])
                     df_indic[ind+"_rg"] = 1 - (df_indic[ind]-min(df_indic[ind]))/(max(df_indic[ind])-min(df_indic[ind]))
+                #Objectifs à maximiser
                 else:
                     #df_indic = df_indic.sort_values(by=[ind], ascending=False)
                     df_indic[ind+"_rg"] = (df_indic[ind]-min(df_indic[ind]))/(max(df_indic[ind])-min(df_indic[ind]))
                 #df_indic[ind+"_rg"] = list(range(1,len(df_indic[ind])+1)) 
             
             else : # Si indic constant pour toute solution, non pris en compte dans le calcul du fitness
-                df_indic[ind+"_rg"] = 1 - df_indic[ind]/max(df_indic[ind])
+                if (max(df_indic[ind]) != 0):
+                    df_indic[ind+"_rg"] = 1 - df_indic[ind]/max(df_indic[ind])
+                else:
+                    df_indic[ind+"_rg"] = 0    
              
     #print(df_indic)
     return df_indic
@@ -105,7 +110,7 @@ def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
         num_sol = list(df_indic.sort_values(by=[ind_rg],ascending=False).index.values)[0]
     else :
         num_sol = list(df_indic.sort_values(by=[ind_rg],ascending=False).index.values)[int(len(df_indic)/2)]
-    print(num_sol)
+    print(num_sol+ nom_indic)
     print("solution" + num_sol + ".csv")
     
     return num_sol
