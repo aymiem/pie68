@@ -16,27 +16,28 @@ def fitness_operationnel(df_classement):
     # on récupère les poids des indicateurs
     df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
     
-    # somme pondérée des scores par indicateurs
-    df_RWS["fitness_op"] = np.asarray(df_RWS["pot_perdu_rg"])*(df_poids.loc["pot_perdu","poids"]) \
-            - np.asarray(df_RWS["min_pot_perdu_rg"])*(df_poids.loc["min_pot_perdu","poids"]) \
-            + np.asarray(df_RWS["last_cravate_rg"])*(df_poids.loc["last_cravate","poids"]) 
+    # somme pondérée des scores par indicateurs - normalisée et à maximiser
+    df_RWS["fitness_ope"] = - np.asarray(df_RWS["moy_pot_perdu"])*(df_poids.loc["moy_pot_perdu","poids"]) \
+            + np.asarray(df_RWS["min_pot_perdu"])*(df_poids.loc["min_pot_perdu","poids"]) \
+            - np.asarray(df_RWS["last_cravate"])*(df_poids.loc["last_cravate","poids"]) 
     
     print(df_RWS)
-    return df_RWS.sort_values(by=["fitness_op"], ascending=False)
+    return df_RWS.sort_values(by=["fitness_ope"], ascending=False)
 
 
 
 def fitness_ope_indiv(solution):
     # evalue un score (ou fitness) de 3 indicateurs opérationnels aggrégés :
     # moyenne_heures_perdues, min_pot_perdu et last_cravate pour un individu 
+    # normalisée dans l'ordre de grandeur des deux premiers critères
     
     if isinstance(solution, str): # si l'input est le nom de l'individu
         df_indics = pd.DataFrame.from_csv("indicateurs"+solution[8:10]+".csv", header=None, sep=';', index_col=0)
     else:
         df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         
-    # Calcul de l'indic aggrégé opérationnel : à minimiser  
-    f_value = 0.5*df_indics.loc["pot_per"] - 0.3*df_indics.loc["min_pot_per"] + 0.2*1000*df_indics.loc["min_pot_per"]
+    # Calcul de l'indic aggrégé opérationnel : à maximiser  
+    f_value = - 0.5*df_indics.loc["pot_per"] + 0.3*df_indics.loc["min_pot_per"] - 0.2*1000*df_indics.loc["min_pot_per"]
     return f_value
 
 
@@ -47,14 +48,14 @@ def fitness_lissage(df_classement):
     
     df_RWS = df_classement
     df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
-    df_RWS["fitness_lis"] = np.zeros(len(df_RWS))
     
-    # somme pondérée des scores par indicateurs
+    # somme pondérée des scores par indicateurs - normalisée et à maximiser
     for nom_indic in ["maint_var", "delta_maint"]:
-        df_RWS["fitness_lis"] = df_RWS["fitness_lis"] + np.asarray(df_RWS[nom_indic+"_rg"])*(df_poids.loc[nom_indic,"poids"])
+        df_RWS["fitness_lis"] = df_RWS["fitness_lis"] - np.asarray(df_RWS[nom_indic])*(df_poids.loc[nom_indic,"poids"])
     
     print(df_RWS)
     return df_RWS.sort_values(by=["fitness_lis"], ascending=False)
+
 
 def fitness_lis_indiv(solution):
     # evalue un score (ou fitness) de 2 indicateurs liés à la maintenance et
@@ -70,11 +71,14 @@ def fitness_lis_indiv(solution):
     return f_value   
     
 
-def Roulette_wheel_selection(df_classement, N): 
+def Roulette_wheel_selection(df_classement, N, ope): 
     # input : dataframe classée de façon décroissante par fitness
+    #       Si ope = True, sélection au sens de l'indicateur opérationnel aggrégé 
+    #       et de celui de lissage si ope = False.
     # output : liste de N individus sélectionnés pour les opérateurs de mutations
     # et de cross-over. Cette selection est basee sur le fitness des individus d'une population
     df = df_classement
+    if ope == True :
     f_sum = sum(df["fitness"])
     df["proba"] = df["fitness"]/f_sum
     p_sum = sum(df["proba"])
