@@ -22,7 +22,7 @@ def lecture(pathCSV):
     l_mt = creationListeMaintenance(lecture_l_mt)   # liste des maintenances
 
     # Lecture csv de la situation initiale / rebouclage
-    df= lectureDF(l_a,nom_fichier[2])
+    df= lectureDF(nom_fichier[2])
     y=df.as_matrix()
     index=df.index
     df1=pd.DataFrame(y,index=index,columns=l_a)
@@ -107,8 +107,7 @@ def affectationParam(l):
     parametre.anticipMaint=listeParam[8]
 
 # lecture CSV de la situation initiale / rebouclage
-def lectureDF(l,s):
-    path=s
+def lectureDF(path):
     dataframeInit=pd.read_csv(path,sep=';',header=0,index_col=0,skiprows=[0,1,2,3])
     t=dataframeInit.T
     return t
