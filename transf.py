@@ -6,8 +6,9 @@ Created on Tue Jan 23 11:26:53 2018
 """
 import csv
 import pandas as pd
+import numpy as np
 
-def transf(pathSolution):
+def transf_Mission2Numb(pathSolution):
     
     #Lecture pour avoir le type de l'avion en fonction de son nom
     
@@ -63,6 +64,62 @@ def transf(pathSolution):
                     if (array[row,column].split("$")[0] == nom[j]):
                         array[row,column] = dicoTransformation[nom[j]]
                         
+    df1 = pd.DataFrame(array)
+                        
+    return df1
+
+def transf_NumbtoMission(df, d):
+    
+    #Lecture pour avoir le type de l'avion en fonction de son nom
+    
+    nomAvion = []
+    typeAvion =[]
+    
+    f = open('NomToType')
+    csv_f = csv.reader(f, delimiter = ';')
+    row1 = next(csv_f)
+    row2 = next(csv_f)
+    nomAvion = row2
+    del nomAvion[0]
+    row3 = next(csv_f)
+    typeAvion = row3
+    del typeAvion[0]
+
+    
+    #Lecture pour avoir le numéro associé au nom de mission
+    
+    nom = []
+    numero =[]
+    dicoTransformation = dict()
+    
+    f = open('Transformation')
+    csv_f = csv.reader(f, delimiter = ';')
+    row1 = next(csv_f)
+    row2 = next(csv_f)
+    nom = row2
+    del nom[0]
+    row3 = next(csv_f)
+    numero = row3
+    del numero[0]
+    
+    
+    
+    for i in range(0,len(nom)):
+        dicoTransformation[nom[i]] = numero[i]
+        
+    dicoTransformation['-'] = 600
+    
+    nom.append('-')
+    
+    #Transformation du csv en dataframe
+    array = df.values
+    
+    for i in range(0,len(nom)):
+        for m in d["listeMission"]:
+            if (m.nom == nom[i]):
+                array[array == dicoTransformation[nom[i]]] = ''.join(nom[i],'$',str(m.pu))
+                array[array == 500] = float('nan')
+        
     df1 = pd.DataFrame(array)
                         
     return df1
