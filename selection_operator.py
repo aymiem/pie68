@@ -37,7 +37,7 @@ def fitness_ope_indiv(solution):
         df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         
     # Calcul de l'indic aggrégé opérationnel : à maximiser  
-    f_value = - 0.5*df_indics.loc["pot_per"] + 0.3*df_indics.loc["min_pot_per"] - 0.2*1000*df_indics.loc["min_pot_per"]
+    f_value = - 0.5*df_indics.loc["moy_pot_perdu"] + 0.3*10*df_indics.loc["min_pot_perdu"] - 0.2*df_indics.loc["last_cravate"]
     return f_value
 
 
