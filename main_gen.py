@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+ #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jan 23 14:45:59 2018
@@ -9,10 +9,10 @@ import timeit as tt
 import pandas as pd
 import numpy as np
 from initialisation  import initialisation
-from classement_population import rankings, choix_indiv_rg
+from classement_population import *
 from selection_operator import Roulette_wheel_selection, evaluation_fitness
 from Pareto import drawPareto, addGeneration
-from crossover import calculs
+from crossover import *
 
 def programme_gen(max_iter, max_time, indic_ref_1, indic_ref_2):
     print("Lancement du programme génétique")
@@ -20,6 +20,8 @@ def programme_gen(max_iter, max_time, indic_ref_1, indic_ref_2):
     elapsed = 0    
     initialisation()
     ranked = rankings("1")
+    fit = evaluation_fitness(ranked)
+    print(fit)
     dataPareto = pd.DataFrame()
     dataPareto = addGeneration(ranked, dataPareto)
     gen = 1
@@ -53,4 +55,4 @@ def programme_gen(max_iter, max_time, indic_ref_1, indic_ref_2):
     return dataPareto
 
 
-pareto = programme_gen(1,100000, "var_maint", "pot_perdu")
+pareto = programme_gen(1,100000, "var_maint", "moy_pot_perdu")
