@@ -16,7 +16,12 @@ def programme(is_init, dataframe_gen):
     tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
     d=lectureEntrees(x)# Lecture des fichiers d'entrées
-    df=(dataframe(d) if is_init == True else dataframe_gen) # Création du dataframe
+    print("Impression de d")
+    print(d)
+    if is_init == False :
+        d["df1"] = dataframe_gen
+        
+    df=dataframe(d)  # Création du dataframe
     
     mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
     
