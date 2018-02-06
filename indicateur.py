@@ -11,6 +11,8 @@ from sklearn.decomposition import PCA
 def Init_Indicateurs(d, indic):
     
     MpotH = dict()
+    MpotC = dict()
+    
     indic["FlightTime"] = dict()
     indic["tauxRempMission"]= dict()
     indic["RempMission"] = dict()
@@ -18,6 +20,7 @@ def Init_Indicateurs(d, indic):
     for a in d["listeAvion"]:
         nomAvion = a.nom
         MpotH[nomAvion] = [] #On crée une liste vide pour le potentiel horaire de chaque avion
+        MpotC[nomAvion] = [] #On crée une liste vide pour le potentiel calendaire de chaque avion
         indic["FlightTime"][nomAvion] = 0 #On crée une liste vide pour le temps de vol réalisé de chaque avion
     
     for m in d["listeMission"]: #Pour chaque mission, on calculera le nombre d'avion affecter à chaque période à cette mission
@@ -27,21 +30,20 @@ def Init_Indicateurs(d, indic):
         
     MpotH["somme"] = [0] * (d["temps"] - 4) #On crée une liste qui sera la somme des pot. sur chaque période
 
-    NbrMaint = [0] * ( d["temps"] - 3)
-    nbrAvionMission = [0] * ( d["temps"] - 3)
-    nbrAvionFree = [0] * ( d["temps"] - 3)
-    
     #PotCalTot = len(d["listeAvion"])*(d["temps"])
     
 
     indic["MpotH"] = MpotH
-    indic["NbrMaint"] = NbrMaint
+    indic["MpotC"] = MpotC
+    
+    indic["NbrMaint"] = [0] * ( d["temps"] - 6)
     #indic["PotCalTot"] = PotCalTot
-    indic["nbrAvionMission"] = nbrAvionMission
-    indic["nbrAvionFree"] = nbrAvionFree
+    indic["nbrAvionMission"] = [0] * ( d["temps"] - 3)
+    indic["nbrAvionFree"] = [0] * ( d["temps"] - 3)
     indic["avionDispo"]= [0] * ( d["temps"] - 4)
     indic["min_dispo"] = 0
     indic["listPotPerdu"] = []
+    indic["last_cravate"] = 0
     indic["moyPotPerdu"] = 0
     indic["minPotPerdu"] = 0
     
@@ -50,26 +52,32 @@ def Init_Indicateurs(d, indic):
     
 def Remplir_Indicateurs_temporels(d, df, indic, t):
     
-    
     for a in d["listeAvion"]:
         nomAvion = a.nom
-        indic["MpotH"][nomAvion].append(a.pot_horaire) # On rajoute la dernière valeur à la liste
+        indic["MpotH"][nomAvion].append(a.pot_horaire) # On rajoute la dernière valeur de pot horaire à la liste
+        indic["MpotC"][nomAvion].append(a.pot_mois) # On rajoute la dernière valeur de pot calendaire à la liste
         
         if (t>1):
             if (indic["MpotH"][nomAvion][t-2]-a.pot_horaire > 0) :
-                indic["FlightTime"][nomAvion] += indic["MpotH"][nomAvion][t-2]-a.pot_horaire 
+                indic["FlightTime"][nomAvion] += indic["MpotH"][nomAvion][t-2]-a.pot_horaire #heures volées
             
         indic["MpotH"]["somme"][t-1] += indic["MpotH"][nomAvion][t-1] # On fait la somme des pot. sur tous les avions à chaque période
         #indic["PotMois"][nomAvion].append(a.pot_mois)
 
-        if str(df.xs(t)[a])[0] == "V":
-            indic["NbrMaint"][t-1] += 1
-            #indic["PotCalTot"] -= 1
+        if (t>3):
+            if str(df.xs(t)[a])[0] == "V":
+                indic["NbrMaint"][t-4] += 1 #on compte un avion en maintenance
+                #indic["PotCalTot"] -= 1
 
         if t>1:
             if indic["MpotH"][nomAvion][t-2] < indic["MpotH"][nomAvion][t-1]:
                 indic["listPotPerdu"].append(indic["MpotH"][nomAvion][t-2])
-
+                
+                if indic["MpotC"][nomAvion][t-2] > 0: 
+                    if (float((indic["MpotH"][nomAvion][t-2])/(indic["MpotC"][nomAvion][t-2])) < 10 ): #avions avec un potentiel horaire/calendaire faible (inf à 10) au dernier pas de temps, et qui devraient donc être en maintenance
+                               #peu après le dernier pas de temp
+                        indic["last_cravate"]+= 1
+                
 def Remplir_Indicateurs_globaux(d, df, indic):
     indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
     indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot

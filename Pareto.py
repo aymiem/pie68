@@ -15,7 +15,7 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
 
-def programme2():
+def programmePareto():
     
     dataPareto = pd.DataFrame()
     dataPareto = addGeneration(df_e, dataPareto)
@@ -26,12 +26,15 @@ def programme2():
     return dataPareto
 
 def addGeneration(df, dataPareto):
+    #On ajoute la génération aux données pour le tracé de Pareto
+    # df : dataframe contenant l'ensembles des indicateurs, les rangs et les fitness
+    # dataPareto : dataframe contenant les données nécessaires au tracé de Pareto final
     
-    dataPareto = dataPareto.append(df.loc[:, ['var_maint', 'pot_perdu']])
+    dataPareto = dataPareto.append(df.loc[:, ['fitness_lis', 'fitness_op']])
     return dataPareto
 
 def drawPareto(data):
-    #Tracé du Pareto
+    #Tracé du Pareto 
     plt.show()
     plt.figure(figsize=(10,4))
     plt.scatter(data[data.columns[0]].values,data[data.columns[1]].values)
@@ -81,4 +84,4 @@ def drawPareto(data):
 #    
     return data
 
-if __name__ == '__main__': dataPareto = programme2()
+if __name__ == '__main__': dataPareto = programmePareto()

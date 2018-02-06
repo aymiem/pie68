@@ -45,13 +45,13 @@ def choixAvion(liste,choix):
 # puis affectation des missions dans le dataframe sous le format (nom_mission)
 # la modification du potentiel de l'avion est realisée avec la fonction modifPot.
 def affectationMission(m, listeAvion, avions_aff, data, nb, t, listeMission, i, choix):
-    listeAlpha = besoinEnMission(m,listeMission, listeAvion, a_a , data,nb,t,i)
+    listeAlpha = besoinEnMission(m,listeMission, listeAvion, avions_aff , data,nb,t,i)
     
     #print(type(listeAlpha),listeAlpha)
     listeBeta = choixAvion(listeAlpha,choix)
     
     #print(type(listeBeta),listeBeta)
-    listeGamma = listeBeta[0:m.nb_avion - a_a]
+    listeGamma = listeBeta[0:m.nb_avion - avions_aff]
     #print("nb d'avions necessaires pour la mission", m.nb_avion)
     #print("nb d'avions deja affectes pour la mission", nbmiss)
     for i in range(0, nb):
