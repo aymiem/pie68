@@ -39,9 +39,9 @@ def calculs(sel):
 
     for num in sel :
         
-        #print(num)
+        print('analyse planning '  + num)
         
-        df[num] = pd.read_csv(str(num), sep =";")
+        df[num] = pd.read_csv('solution'+str(num)+'.csv', sep =";")
         
         #Transformation des noms des missions et maint en numeros pour pouvoir calculer des covariances
         #Pas "automatique" pour l'instant, le sera avec ce qu'a fait Guillaume
@@ -146,7 +146,7 @@ def new_sitInit(plane,n,planing,dic,gen):
     return df
  
 #Genere les sitInit en fonction des param choisis
-def generateur(plane,n_plan,n_fix,dic):
+def generateur(plane,n_plan,n_fix,dic,gen):
     dfs = []
     for m in range(n_plan):
         dfs.append(new_sitInit(plane,n_fix,m,dic,gen))

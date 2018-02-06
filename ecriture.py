@@ -18,7 +18,7 @@ def ecriture_donnees(listMission,indic,nom_fichier):
         spamwriter.writerow(['moy_pot_hor'] + [indic["MpotH"]["moy_somme"]]) #moyenne potentiel horaire, à maximiser
         spamwriter.writerow(['min_pot_hor'] + [indic["MpotH"]["min_somme"]])  #minimun potentiel horaire, à maximiser
         spamwriter.writerow(['var_maint'] + [indic["Maint_var"]]) #variance maint, à minimiser
-        spamwriter.writerow(['delta_nbmaint'] + [indic["delta_maint"]]) #eécart max du nombre d'avion en maintenance
+        spamwriter.writerow(['delta_maint'] + [indic["delta_maint"]]) #eécart max du nombre d'avion en maintenance
         #spamwriter.writerow(['pot_cal_tot'] + [indic["PotCalTot"]]) #Disponibilité totale planifié, soit le nombre total de créneau moins le nombre de créneau occupé par une maintenance
         spamwriter.writerow(['min_pot_perdu'] + [indic["minPotPerdu"]]) #Potentiel perdu minimum 
         spamwriter.writerow(['moy_pot_perdu'] + [indic["moyPotPerdu"]]) #Potentiel perdu moyen
