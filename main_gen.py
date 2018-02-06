@@ -17,6 +17,7 @@ from crossover import calculs
 from main import programme
 from ecriture import nom_fichier_sortie
 from mutation import mutation
+from crossover import crossover
 
 def programme_gen(max_iter, max_time):
     print("Lancement du programme génétique")
@@ -37,7 +38,7 @@ def programme_gen(max_iter, max_time):
         worst_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0)
         med_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0.5)
         
-        sitInit_ope = crossover([best_ope, med_ope, worst_ope], True, gen_str)
+        sitInit_ope = crossover([best_ope, med_ope, worst_ope], gen)
         
         indiv=0
         for x in sitInit_ope:
@@ -49,7 +50,7 @@ def programme_gen(max_iter, max_time):
         worst_lis = choix_indiv_rg(ranked, gen_str, "fitness_lis", 0)
         med_lis = choix_indiv_rg(ranked, gen_str, "fitness_lis", 0.5)
         
-        sitInit_lis = crossover([best_lis, med_lis, worst_lis], True, gen_str)
+        sitInit_lis = crossover([best_lis, med_lis, worst_lis], gen)
                 
         for x in sitInit_lis:
             nom_fichier_sortie(gen,indiv)
@@ -76,4 +77,4 @@ def programme_gen(max_iter, max_time):
     drawPareto(dataPareto)
     return dataPareto
 
-pareto = programme_gen(1,100000)
+pareto = programme_gen(2,100000)
