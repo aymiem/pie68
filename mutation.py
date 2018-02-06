@@ -33,7 +33,7 @@ def mutation(parents_gen, parent_num, child_num, ope):
         if is_better(parent, new_indic, ope):
             break
     print(time.time() - tt, "secondes pour la mutation")
-    return new_indic, new_df
+    return iter
 
             
 def is_better(parent_name, indics_enfant, operationnel):
