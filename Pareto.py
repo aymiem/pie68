@@ -36,7 +36,7 @@ def addGeneration(df, dataPareto):
 def drawPareto(data):
     #Tracé du Pareto 
     plt.show()
-    plt.figure(figsize=(10,4))
+    plt.figure(figsize=(15,8))
     plt.scatter(data[data.columns[0]].values,data[data.columns[1]].values)
     plt.title("Front de Pareto")
     plt.xlabel(data.columns[0])

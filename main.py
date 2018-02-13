@@ -16,11 +16,8 @@ def programme(is_init, dataframe_gen):
     tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
     d=lectureEntrees(x)# Lecture des fichiers d'entrées
-    print(len(d["df1"].index),len(d["df1"].columns))
     if is_init == False :
-        #print(dataframe_gen.transpose())
         d["df1"] = dataframe_gen.transpose()
-        print(len(d["df1"].index),len(d["df1"].columns))
     print("creation df")
     df=dataframe(d)  # Création du dataframe
     
@@ -82,7 +79,6 @@ def lectureEntrees(path):
     # definitions des unités temporelles et du pas de temps
     mois, annee = parametre.moisInit, parametre.anInit
     dictionnaire["temps"] = 12 * (parametre.anFin - annee) + (parametre.moisFin - mois)
-    print("temps",dictionnaire["temps"])
     #print("Lecture des données terminée")
     
         #Création d'un csv permettant de faire la transformation du calendrier en dataframe avec des nombres
@@ -268,12 +264,8 @@ def dataframe(d):
     # Association entre la matrice de rebouclage (si non  vide) et le pas de temps
     ndarraySitInit = d["df1"].as_matrix()
     if ndarraySitInit.any() == True:
-        print("3",d["temps"] + 2)
         dfrm = pd.DataFrame(index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
-        print(dfrm)
     else:
-        print("4",d["temps"] + 2)
-        print(len(d["listeAvion"]))
-        dfrm = pd.DataFrame(ndarraySitInit[1:,5:], index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
-    print("5", len(ndarraySitInit))
+        d_temps = d["temps"] + 2
+        dfrm = pd.DataFrame(ndarraySitInit[1:d_temps,5:], index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
     return dfrm

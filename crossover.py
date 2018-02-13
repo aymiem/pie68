@@ -13,12 +13,13 @@ from transf import transf_NumbtoMission, transf_Mission2Numb
 
 def crossover(input_dict, children_gen):
     
-    #ope: True/False
 
     # prend 3 plannings en entrée (meilleur, moyen et pire) dans un dictionnaire
-    #Meilleur avion en fonction de l'indicateur choisi et dictionnaire avec temps et mission/maint ou on a une difference entre les 3 plannings
+    # ex : {'best': '0', 'worst': '12', 'median': '14'}
+    
+    # Meilleur avion en fonction de l'indicateur choisi et dictionnaire avec temps et mission/maint ou on a une difference entre les 3 plannings
     avion, dic_chg = calculs(input_dict)
-   
+    print("calculs ok")
     #genere les deux plannings 
     dfs = generateur(avion,2,2,dic_chg,children_gen)
     
@@ -54,21 +55,20 @@ def calculs(sols):
     #On prend la ligne i de chacun des 3 plannings, on les stack et on calcule la cov
     for i in range (0,total_rows):
         x = np.vstack([df[sols["best"]].iloc[i,1:],df[sols["median"]].iloc[i,1:],df[sols["worst"]].iloc[i,1:]])
-        #print(x)
         cor[i] = np.corrcoef(x.astype(float))
-        #print(i)
-        #print(cor[i])
     
     
     #On calcule le minimum qui nous donnera l'avion qui a le plus d'impact
     dif = {}
-    dife = {}
+    #dife = {}
     for i in cor:
         dif[i] = (np.abs(cor[i].item(3))+np.abs(cor[i].item(7)))/2
-        dife[i] = np.abs(cor[i].item(6))
+        #dife[i] = np.abs(cor[i].item(6))
     
     #print(dif)
     #print(dife)
+    
+    dif_sorted = sorted(dif.items(), key=lambda kv: kv[1], reverse=False)
     
     val = min(dif, key=lambda i: dif[i])
     
@@ -81,14 +81,12 @@ def calculs(sols):
     # values = ["meilleur", "moyen", "pire"]
     # dictionaire = dict(zip(sel, values))
     for key, num in sols.items():
-        df[num]=df[num].replace(df[num].iloc[val][0],df[num].iloc[val][0] + key)
+        df[num]=df[num].replace(df[num].iloc[val][0], key)
         liste.append(df[num].loc[val:val])
         
     #print(liste)  
     
-    result = pd.concat(liste,ignore_index=True)
-    
-    #print(result)
+    result = pd.concat(liste, ignore_index=True)
     
     #Dictonnaire missions/numero
     #missions = ["NaN",'NANCY_D','NDJAMENA_D','LUXEUIL_5F',"NIAMEY_D","ORANGE_C","DJIBOUTI_5F","MARSAN_5F","CHAMMAL_D","MARSAN_D","MARSAN_C","NIAMEY_C$50","ORANGE_B$23","V5","V10","V15","V20","V25","V30","-"]
@@ -103,19 +101,45 @@ def calculs(sols):
             valeur= result[column][0]
             mission= list(dic_miss.keys())[list(dic_miss.values()).index(valeur)]
             dic_chg[column] = mission
-            #print(valeur)
-      
-    #Supprime ls - et NaN du dictionnaire, necessaire par la suite                         
-    for k,v in list(dic_chg.items()):
-        if (v == '-') or (v == ''):
-           del dic_chg[k]
-           
-    return (avion, dic_chg)
+       
+    av = 0
+    while (len(dic_chg) == 0):
+        print("step recherche with avion",avion)
+        av = av + 1
+        avion_val = dif_sorted[av]
+        avion = df[sols["best"]].iloc[avion_val[0]]
+        
+        liste = []
+        
+        
+        for key, num in sols.items():
+            df[num]=df[num].replace(avion.iloc[0], key)
+            liste.append(df[num].loc[avion_val[0]:avion_val[0]])
+        
+        result = pd.concat(liste,ignore_index=True)
+        
+        for column in result.columns[1:]:
+        
+            if (result[column][0] != result[column][1] != result[column][2]):
+                valeur= result[column][0]
+                mission= list(dic_miss.keys())[list(dic_miss.values()).index(valeur)]
+                dic_chg[column] = mission
+        
+        #Supprime ls - et NaN du dictionnaire, necessaire par la suite                         
+        for k,v in list(dic_chg.items()):
+            if (v == '-') or (v == ''):
+                del dic_chg[k]
+    
+        
+    if isinstance(avion,str):
+        return (avion, dic_chg)
+    else :
+        return (avion.iloc[0], dic_chg)
 
 #Creation des nouveaux sitInit.cscv
 def new_sitInit(plane,n,planing,dic,gen):
     #read csv, and split on "," the line
-    csv_file = csv.reader(open('sitInit.csv', "r"), delimiter=";")
+    csv_file = csv.reader(open('sitInitD.csv', "r"), delimiter=";")
     index = 1
     #loop through csv list
     for row in csv_file:
@@ -126,10 +150,10 @@ def new_sitInit(plane,n,planing,dic,gen):
              break
         else : index += 1
     
-    shutil.copy("sitInit.csv", "sitInittemp.csv")
+    shutil.copy("sitInitD.csv", "sitInittemp.csv")
     df = pd.read_csv("sitInittemp.csv",sep=";",header=None)
     
-    print(dic)
+    #print(dic)
     
     for i in range(n):
         key=random.choice(list(dic))
