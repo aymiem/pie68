@@ -101,7 +101,7 @@ def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
     elif (niveau_sol == 1) :
         num_sol = list(df_indic.sort_values(by=[nom_indic],ascending=False).index.values)[0]
     else :
-        num_sol = list(df_indic.sort_values(by=[nom_indic],ascending=False).index.values)[int(len(df_indic)/2)]
+        num_sol = list(df_indic.sort_values(by=[nom_indic],ascending=False).index.values)[int(len(df_indic)/2)-2]
     print("solution retenue pour niveau", niveau_sol, "et indic"+ nom_indic + ": " + num_sol)
     
     return num_sol

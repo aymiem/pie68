@@ -62,13 +62,15 @@ def calculs(sols):
     
     #On calcule le minimum qui nous donnera l'avion qui a le plus d'impact
     dif = {}
-    dife = {}
+    #dife = {}
     for i in cor:
         dif[i] = (np.abs(cor[i].item(3))+np.abs(cor[i].item(7)))/2
-        dife[i] = np.abs(cor[i].item(6))
+        #dife[i] = np.abs(cor[i].item(6))
     
     #print(dif)
     #print(dife)
+    
+    dif_sorted = sorted(dif.items(), key=lambda kv: kv[1], reverse=False)
     
     val = min(dif, key=lambda i: dif[i])
     
@@ -88,8 +90,6 @@ def calculs(sols):
     
     result = pd.concat(liste,ignore_index=True)
     
-    #print(result)
-    
     #Dictonnaire missions/numero
     #missions = ["NaN",'NANCY_D','NDJAMENA_D','LUXEUIL_5F',"NIAMEY_D","ORANGE_C","DJIBOUTI_5F","MARSAN_5F","CHAMMAL_D","MARSAN_D","MARSAN_C","NIAMEY_C$50","ORANGE_B$23","V5","V10","V15","V20","V25","V30","-"]
     #numero = [0,1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,1019]
@@ -104,7 +104,29 @@ def calculs(sols):
             mission= list(dic_miss.keys())[list(dic_miss.values()).index(valeur)]
             dic_chg[column] = mission
             #print(valeur)
-      
+     
+    av = 0
+    while (bool(dic_chg) == False):
+        av = av + 1
+        avion_val = list(dif_sorted.keys())[int(av)]
+        avion = df[sols["best"]].iloc[avion_val][0]
+        
+        liste = []
+        
+        for key, num in sols.items():
+            df[num]=df[num].replace(df[num].iloc[val][0],df[num].iloc[val][0] + key)
+            liste.append(df[num].loc[val:val])
+        
+        result = pd.concat(liste,ignore_index=True)
+        
+        dic_chg = {}
+        for column in result.columns[1:]:
+        
+            if (result[column][0] != result[column][1] != result[column][2]):
+                valeur= result[column][0]
+                mission= list(dic_miss.keys())[list(dic_miss.values()).index(valeur)]
+                dic_chg[column] = mission
+        
     #Supprime ls - et NaN du dictionnaire, necessaire par la suite                         
     for k,v in list(dic_chg.items()):
         if (v == '-') or (v == ''):
