@@ -11,16 +11,17 @@ from sklearn.decomposition import PCA
 import time
 
 def programme(is_init, dataframe_gen):
-    print('Lancement du programme ')
+    print(' Execution de l algo glouton ')
     
     tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV
     d=lectureEntrees(x)# Lecture des fichiers d'entrées
-    #print(d["df1"])
+    print(len(d["df1"].index),len(d["df1"].columns))
     if is_init == False :
         #print(dataframe_gen.transpose())
         d["df1"] = dataframe_gen.transpose()
-        
+        print(len(d["df1"].index),len(d["df1"].columns))
+    print("creation df")
     df=dataframe(d)  # Création du dataframe
     
     mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
@@ -44,11 +45,11 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     for avion in d["listeAvion"]:
         for t in range(d['temps']):
             if isinstance(df.xs(t+1)[avion],str):
-                if df.xs(t+1)[avion][0] != "V":
+                if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-":
                      #print(avion.nom, "est affecté à", df.xs(t+1)[avion])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
                     
-    print(time.time() - tt)
+    print("init avions_affectes",time.time() - tt)
 
     for t in range(1, d["temps"] - 3):
         h,mi,mip= 0,0,0
@@ -81,8 +82,8 @@ def lectureEntrees(path):
     # definitions des unités temporelles et du pas de temps
     mois, annee = parametre.moisInit, parametre.anInit
     dictionnaire["temps"] = 12 * (parametre.anFin - annee) + (parametre.moisFin - mois)
-    print("Lecture des données terminée")
-    #print(parametre.strategie)
+    print("temps",dictionnaire["temps"])
+    #print("Lecture des données terminée")
     
         #Création d'un csv permettant de faire la transformation du calendrier en dataframe avec des nombres
     
@@ -186,9 +187,17 @@ def remplir_maintenance(d,t,df,mi,mip):
         if isinstance(df.xs(t)[a],str): #!
             if df.xs(t)[a][0] == "V": #str
                 mi = mi + 1
-                if (t > 1 and df.xs(t - 1)[a][0] != "V") or ( t == 1): #str
+                if t == 1 :
                     mip = mip + 1
                     affectMaint(a, t, df, d["listeMaintenance"])
+                elif t > 1 :
+                    if isinstance(df.xs(t-1)[a],str):
+                        if df.xs(t - 1)[a][0] != "V": #str
+                            mip = mip + 1
+                            affectMaint(a, t, df, d["listeMaintenance"])
+                    else :
+                        mip = mip + 1
+                        affectMaint(a, t, df, d["listeMaintenance"])                        
                     #print(a, "affecté", df.xs(t)[a][0])
 
            #    if t == 1:
@@ -259,7 +268,12 @@ def dataframe(d):
     # Association entre la matrice de rebouclage (si non  vide) et le pas de temps
     ndarraySitInit = d["df1"].as_matrix()
     if ndarraySitInit.any() == True:
-        df = pd.DataFrame(index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
+        print("3",d["temps"] + 2)
+        dfrm = pd.DataFrame(index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
+        print(dfrm)
     else:
-        df = pd.DataFrame(ndarraySitInit[1:,5:], index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
-    return df
+        print("4",d["temps"] + 2)
+        print(len(d["listeAvion"]))
+        dfrm = pd.DataFrame(ndarraySitInit[1:,5:], index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
+    print("5", len(ndarraySitInit))
+    return dfrm

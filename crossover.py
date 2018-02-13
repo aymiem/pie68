@@ -11,15 +11,13 @@ from classement_population import rankings
 from transf import transf_NumbtoMission, transf_Mission2Numb
 
 
-def crossover(input_list, children_gen):
+def crossover(input_dict, children_gen):
     
     #ope: True/False
 
-    #prend 3 plannings en entrée (meilleur, moyen et pire)
-    sel_gene_1 = input_list
-
+    # prend 3 plannings en entrée (meilleur, moyen et pire) dans un dictionnaire
     #Meilleur avion en fonction de l'indicateur choisi et dictionnaire avec temps et mission/maint ou on a une difference entre les 3 plannings
-    avion, dic_chg = calculs(sel_gene_1)
+    avion, dic_chg = calculs(input_dict)
    
     #genere les deux plannings 
     dfs = generateur(avion,2,2,dic_chg,children_gen)
@@ -27,12 +25,12 @@ def crossover(input_list, children_gen):
     return dfs
     
  #Calcule l'avion qui a le plus d'influence pour l'indicateur choisi   
-def calculs(sel):
+def calculs(sols):
     df = {}
-
-    for num in sel :
+    
+    for key, num in sols.items() :
         
-        print('analyse planning ' + num)
+        print('analyse planning ' + key + num)
         
         #df[num] = pd.read_csv('solution'+str(num)+'.csv', sep =";")
         df[num], dic_miss = transf_Mission2Numb('solution'+str(num)+'.csv')
@@ -46,7 +44,7 @@ def calculs(sel):
         #print(df[num])
     #print(df , dic_miss)
     #Calcul du nb total d'avions
-    total_rows = len(df[sel[0]])
+    total_rows = len(df[sols["best"]])
     #print(total_rows)
     #print("prueba")
     
@@ -55,7 +53,7 @@ def calculs(sel):
     
     #On prend la ligne i de chacun des 3 plannings, on les stack et on calcule la cov
     for i in range (0,total_rows):
-        x = np.vstack([df[sel[0]].iloc[i,1:],df[sel[1]].iloc[i,1:],df[sel[2]].iloc[i,1:]])
+        x = np.vstack([df[sols["best"]].iloc[i,1:],df[sols["median"]].iloc[i,1:],df[sols["worst"]].iloc[i,1:]])
         #print(x)
         cor[i] = np.corrcoef(x.astype(float))
         #print(i)
@@ -75,15 +73,15 @@ def calculs(sel):
     val = min(dif, key=lambda i: dif[i])
     
     #Donne l'avion correspondant au minimum calculé
-    avion = df[sel[0]].iloc[val][0]
+    avion = df[sols["best"]].iloc[val][0]
     #val = min(dife, key=lambda i: dife[i])
     
     #On concatenate les 3 lignes correspondant à l'avion choisi, chacune des 3 étant celle du meilleur, moyen et pire planning
     liste = []
-    values = ["meilleur", "moyen", "pire"]
-    dictionaire = dict(zip(sel, values))
-    for num in sel:
-        df[num]=df[num].replace(df[num].iloc[val][0],df[num].iloc[val][0] + dictionaire[num])
+    # values = ["meilleur", "moyen", "pire"]
+    # dictionaire = dict(zip(sel, values))
+    for key, num in sols.items():
+        df[num]=df[num].replace(df[num].iloc[val][0],df[num].iloc[val][0] + key)
         liste.append(df[num].loc[val:val])
         
     #print(liste)  
@@ -117,7 +115,7 @@ def calculs(sel):
 #Creation des nouveaux sitInit.cscv
 def new_sitInit(plane,n,planing,dic,gen):
     #read csv, and split on "," the line
-    csv_file = csv.reader(open('sitInitD.csv', "r"), delimiter=";")
+    csv_file = csv.reader(open('sitInit.csv', "r"), delimiter=";")
     index = 1
     #loop through csv list
     for row in csv_file:
@@ -128,10 +126,10 @@ def new_sitInit(plane,n,planing,dic,gen):
              break
         else : index += 1
     
-    shutil.copy("sitInitD.csv", "sitInittemp.csv")
+    shutil.copy("sitInit.csv", "sitInittemp.csv")
     df = pd.read_csv("sitInittemp.csv",sep=";",header=None)
     
-    #print(dic)
+    print(dic)
     
     for i in range(n):
         key=random.choice(list(dic))

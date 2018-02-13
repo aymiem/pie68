@@ -97,14 +97,25 @@ def affectMaint(a, t, df, listeMaintenance):
 def affectMaint(a, t, df, listeMaintenance):
     if t > 1:  #! str()
         if isinstance(df.xs(t)[a],str):
-            if df.xs(t)[a][0] == "V" and df.xs(t - 1)[a][0] != "V": # maintenance à la main
-                l_maint=listeMaint(listeMaintenance, a)
-                for i in range(0, len(l_maint)):
-                    if a.proch_maint == l_maint[i].nom:
-                        a.pot_mois = l_maint[i].gain_mois
-                        a.pot_horaire = l_maint[i].gain_heures
-                        a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
-                        break
+            if df.xs(t)[a][0] == "V" :
+                if isinstance(df.xs(t-1)[a],str):
+                    if df.xs(t - 1)[a][0] != "V": # maintenance à la main
+                        l_maint=listeMaint(listeMaintenance, a)
+                        for i in range(0, len(l_maint)):
+                            if a.proch_maint == l_maint[i].nom:
+                                a.pot_mois = l_maint[i].gain_mois
+                                a.pot_horaire = l_maint[i].gain_heures
+                                a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
+                                break
+                else:
+                    l_maint=listeMaint(listeMaintenance, a)
+                    for i in range(0, len(l_maint)):
+                        if a.proch_maint == l_maint[i].nom:
+                            a.pot_mois = l_maint[i].gain_mois
+                            a.pot_horaire = l_maint[i].gain_heures
+                            a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
+                            break
+                            
         else:  # maintenance programmé par l'algorithme
             l_maint=listeMaint(listeMaintenance, a)
             for i in range(0,len(l_maint)):

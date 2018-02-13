@@ -23,7 +23,7 @@ def fitness_operationnel(df_classement):
             + np.asarray(df_RWS["min_pot_perdu"])*(df_poids.loc["min_pot_perdu","poids"]) \
             - np.asarray(df_RWS["last_cravate"])*(df_poids.loc["last_cravate","poids"]) 
     
-    print(df_RWS)
+    #print(df_RWS)
     return df_RWS.sort_values(by=["fitness_ope"], ascending=False)
 
 
@@ -33,13 +33,19 @@ def fitness_ope_indiv(solution):
     # moyenne_heures_perdues, min_pot_perdu et last_cravate pour un individu 
     # normalisée dans l'ordre de grandeur des deux premiers critères
     
-    if isinstance(solution, str): # si l'input est le nom de l'individu
-        df_indics = pd.DataFrame.from_csv("indicateurs"+solution[8:10]+".csv", header=None, sep=';', index_col=0)
-    else:
-        df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
+    if isinstance(solution, dict): # si l'input est un dictionnaire
+        f_value = - 0.5*solution["moy_pot_perdu"] + 0.3*10*solution["min_pot_perdu"] - 0.2*solution["last_cravate"]
+    
+    else :
+        if isinstance(solution, str): # si l'input est le nom de l'individu
+            df_indics = pd.DataFrame.from_csv("indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
+        else:
+            df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         
-    # Calcul de l'indic aggrégé opérationnel : à maximiser  
-    f_value = - 0.5*df_indics.loc["moy_pot_perdu"] + 0.3*10*df_indics.loc["min_pot_perdu"] - 0.2*df_indics.loc["last_cravate"]
+        # Calcul de l'indic aggrégé opérationnel : à maximiser  
+        f = - 0.5*df_indics.loc["moy_pot_perdu"] + 0.3*10*df_indics.loc["min_pot_perdu"] - 0.2*df_indics.loc["last_cravate"]
+        f_value = f.loc[1]
+        
     return f_value
 
 
@@ -57,7 +63,7 @@ def fitness_lissage(df_classement):
     for nom_indic in ["var_maint", "delta_maint"]:
         df_RWS["fitness_lis"] = df_RWS["fitness_lis"] - np.asarray(df_RWS[nom_indic])*(df_poids.loc[nom_indic,"poids"])
     
-    print(df_RWS)
+    #print(df_RWS)
     return df_RWS.sort_values(by=["fitness_lis"], ascending=False)
 
 
@@ -65,13 +71,17 @@ def fitness_lis_indiv(solution):
     # evalue un score (ou fitness) de 2 indicateurs liés à la maintenance et
     # aggrégés : maint_var, delta_maint, pour les individus d'une même génération
 
-    if isinstance(solution, str): # si l'input est le nom de l'individu
-        df_indics = pd.DataFrame.from_csv("indicateurs"+solution[8:10]+".csv", header=None, sep=';', index_col=0)
-    else:
-        df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
-        
-    # Calcul de l'indic aggrégé de maintenance : à maximiser  
-    f_value = - 0.5*df_indics.loc["var_maint"] - 0.5*df_indics.loc["delta_maint"]
+    if isinstance(solution, dict): # si l'input est un dictionnaire
+        f_value = - 0.5*solution["var_maint"] - 0.5*solution["delta_maint"] 
+    
+    else :
+        if isinstance(solution, str): # si l'input est le nom de l'individu
+            df_indics = pd.DataFrame.from_csv("indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
+        else:
+            df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
+        # Calcul de l'indic aggrégé de maintenance : à maximiser  
+        f = - 0.5*df_indics.loc["var_maint"] - 0.5*df_indics.loc["delta_maint"]
+        f_value = f.loc[1]
     return f_value   
     
 

@@ -23,9 +23,13 @@ def lecture(pathCSV):
 
     # Lecture csv de la situation initiale / rebouclage
     df= lectureDF(nom_fichier[2])
+    print("1",len(df.index),len(df.columns))
     y=df.as_matrix()
+    print("2",len(y))
     index=df.index
+    print("index", len(df.index))
     df1=pd.DataFrame(y,index=index,columns=l_a)
+    print("1",len(df1.index),len(df1.columns))
 
 
     return [l_a,l_m,l_mt,df1,nom_fichier]

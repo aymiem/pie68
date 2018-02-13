@@ -17,11 +17,11 @@ def ecriture_donnees(listMission,indic,nom_fichier):
         
         spamwriter.writerow(['moy_pot_hor'] + [indic["MpotH"]["moy_somme"]]) #moyenne potentiel horaire, à maximiser
         spamwriter.writerow(['min_pot_hor'] + [indic["MpotH"]["min_somme"]])  #minimun potentiel horaire, à maximiser
-        spamwriter.writerow(['var_maint'] + [indic["Maint_var"]]) #variance maint, à minimiser
+        spamwriter.writerow(['var_maint'] + [indic["var_maint"]]) #variance maint, à minimiser
         spamwriter.writerow(['delta_maint'] + [indic["delta_maint"]]) #eécart max du nombre d'avion en maintenance
         #spamwriter.writerow(['pot_cal_tot'] + [indic["PotCalTot"]]) #Disponibilité totale planifié, soit le nombre total de créneau moins le nombre de créneau occupé par une maintenance
-        spamwriter.writerow(['min_pot_perdu'] + [indic["minPotPerdu"]]) #Potentiel perdu minimum 
-        spamwriter.writerow(['moy_pot_perdu'] + [indic["moyPotPerdu"]]) #Potentiel perdu moyen
+        spamwriter.writerow(['min_pot_perdu'] + [indic["min_pot_perdu"]]) #Potentiel perdu minimum 
+        spamwriter.writerow(['moy_pot_perdu'] + [indic["moy_pot_perdu"]]) #Potentiel perdu moyen
         spamwriter.writerow(['min_dispo'] + [indic["min_dispo"]]) # nbr d'avion dispo (mission + entrainement), à maximiser
         spamwriter.writerow(['last_cravate'] + [indic["last_cravate"]]) #
         #for m in listMission:
@@ -32,9 +32,7 @@ def nom_fichier_sortie(generation, num_in_gen):
     # le nom du futur individu que l'on veut créer.
     # generation : dans [1..N], c'est le numéro de la génération de l'individu à créer
     # num_in_gen : dans [0..9], c'est le numéro de l'individu dans la génération    
-    
-    print("solution à créer :", num_in_gen, " de la generation ", generation)
-        
+            
     new_rows = [] # liste des lignes du fichier ré-écrit
     
     # création du dictionnaire du changement a effectuer

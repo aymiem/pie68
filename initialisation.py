@@ -18,7 +18,7 @@ def initialisation() :
     constantes.typechoix = 1 # stratégie d'affectation en mission aléatoire
     
     for i in range(10):
-        print("Création du planning 1", i)
+        print("Initialisation step :", i)
         
         nom_fichier_sortie(1, i)
 

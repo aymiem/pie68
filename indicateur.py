@@ -44,8 +44,8 @@ def Init_Indicateurs(d, indic):
     indic["min_dispo"] = 0
     indic["listPotPerdu"] = []
     indic["last_cravate"] = 0
-    indic["moyPotPerdu"] = 0
-    indic["minPotPerdu"] = 0
+    indic["moy_pot_perdu"] = 0
+    indic["min_pot_perdu"] = 0
     
     return indic
     
@@ -81,12 +81,12 @@ def Remplir_Indicateurs_temporels(d, df, indic, t):
 def Remplir_Indicateurs_globaux(d, df, indic):
     indic["MpotH"]["min_somme"] = min(indic["MpotH"]["somme"]) # L'indicateur est le min de la somme des pot
     indic["MpotH"]["moy_somme"] = np.mean(indic["MpotH"]["somme"]) # L'indicateur est la moyenne de la somme des pot
-    indic["Maint_var"] = np.var(np.asarray(indic["NbrMaint"])) #Calcul de la variance du nombre d'avion en maintenance
+    indic["var_maint"] = np.var(np.asarray(indic["NbrMaint"])) #Calcul de la variance du nombre d'avion en maintenance
     indic["Min_maint"] = min(indic["NbrMaint"]) #Calcul du min d'avion en maintenanc
     indic["Max_maint"] = max(indic["NbrMaint"]) #Calcul du max d'avion en maintenance (normalement égal à la contrainte imposé au code)
     indic["delta_maint"] = indic["Max_maint"] - indic["Min_maint"]
-    indic["minPotPerdu"] = min(indic["listPotPerdu"])
-    indic["moyPotPerdu"] = np.mean(indic["listPotPerdu"])
+    indic["min_pot_perdu"] = min(indic["listPotPerdu"])
+    indic["moy_pot_perdu"] = np.mean(indic["listPotPerdu"])
     indic["FlightTime_var"] = np.var(
             np.fromiter(iter(indic["FlightTime"].values()), dtype=int)
             )

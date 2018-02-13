@@ -24,7 +24,7 @@ def programme_gen(max_iter, max_time):
     ## Initialisation 
     start = tt.default_timer() # timer
     elapsed = 0    
-    #initialisation()
+    initialisation()
     ranked = rankings("1") #premiere génération
     dataPareto = pd.DataFrame()
     dataPareto = addGeneration(ranked, dataPareto)
@@ -34,11 +34,14 @@ def programme_gen(max_iter, max_time):
         gen +=1
         gen_str = str(gen)
         
-        best_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 1)
-        worst_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0)
-        med_ope = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0.5)
-                
-        sitInit_ope = crossover([best_ope, med_ope, worst_ope], gen)
+        # dictionnaire des solutions pour le crossover
+        sols_ope = {}
+        sols_ope["best"] = choix_indiv_rg(ranked, gen_str, "fitness_ope", 1)
+        sols_ope["worst"] = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0)
+        sols_ope["median"] = choix_indiv_rg(ranked, gen_str, "fitness_ope", 0.5)
+        
+        print("crossover sur generation", gen, "pour indic operationnel")
+        sitInit_ope = crossover(sols_ope, gen)
         
         indiv=0
         for x in sitInit_ope:
@@ -46,29 +49,35 @@ def programme_gen(max_iter, max_time):
             programme(False, x)
             indiv+=1
     
-        best_lis = choix_indiv_rg(ranked, gen_str, "fitness_lis", 1)
-        worst_lis = choix_indiv_rg(ranked, gen_str, "fitness_lis", 0)
-        med_lis = choix_indiv_rg(ranked, gen_str, "fitness_lis", 0.5)
+        sols_lis = {}
+        sols_lis["best"]  = choix_indiv_rg(ranked, gen_str, "fitness_lis", 1)
+        sols_lis["worst"] = choix_indiv_rg(ranked, gen_str, "fitness_lis", 0)
+        sols_lis["median"]  = choix_indiv_rg(ranked, gen_str, "fitness_lis", 0.5)
         
-        sitInit_lis = crossover([best_lis, med_lis, worst_lis], gen)
+        print("crossover sur generation", gen, "pour indic maint lissage")
+        sitInit_lis = crossover(sols_lis, gen)
                 
         for x in sitInit_lis:
             nom_fichier_sortie(gen,indiv)
             programme(False, x)
             indiv+=1
         
-        
+        print("mutation sur generation", gen, "pour indic operationnel")        
         nom_fichier_sortie(gen, 4)
-        changes_ope = mutation(str(gen-1), str(best_ope), 4, True)
+        changes_ope = mutation(str(gen-1), sols_ope["best"], 4, True)
         
+        print("mutation sur generation", gen, "pour indic maint lissage")
         nom_fichier_sortie(gen, 5)
-        changes_lis = mutation(str(gen-1), str(best_lis), 5, False)
+        changes_lis = mutation(str(gen-1), sols_lis["best"], 5, False)
         
         if changes_ope == True: 
-            os.rename("solution"+str(gen-1)+best_ope+".csv", "solution"+gen_str+"6"+".csv")
+            os.rename("solution"+sols_ope["best"]+".csv", "solution"+gen_str+"6"+".csv")
+            os.rename("indicateurs"+sols_ope["best"]+".csv", "indicateurs"+gen_str+"6"+".csv")
 
         if changes_lis == True: 
-            os.rename("solution"+str(gen-1)+best_lis+".csv", "solution"+gen_str+"7"+".csv")
+            os.rename("solution"+sols_lis["best"]+".csv", "solution"+gen_str+"7"+".csv")
+            os.rename("indicateurs"+sols_lis["best"]+".csv", "indicateurs"+gen_str+"7"+".csv")
+
         
         ranked = rankings(gen_str)
         dataPareto = addGeneration(ranked, dataPareto)

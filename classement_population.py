@@ -78,6 +78,7 @@ def rankings(generation):
     # Calcul et ajout des colonnes des indics agrégés "fitness_ope" et "fitness_lis"
     df_indic = fitness_operationnel(df_indic)
     df_indic = fitness_lissage(df_indic)
+    print(df_indic.iloc[:,-2:])
     
     return df_indic
 
@@ -101,7 +102,6 @@ def choix_indiv_rg(df_indic, generation, nom_indic, niveau_sol):
         num_sol = list(df_indic.sort_values(by=[nom_indic],ascending=False).index.values)[0]
     else :
         num_sol = list(df_indic.sort_values(by=[nom_indic],ascending=False).index.values)[int(len(df_indic)/2)]
-    print(num_sol+ nom_indic)
-    print("solution" + num_sol + ".csv")
+    print("solution retenue pour niveau", niveau_sol, "et indic"+ nom_indic + ": " + num_sol)
     
     return num_sol
