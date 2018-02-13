@@ -24,7 +24,7 @@ def programme_gen(max_iter, max_time):
     ## Initialisation 
     start = tt.default_timer() # timer
     elapsed = 0    
-    initialisation()
+    #initialisation()
     ranked = rankings("1") #premiere génération
     dataPareto = pd.DataFrame()
     dataPareto = addGeneration(ranked, dataPareto)

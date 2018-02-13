@@ -115,7 +115,7 @@ def calculs(sols):
 #Creation des nouveaux sitInit.cscv
 def new_sitInit(plane,n,planing,dic,gen):
     #read csv, and split on "," the line
-    csv_file = csv.reader(open('sitInit.csv', "r"), delimiter=";")
+    csv_file = csv.reader(open('sitInitD.csv', "r"), delimiter=";")
     index = 1
     #loop through csv list
     for row in csv_file:
@@ -126,10 +126,10 @@ def new_sitInit(plane,n,planing,dic,gen):
              break
         else : index += 1
     
-    shutil.copy("sitInit.csv", "sitInittemp.csv")
+    shutil.copy("sitInitD.csv", "sitInittemp.csv")
     df = pd.read_csv("sitInittemp.csv",sep=";",header=None)
     
-    print(dic)
+    #print(dic)
     
     for i in range(n):
         key=random.choice(list(dic))
