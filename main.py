@@ -88,34 +88,6 @@ def lectureEntrees(path):
 #        nomAvion = a.nom
 #        dicoMatricule[a.nom] = a.type_avion
     
-    dicoAssociation= dict()
-    dicoDollar = dict()
-    nbrMission = 1101
-    for i in dictionnaire["listeMission"]:
-        nomMission = i.nom
-        dicoAssociation[nomMission] = nbrMission
-        nbrMission += 1
-        
-    nbrMaintenance = 1001        
-    for i in dictionnaire["listeMaintenance"]:   
-        nomMaintenance = i.nom
-        dicoAssociation[nomMaintenance] = nbrMaintenance
-        nbrMaintenance += 1
-        
-    for i in dictionnaire["listeMission"]:
-        nomMission = ''.join([i.nom, '$', string(i.pu)])
-        dicoDollar[i.nom] = nomMission
-        nbrMission += 1
-    
-#    dM = pd.DataFrame(list(dicoMatricule.items()), columns=['nomAvion', 'typeAvion'])
-    dA = pd.DataFrame(list(dicoAssociation.items()), columns=['nom', 'numero'])
-    dM = pd.DataFrame(list(dicoAssociation.items()), columns=['nom', 'nomDollar'])
-
-    
-#    dM.T.to_csv("NomToType", sep=';')
-    dA.T.to_csv("Transformation", sep=';')
-    dM.T.to_csv("MissionDollar", sep=';')
-
 
     return dictionnaire
 

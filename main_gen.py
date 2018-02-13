@@ -18,6 +18,7 @@ from main import programme
 from ecriture import nom_fichier_sortie
 from mutation import mutation
 from crossover import crossover
+from transf import dico_transf_init
 
 def programme_gen(max_iter, max_time):
     print("Lancement du programme génétique")
@@ -27,6 +28,8 @@ def programme_gen(max_iter, max_time):
     
     ## INITIALISATION
     
+    # Initialisation des dictionnaires pour les conversions de fichiers
+    dico_transf_init()
     # Initialisation des individus de la première génération
     initialisation()
     ranked = rankings("1") # Classement de la premiere génération

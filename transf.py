@@ -8,6 +8,44 @@ import csv
 import pandas as pd
 import numpy as np
 from objects import *
+from constantes import *
+from main import lectureEntrees
+
+def dico_transf_init():
+    
+    x=constantes.path # Nom du fichier contenant la liste des autres CSV
+    d=lectureEntrees(x)# Lecture des fichiers d'entrées
+
+    dicoAssociation= dict()
+    dicoDollar = dict()
+    nbrMission = 1101
+    
+    for i in d["listeMission"]:
+        nomMission = i.nom
+        dicoAssociation[nomMission] = nbrMission
+        nbrMission += 1
+        
+    nbrMaintenance = 1001        
+    for i in d["listeMaintenance"]:   
+        nomMaintenance = i.nom
+        dicoAssociation[nomMaintenance] = nbrMaintenance
+        nbrMaintenance += 1
+        
+    for i in d["listeMission"]:
+        nomMission = ''.join([i.nom, '$', str(int(i.pu))])
+        dicoDollar[i.nom] = nomMission
+        nbrMission += 1
+    
+#    dM = pd.DataFrame(list(dicoMatricule.items()), columns=['nomAvion', 'typeAvion'])
+    dA = pd.DataFrame(list(dicoAssociation.items()), columns=['nom', 'numero'])
+    dM = pd.DataFrame(list(dicoDollar.items()), columns=['nom', 'nomDollar'])
+
+    
+#    dM.T.to_csv("NomToType", sep=';')
+    dA.T.to_csv("Transformation.csv", sep=';')
+    dM.T.to_csv("MissionDollar.csv", sep=';')
+
+
 
 def transf_Mission2Numb(pathSolution):
     
@@ -33,7 +71,7 @@ def transf_Mission2Numb(pathSolution):
     numero =[]
     dicoTransformation = dict()
     
-    f = open('Transformation')
+    f = open('Transformation.csv')
     csv_f = csv.reader(f, delimiter = ';')
     row1 = next(csv_f)
     row2 = next(csv_f)
@@ -95,7 +133,7 @@ def transf_NumbtoMission(df):
     numero =[]
     dicoTransformation = dict()
     
-    f = open('Transformation')
+    f = open('Transformation.csv')
     csv_f = csv.reader(f, delimiter = ';')
     row1 = next(csv_f)
     row2 = next(csv_f)
@@ -148,10 +186,10 @@ def transf_Mission2MissionDollar(pathSolution):
     #Lecture pour avoir le numéro associé au nom de mission
     
     nom = []
-    numero =[]
+    nomDollar =[]
     dicoTransformation = dict()
     
-    f = open('MissionDollar')
+    f = open('MissionDollar.csv')
     csv_f = csv.reader(f, delimiter = ';')
     row1 = next(csv_f)
     row2 = next(csv_f)
@@ -159,7 +197,7 @@ def transf_Mission2MissionDollar(pathSolution):
     del nom[0]
     row3 = next(csv_f)
     nomDollar = row3
-    del numero[0]
+    del nomDollar[0]
     
     
     
@@ -178,16 +216,13 @@ def transf_Mission2MissionDollar(pathSolution):
                             
     for column in range(1,len(array[1,:])):
         for row in range(0,len(array[:,1])):
-            if(type(array[row,column]) == float):
-                array[row,column] = 500
-            else:
-                for j in range(0,len(nom)):
-                    if (array[row,column] == nom[j]):
-                        array[row,column] = dicoTransformation[nom[j]]
+            for j in range(0,len(nom)):
+                if (array[row,column] == nom[j]):
+                    array[row,column] = dicoTransformation[nom[j]]
                         
     df1 = pd.DataFrame(array)
                         
-    return df1
+    df1.to_csv("solution_genetique.csv",sep=";",index=False,header=None)
     
     
     
