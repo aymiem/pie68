@@ -30,7 +30,7 @@ def addGeneration(df, dataPareto):
     # df : dataframe contenant l'ensembles des indicateurs, les rangs et les fitness
     # dataPareto : dataframe contenant les données nécessaires au tracé de Pareto final
     
-    dataPareto = dataPareto.append(df.loc[:, ['fitness_lis', 'fitness_op']])
+    dataPareto = dataPareto.append(df.loc[:, ['fitness_lis', 'fitness_ope']])
     return dataPareto
 
 def drawPareto(data):
