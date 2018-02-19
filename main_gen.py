@@ -123,4 +123,4 @@ def programme_gen(max_iter, max_time):
 
     return dataPareto
 
-pareto = programme_gen(5,100000)
+pareto = programme_gen(3,100000)

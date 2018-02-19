@@ -204,7 +204,7 @@ def transf_Mission2MissionDollar(pathSolution):
     for i in range(0,len(nom)):
         dicoTransformation[nom[i]] = nomDollar[i]
         
-    dicoTransformation['-'] = ''
+    dicoTransformation['-'] = '-'
     
     nom.append('-')
     
