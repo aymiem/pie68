@@ -219,8 +219,10 @@ def transf_Mission2MissionDollar(pathSolution):
             for j in range(0,len(nom)):
                 if (array[row,column] == nom[j]):
                     array[row,column] = dicoTransformation[nom[j]]
+                    
+    numcols = len(array[0])
                         
-    df1 = pd.DataFrame(array)
+    df1 = pd.DataFrame(array, index=list(range(1, numcols + 1)))
                         
     df1.to_csv("solution_genetique.csv",sep=";",index=False,header=None)
     
