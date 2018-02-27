@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 import time
 
 def programme(is_init, dataframe_gen):
-    print(' Execution de l algo glouton ')
+    print(' Execution de l algo glouton avec typechoix ', constantes.typechoix)
     
     tt = time.time()
     x=constantes.path # Nom du fichier contenant la liste des autres CSV

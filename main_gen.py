@@ -98,13 +98,11 @@ def programme_gen(max_iter, max_time):
         # les intègre à la nouvelle génération sous les numéros "gen_6" et "gen_7"
         
         nom_fichier_sortie(gen, 6)
-        if changes_ope == True: 
-            os.rename("solutions\solution"+sols_ope["best"]+".csv", "solutions\solution"+gen_str+"6"+".csv")
-            os.rename("indicateurs\indicateurs"+sols_ope["best"]+".csv", "indicateurs\indicateurs"+gen_str+"6"+".csv")
+        os.rename("solutions\solution"+sols_ope["best"]+".csv", "solutions\solution"+gen_str+"6"+".csv")
+        os.rename("indicateurs\indicateurs"+sols_ope["best"]+".csv", "indicateurs\indicateurs"+gen_str+"6"+".csv")
         nom_fichier_sortie(gen, 7)
-        if changes_lis == True: 
-            os.rename("solutions\solution"+sols_lis["best"]+".csv", "solutions\solution"+gen_str+"7"+".csv")
-            os.rename("indicateurs\indicateurs"+sols_lis["best"]+".csv", "indicateurs\indicateurs"+gen_str+"7"+".csv")
+        os.rename("solutions\solution"+sols_lis["best"]+".csv", "solutions\solution"+gen_str+"7"+".csv")
+        os.rename("indicateurs\indicateurs"+sols_lis["best"]+".csv", "indicateurs\indicateurs"+gen_str+"7"+".csv")
 
         # Classement de la nouvelle génération
         ranked = rankings(gen_str)
