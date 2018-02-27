@@ -19,6 +19,7 @@ def mutation(parents_gen, parent_num, child_num, ope, nb_iter):
     # précédente dans ce cas.
     
     changes = False
+    step_iter = 1
     
     for iteration in range(nb_iter):
         
@@ -41,7 +42,7 @@ def mutation(parents_gen, parent_num, child_num, ope, nb_iter):
         #df.iloc[offset:offset+changes_size, :changes_size] = pd.DataFrame(index=df.iloc[offset:offset+changes_size, \
         #     :changes_size].index, columns=df.iloc[offset:offset+changes_size, :changes_size].columns)
         
-        print("pourcentage de mutation :", changes_size*changes_size*100/(len(df.index)*len(df.columns)))
+        print("Iter ", step_iter," : pourcentage de mutation :", changes_size*changes_size*100/(len(df.index)*len(df.columns)))
         
         dummy_df = pd.DataFrame(0, index = range(5), columns = df.columns.values)
         df = pd.concat([dummy_df, df])
@@ -50,6 +51,8 @@ def mutation(parents_gen, parent_num, child_num, ope, nb_iter):
 
         # mutation         
         new_indic, new_df = programme(False, df)
+        
+        step_iter += 1
         
         # si on trouve une meilleure solution on sort de la boucle et on renvoit la solution
         if is_better(parent, new_indic, ope):
