@@ -6,14 +6,12 @@ import numpy as np
 import csv
 import shutil
 import random
-from classement_population import choix_indiv_rg
-from classement_population import rankings
+from constantes import paths
 from transf import transf_NumbtoMission, transf_Mission2Numb
 
 
 def crossover(input_dict, children_gen):
     
-
     # prend 3 plannings en entrée (meilleur, moyen et pire) dans un dictionnaire
     # ex : {'best': '0', 'worst': '12', 'median': '14'}
     
@@ -33,8 +31,7 @@ def calculs(sols):
         
         print('analyse planning ' + key + num)
         
-        #df[num] = pd.read_csv('solution'+str(num)+'.csv', sep =";")
-        df[num], dic_miss = transf_Mission2Numb('solution'+str(num)+'.csv')
+        df[num], dic_miss = transf_Mission2Numb(paths.solutions_path +'solution'+str(num)+'.csv')
         
         #Transformation des noms des missions et maint en numeros pour pouvoir calculer des covariances
         #Pas "automatique" pour l'instant, le sera avec ce qu'a fait Guillaume
@@ -139,34 +136,27 @@ def calculs(sols):
 #Creation des nouveaux sitInit.cscv
 def new_sitInit(plane,n,planing,dic,gen):
     #read csv, and split on "," the line
-    csv_file = csv.reader(open('sitInit.csv', "r"), delimiter=";")
+    path_to_file = 'sitInit.csv'
+    csv_file = csv.reader(open(path_to_file, "r"), delimiter=";")
     index = 1
     #loop through csv list
     for row in csv_file:
         #if current rows 2nd value is equal to input, print that row
         if plane == row[0]:
-             #print(row)
-             #print(index)
-             break
-        else : index += 1
+            break
+        else : 
+            index += 1
     
-    shutil.copy("sitInit.csv", "sitInittemp.csv")
+    shutil.copy(path_to_file, "sitInittemp.csv")
     df = pd.read_csv("sitInittemp.csv",sep=";",header=None)
-    
-    #print(dic)
     
     for i in range(n):
         key=random.choice(list(dic))
         df.loc[index-1,int(key)]= int(key)
-    #print(df)
-    #df.set_value(index-1, 34,)
     
     dataframe = transf_NumbtoMission(df)
     
-    #print('dataframe mission')
-    #print(dataframe)
-    
-    dataframe.to_csv("sitInit_"+str(gen) +"_"+ str(planing) + ".csv",sep=";",index=False,header=None)
+    dataframe.to_csv(paths.sitInits_path +"sitInit_"+str(gen) +"_"+ str(planing) + ".csv",sep=";",index=False,header=None)
     
     return dataframe
  

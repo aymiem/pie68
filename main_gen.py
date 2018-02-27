@@ -8,17 +8,15 @@ Created on Tue Jan 23 14:45:59 2018
 import os
 import time
 import pandas as pd
-import numpy as np
 from initialisation  import initialisation
 from classement_population import rankings, choix_indiv_rg
-from selection_operator import *
 from Pareto import drawPareto, addGeneration
-from crossover import calculs
 from main import programme
 from ecriture import nom_fichier_sortie
 from mutation import mutation
 from crossover import crossover
 from transf import dico_transf_init
+from constantes import paths
 
 def programme_gen(max_iter, max_time):
     print("Lancement du programme génétique")
@@ -27,10 +25,14 @@ def programme_gen(max_iter, max_time):
     elapsed = 0    
     
     ## INITIALISATION
-    
+    if not os.path.exists(paths.indicateurs_path):
+        os.mkdir(paths.indicateurs_path)
+        os.mkdir(paths.sitInits_path)
+        os.mkdir(paths.solutions_path)
+        
     # Initialisation des dictionnaires pour les conversions de fichiers
     dico_transf_init()
-    # Initialisation des individus de la première génération
+    # Initialisation : création des individus de la première génération
     initialisation()
     ranked = rankings("1") # Classement de la premiere génération
     # Initialisation des données du Front de Pareto
@@ -97,12 +99,12 @@ def programme_gen(max_iter, max_time):
         
         nom_fichier_sortie(gen, 6)
         if changes_ope == True: 
-            os.rename("solution"+sols_ope["best"]+".csv", "solution"+gen_str+"6"+".csv")
-            os.rename("indicateurs"+sols_ope["best"]+".csv", "indicateurs"+gen_str+"6"+".csv")
+            os.rename("solutions\solution"+sols_ope["best"]+".csv", "solutions\solution"+gen_str+"6"+".csv")
+            os.rename("indicateurs\indicateurs"+sols_ope["best"]+".csv", "indicateurs\indicateurs"+gen_str+"6"+".csv")
         nom_fichier_sortie(gen, 7)
         if changes_lis == True: 
-            os.rename("solution"+sols_lis["best"]+".csv", "solution"+gen_str+"7"+".csv")
-            os.rename("indicateurs"+sols_lis["best"]+".csv", "indicateurs"+gen_str+"7"+".csv")
+            os.rename("solutions\solution"+sols_lis["best"]+".csv", "solutions\solution"+gen_str+"7"+".csv")
+            os.rename("indicateurs\indicateurs"+sols_lis["best"]+".csv", "indicateurs\indicateurs"+gen_str+"7"+".csv")
 
         # Classement de la nouvelle génération
         ranked = rankings(gen_str)
@@ -114,6 +116,8 @@ def programme_gen(max_iter, max_time):
         
         nom_fichier_sortie(gen, 8)
         nom_fichier_sortie(gen, 9)
+        
+        drawPareto(dataPareto)
 
     print ("temps total", elapsed, "sec")
     ## AFFICHAGE

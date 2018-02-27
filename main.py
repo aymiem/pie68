@@ -43,7 +43,6 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         for t in range(d['temps']):
             if isinstance(df.xs(t+1)[avion],str):
                 if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-":
-                     #print(avion.nom, "est affecté à", df.xs(t+1)[avion])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
                     
     print("init avions_affectes",time.time() - tt)
@@ -78,23 +77,16 @@ def lectureEntrees(path):
 
     # definitions des unités temporelles et du pas de temps
     mois, annee = parametre.moisInit, parametre.anInit
-    dictionnaire["temps"] = 12 * (parametre.anFin - annee) + (parametre.moisFin - mois)
-    #print("Lecture des données terminée")
-    
-        #Création d'un csv permettant de faire la transformation du calendrier en dataframe avec des nombres
-    
-#    dicoMatricule= dict()
-#    for a in dictionnaire["listeAvion"]:
-#        nomAvion = a.nom
-#        dicoMatricule[a.nom] = a.type_avion
-    
+    dictionnaire["temps"] = 12 * (parametre.anFin - annee) + (parametre.moisFin - mois)        
 
     return dictionnaire
+
 
 def modif_mission(d,t,df, indic, m_h):
     for a in d["listeAvion"]:
         for m in d["listeMission"]:
             modifPot(m, df, a, t, indic, m_h)  # modification des potentiels (avions affectés manuellement inclus)
+
 
 def remplir_mission(d,t,df,opex,indic, avions_affectes):
 
@@ -102,9 +94,7 @@ def remplir_mission(d,t,df,opex,indic, avions_affectes):
         # calcul des dates de début et de fin de la mission
         t_deb = 12 * (m.annee_debut - parametre.anInit) + (m.mois_debut - parametre.moisInit)
         t_fin = 12 * (m.annee_fin - parametre.anInit) + (m.mois_fin - parametre.moisInit) +1
-         
-        # nbmiss = 0 #nombre d'avions affecté à la mission m à l'instant t
-         
+                  
         if (t_deb <= t <= t_fin):
            
             #for a in d["listeAvion"]: # On parcourt le dataframe pour calculer nbmiss

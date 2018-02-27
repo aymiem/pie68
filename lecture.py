@@ -1,6 +1,6 @@
 import csv
-from objects import *
-from constantes import *
+from objects import mission, avion, maintenance
+from constantes import parametre
 import pandas as pd
 
 def lecture(pathCSV):

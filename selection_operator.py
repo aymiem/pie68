@@ -38,7 +38,7 @@ def fitness_ope_indiv(solution):
     
     else :
         if isinstance(solution, str): # si l'input est le nom de l'individu
-            df_indics = pd.DataFrame.from_csv("indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
+            df_indics = pd.DataFrame.from_csv(paths.indicateurs_path + "indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
         else:
             df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         
@@ -76,7 +76,7 @@ def fitness_lis_indiv(solution):
     
     else :
         if isinstance(solution, str): # si l'input est le nom de l'individu
-            df_indics = pd.DataFrame.from_csv("indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
+            df_indics = pd.DataFrame.from_csv(paths.indicateurs_path +"indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
         else:
             df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         # Calcul de l'indic aggrégé de maintenance : à maximiser  

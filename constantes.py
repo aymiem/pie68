@@ -1,3 +1,5 @@
+import os
+
 class constantes:
     path = 'donnees_lecture.csv'
     strategie_cravate = 1
@@ -17,3 +19,7 @@ class parametre:
     strategie = 0
     anticipMaint = 0
     
+class paths:
+    solutions_path = os.getcwd() + "\solutions\ ".replace(" ","")
+    indicateurs_path = os.getcwd() + "\indicateurs\ ".replace(" ","")
+    sitInits_path = os.getcwd() + "\sitInits\ ".replace(" ","")    

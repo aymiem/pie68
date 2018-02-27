@@ -6,14 +6,12 @@ Created on Tue Jan 23 11:26:53 2018
 """
 import csv
 import pandas as pd
-import numpy as np
-from objects import *
-from constantes import *
+from constantes import constantes
 from main import lectureEntrees
 
 def dico_transf_init():
     
-    x=constantes.path # Nom du fichier contenant la liste des autres CSV
+    x=constantes.path # "donnees_lecture.csv"
     d=lectureEntrees(x)# Lecture des fichiers d'entrées
 
     dicoAssociation= dict()
