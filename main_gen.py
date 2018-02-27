@@ -85,14 +85,14 @@ def programme_gen(max_iter, max_time):
         
         print("mutation sur generation", gen, "pour indic operationnel")        
         nom_fichier_sortie(gen, 4)
-        changes_ope = mutation(str(gen-1), sols_ope["best"], 4, True)
+        changes_ope = mutation(str(gen-1), sols_ope["best"], 4, True, 4)
 
         # MUTATION pour créer individu "solution_gen_5" 
         # à partir du meilleur individu selon indicateur de maintenance
 
         print("mutation sur generation", gen, "pour indic maint lissage")
         nom_fichier_sortie(gen, 5)
-        changes_lis = mutation(str(gen-1), sols_lis["best"], 5, False)
+        changes_lis = mutation(str(gen-1), sols_lis["best"], 5, False, 4)
         
         # On conserve les meilleurs individus de la génération précédente et on 
         # les intègre à la nouvelle génération sous les numéros "gen_6" et "gen_7"

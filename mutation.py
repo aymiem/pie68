@@ -7,7 +7,7 @@ from constantes import paths
 from selection_operator import fitness_ope_indiv, fitness_lis_indiv
 
 
-def mutation(parents_gen, parent_num, child_num, ope):
+def mutation(parents_gen, parent_num, child_num, ope, nb_iter):
     
     tt = time.time()
     parent = "solution"+parent_num+".csv" # nom du parente
@@ -17,11 +17,10 @@ def mutation(parents_gen, parent_num, child_num, ope):
     # Après tant que is_better renvoit False, on itère jusqu'à trouver une meilleure
     # solution au sens de l'indicateur aggrégé choisi. On ré-écrit sur la solution 
     # précédente dans ce cas.
-    nom_fichier_sortie(int(parents_gen)+1, child_num)
     
     changes = False
     
-    for iteration in range(6):
+    for iteration in range(nb_iter):
         
         df = pd.read_csv(paths.solutions_path + parent, sep=';', \
                          header=0, index_col=0)
