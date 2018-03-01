@@ -25,17 +25,29 @@ def test_mutation_indic_lis(num):
     constantes.typechoix = 1
     iteration_reussie = 0
     start_time = time.time()
+    # Initialisation des données du Front de Pareto
+    dataPareto = pd.DataFrame() 
+    dataPareto = addGeneration(ranked, dataPareto) 
     
     # Choix du type de la mutation
     mutation = type_mutation(num)
-    
-    for i in range(100):
-        print("Iter ",i)
-        changes_lis = mutation(0, best_liss, 0, False, 1)
-        if changes_lis == True: 
-            print("mutation operateur lissage maintenance OK in ", time.time() - start_time)
-            iteration_reussie += 1
+    for generation in [2,3]:
+        for i in range(10):
+            print("Iter ",i)
+            changes_lis = mutation(0, best_liss, 0, False, 1)
+            if changes_lis == True: 
+                print("mutation operateur lissage maintenance OK in ", time.time() - start_time)
+                iteration_reussie += 1
+        # Classement et ajout des nouvelles solutions
+        ranked = rankings(str(generation)) 
+        dataPareto = addGeneration(ranked, dataPareto)
+        
     print("nombre d'itérations réussies :", iteration_reussie)
+       
+    drawPareto(dataPareto)
+    dataPareto.to_csv("ParetoTestMutArriereLis.csv",sep=";",index=False,header=None)
+    
+    
     
     
 def test_mutation_indic_ope(num):
@@ -62,12 +74,16 @@ def test_mutation_indic_ope(num):
     mutation = type_mutation(num)
 
     for i in range(100):
-        changes_ope = mutation(0, best_ope, 0, True, 1)
         print("Iter ",i)
+        nom_fichier_sortie(generation,i)
+        changes_ope = mutation(0, best_ope, 0, True, 1)
         if changes_ope == True: 
             print("Mutation operateur operationnel ok in ", time.time() - start_time)
             iteration_reussie += 1
+        
     print("nombre d'itérations réussies :", iteration_reussie)
+    
+
 
 
 def test_mutation_cravate(num):
