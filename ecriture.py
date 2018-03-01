@@ -1,9 +1,10 @@
 import csv
+from constantes import paths
 
-# Ecriture de la solution finale dans le csv de sortie
+# Ecriture de la solution de sortie de l'algorithme glouton dans le csv de sortie
 def solution_to_csv(df,nom_fichier):
     # fonction to_csv importée de Pandas. 'T' pour transposer la matrice
-    df.T.to_csv(nom_fichier, sep=';')
+    df.T.to_csv(paths.solutions_path + nom_fichier, sep=';')
 
 # Creation d'un fichier indicateurs.csv
 def ecriture_donnees(listMission,indic,nom_fichier):
@@ -12,7 +13,10 @@ def ecriture_donnees(listMission,indic,nom_fichier):
         nom = "indicateurs0.csv"
     else:
         nom = "indicateurs"+num+".csv"
-    with open(nom, 'w') as csvfile:
+    
+    file_to_open = paths.indicateurs_path + nom
+    
+    with open(file_to_open, 'w') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter=';',lineterminator = '\n')
         
         spamwriter.writerow(['moy_pot_hor'] + [indic["MpotH"]["moy_somme"]]) #moyenne potentiel horaire, à maximiser

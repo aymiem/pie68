@@ -4,13 +4,9 @@ Created on Wed Jan 10 14:37:27 2018
 @author: aymeline
 """
 import os
-from lecture import *
-import csv
-from objects import *
-from constantes import *
+from constantes import paths
 from Pareto import addGeneration, drawPareto
 import pandas as pd
-import numpy as np
 from selection_operator import fitness_operationnel, fitness_lissage
 
 # Module permettant de classer les individus d'une même génération 
@@ -35,7 +31,7 @@ def rankings(generation):
 
     listeFiles = [] 
     # liste des fichiers de type "indicateursXX.csv" de la génération étudiée à lire
-    for file in os.listdir(os.getcwd()): # Pour les fichiers du dossier courant
+    for file in os.listdir(paths.indicateurs_path): # Pour les fichiers du dossier courant
         if file.endswith(".csv") and file.startswith("indicateurs"+generation):
             listeFiles.append(file)
             
@@ -44,7 +40,8 @@ def rankings(generation):
     # récupération des dataframes conservées dans les fichiers indicateursXX.csv
     dfs = []
     for nom_fichier in listeFiles:
-        df_loc = pd.read_csv(nom_fichier,sep=";",header=None,index_col=0)
+        df_loc = pd.read_csv(paths.indicateurs_path + nom_fichier, \
+                             sep=";", header=None, index_col=0)
         df_loc.loc["solution"]=[nom_fichier[11:13].replace(".","")]
         df_loc=df_loc.transpose()
         dfs.append(df_loc)
