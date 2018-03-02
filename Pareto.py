@@ -89,13 +89,13 @@ def is_pareto_efficient(data):
     is_better4 = is_better3
     print(is_better3)
  
-    for i in is_better3: #On supprimes les doublons
+    for i in is_better3: #On supprimes les doublons et on garde le plus gros indice
         for j in is_better3:
             better = 0
             if data['fitness_lis'][i] == data['fitness_lis'][j] and data['fitness_ope'][i] == data['fitness_ope'][j] and j in is_better3 and j != i:
                 better = 1
             if better == 1:
-                is_better4.remove(j)
+                is_better4.remove(str(min(int(j),int(i))))
     
     return is_better4
 

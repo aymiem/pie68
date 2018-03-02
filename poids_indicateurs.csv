@@ -1,9 +1,9 @@
 indicateurs;poids
 moy_pot_hor;1
 min_pot_hor;1
-var_maint;0.7
-delta_maint;0.3
-moy_pot_perdu;0.03
-min_pot_perdu;0.03
+var_maint;0.8
+delta_maint;0.2
+moy_pot_perdu;0.10
+min_pot_perdu;0.87
 min_dispo;1
-last_cravate;0.94
+last_cravate;0.03
