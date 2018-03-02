@@ -35,6 +35,8 @@ def addGeneration(df, dataPareto):
 
 def drawPareto(data):
     #Tracé du Pareto 
+    # data : dataframe contenant l'ensembles des fitness
+    
     plt.show()
     plt.figure(figsize=(15,8))
     plt.scatter(data[data.columns[0]].values,data[data.columns[1]].values)
@@ -49,39 +51,52 @@ def drawPareto(data):
             textcoords = 'offset points', ha = 'right', va = 'bottom',
             bbox = dict(boxstyle = 'round,pad=0.5', alpha = 0.5),
             arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0'))
-    
-#    #Traitement par ACP
-#    pca = PCA(n_components=3)
-#    print(pca.fit(data))
-#    pca.explained_variance_ratio_
-#    
-#    #Diagramme barre des variances agrégée
-#    plt.bar(np.arange(len(pca.explained_variance_ratio_))+0.5, pca.explained_variance_ratio_)
-#    plt.title("Variance expliquée")
-#    
-#    #Tracé de l'ACP
-#    axis_list = [pca.components_.T]    
-#    X_reduced = pca.transform(data)
-#    plt.figure(figsize=(10,4))
-#    plt.scatter(X_reduced[:, 0], X_reduced[:, 1])
-#   
-#    if axis_list is not None:
-#        colors = ['orange']
-#        for color, axis in zip(colors, axis_list):
-#            x_axis, y_axis = axis[0],axis[1]
-#            # Trick to get legend to work
-#            #plt.plot(0.1 * x_axis, 0.1 * y_axis, linewidth=1, color=color)
-#            plt.quiver(0, 0, x_axis, y_axis, zorder=5, width=0.005, scale=10,
-#                           color=color)
-#
-#    for label, x, y in zip(data.index, X_reduced[:, 0], X_reduced[:, 1]):
-#        plt.annotate(
-#            label,
-#            xy = (x, y), xytext = (-10, 10),
-#            textcoords = 'offset points', ha = 'right', va = 'bottom',
-#            bbox = dict(boxstyle = 'round,pad=0.5', fc = 'yellow', alpha = 0.5),
-#            arrowprops = dict(arrowstyle = '->', connectionstyle = 'arc3,rad=0'))
-#    
+
     return data
 
-if __name__ == '__main__': dataPareto = programmePareto()
+def is_pareto_efficient(data):
+    #Extraction de la liste des solutions pareto-optimales
+    # data : dataframe contenant l'ensembles des fitness
+    
+    
+    is_better = dict()
+    is_better2 = []
+    is_better3 = []
+    
+    for i in data.index: #Pour chaque plannings on liste des autres plannings strictement meilleurs 
+        liste = []
+        for j in data.index:
+            if data['fitness_lis'][i] < data['fitness_lis'][j] and data['fitness_ope'][i] < data['fitness_ope'][j]:
+                liste.append(j)
+                
+        
+        is_better[i] = liste    
+    
+    for i in is_better.keys(): #Liste des numeros non dominés strictement sur les 2 critères
+        if is_better[i] == []:
+            is_better2.append(i)
+        
+    is_better3 = is_better2
+       
+    for i in is_better2: #On supprimes les dominés sur 1 critère parmi les précédents
+        for j in is_better2:
+            better = 0
+            if (data['fitness_lis'][i] >= data['fitness_lis'][j] and data['fitness_ope'][i] > data['fitness_ope'][j] and j in is_better2) or (data['fitness_lis'][i] > data['fitness_lis'][j] and data['fitness_ope'][i] >= data['fitness_ope'][j] and j in is_better2):
+                better = 1
+            if better == 1:
+                is_better3.remove(j)
+        
+    is_better4 = is_better3
+    print(is_better3)
+ 
+    for i in is_better3: #On supprimes les doublons
+        for j in is_better3:
+            better = 0
+            if data['fitness_lis'][i] == data['fitness_lis'][j] and data['fitness_ope'][i] == data['fitness_ope'][j] and j in is_better3 and j != i:
+                better = 1
+            if better == 1:
+                is_better4.remove(j)
+    
+    return is_better4
+
+
