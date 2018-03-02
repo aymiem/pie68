@@ -33,7 +33,8 @@ def test_mutation_indic_lis(num):
     mutation = type_mutation(num)
     for generation in [2,3]:
         for i in range(10):
-            print("Iter ",i)
+            print("Generation", generation, "Iter ",i)
+            nom_fichier_sortie(generation,i)
             changes_lis = mutation(0, best_liss, 0, False, 1)
             if changes_lis == True: 
                 print("mutation operateur lissage maintenance OK in ", time.time() - start_time)
@@ -75,7 +76,6 @@ def test_mutation_indic_ope(num):
 
     for i in range(100):
         print("Iter ",i)
-        nom_fichier_sortie(generation,i)
         changes_ope = mutation(0, best_ope, 0, True, 1)
         if changes_ope == True: 
             print("Mutation operateur operationnel ok in ", time.time() - start_time)
@@ -132,15 +132,3 @@ def test_mutation_cravate(num):
     dataPareto.to_csv("ParetoTestCravate.csv",sep=";",index=False,header=None)
 
     
-def type_mutation(num):  
-    # Fonction appelant la mutation choisie pour le test
-    if num == 0 :
-        return mutation_arriere
-    elif num == 1 :
-        return mutation_avant
-    elif num == 2 :
-        return mutation_del_some_planes
-    elif num == 3 :
-        return mutation_i_aléatoire
-    else : 
-        return mutation_arriere

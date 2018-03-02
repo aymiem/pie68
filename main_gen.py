@@ -13,18 +13,19 @@ from classement_population import rankings, choix_indiv_rg
 from Pareto import drawPareto, addGeneration
 from main import programme
 from ecriture import nom_fichier_sortie
-from mutation import mutation
+from mutation import type_mutation
 from crossover import crossover
 from transf import dico_transf_init
 from constantes import paths
 
-def programme_gen(max_iter, max_time):
+def programme_gen(max_iter, max_time, mut_type):
     print("Lancement du programme génétique")
     
-    start = time.time() # timer
+    start = time.time()
     elapsed = 0    
     
-    ## INITIALISATION
+    ### INITIALISATION
+    
     if not os.path.exists(paths.indicateurs_path):
         os.mkdir(paths.indicateurs_path)
         os.mkdir(paths.sitInits_path)
@@ -40,8 +41,11 @@ def programme_gen(max_iter, max_time):
     dataPareto = addGeneration(ranked, dataPareto) 
     # Initialisation du numero de la generation
     gen = 1 
+    # Itialisation de l'opérateur de mutation
+    mutation = type_mutation(mut_type)
     
-    ## EVOLUTION par CROSSOVER et MUTATION
+    
+    ### EVOLUTION par CROSSOVER et MUTATION
     
     while((elapsed <= max_time) & (gen < max_iter)):
         gen +=1
@@ -81,14 +85,14 @@ def programme_gen(max_iter, max_time):
             indiv+=1
         
         # MUTATION pour créer individu "solution_gen_4" 
-        # à partir du meilleur individu selon indicateur opérationnel
+        # à partir de l'individu ayant le meilleur score opérationnel
         
         print("mutation sur generation", gen, "pour indic operationnel")        
         nom_fichier_sortie(gen, 4)
         changes_ope = mutation(str(gen-1), sols_ope["best"], 4, True, 4)
 
-        # MUTATION pour créer individu "solution_gen_5" 
-        # à partir du meilleur individu selon indicateur de maintenance
+        # MUTATION pour créer individu "solution_gen_5" à partir
+        # de l'individu ayant le meilleur score de lissage de maintenance
 
         print("mutation sur generation", gen, "pour indic maint lissage")
         nom_fichier_sortie(gen, 5)
@@ -104,7 +108,7 @@ def programme_gen(max_iter, max_time):
         os.rename("solutions\solution"+sols_lis["best"]+".csv", "solutions\solution"+gen_str+"7"+".csv")
         os.rename("indicateurs\indicateurs"+sols_lis["best"]+".csv", "indicateurs\indicateurs"+gen_str+"7"+".csv")
 
-        # Classement de la nouvelle génération
+        # Classement de la nouvelle génération et ajout au front de Pareto
         ranked = rankings(gen_str)
         dataPareto = addGeneration(ranked, dataPareto)
         
@@ -118,11 +122,12 @@ def programme_gen(max_iter, max_time):
         drawPareto(dataPareto)
 
     print ("temps total", elapsed, "sec")
-    ## AFFICHAGE
+    
+    ### AFFICHAGE et SAUVEGARDE du front de Pareto
     
     drawPareto(dataPareto)
     dataPareto.to_csv("dataPareto0.csv",sep=";",index=False,header=None)
 
     return dataPareto
 
-pareto = programme_gen(3,100000)
+pareto = programme_gen(3,100000,0)

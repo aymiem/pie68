@@ -209,3 +209,15 @@ def is_better(parent_name, indics_enfant, operationnel):
         else:
             return False
         
+def type_mutation(num):  
+    # Fonction appelant la mutation choisie pour le test
+    if num == 0 :
+        return mutation_arriere
+    elif num == 1 :
+        return mutation_avant
+    elif num == 2 :
+        return mutation_del_some_planes
+    elif num == 3 :
+        return mutation_i_aléatoire
+    else : 
+        return mutation_arriere
