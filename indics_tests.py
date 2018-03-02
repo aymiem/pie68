@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import time
 import pandas as pd
 from classement_population import rankings, choix_indiv_rg
 from Pareto import drawPareto, addGeneration
-from mutation import *
+from mutation import type_mutation
 from transf import dico_transf_init
 from constantes import constantes
 from ecriture import nom_fichier_sortie

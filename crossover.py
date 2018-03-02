@@ -96,13 +96,17 @@ def calculs(sols):
         
         if (result[column][0] != result[column][1] != result[column][2]):
             valeur= result[column][0]
+            print(list(dic_miss.values()))
             mission= list(dic_miss.keys())[list(dic_miss.values()).index(valeur)]
             dic_chg[column] = mission
        
     av = 0
+    
+
     while (len(dic_chg) == 0):
-        print("step recherche with avion",avion)
+        print("step recherche with avion",av + 1)
         av = av + 1
+        print(len(dif_sorted))
         avion_val = dif_sorted[av]
         avion = df[sols["best"]].iloc[avion_val[0]]
         
@@ -136,7 +140,7 @@ def calculs(sols):
 #Creation des nouveaux sitInit.cscv
 def new_sitInit(plane,n,planing,dic,gen):
     #read csv, and split on "," the line
-    path_to_file = 'sitInit.csv'
+    path_to_file = 'sitInit2000D.csv'
     csv_file = csv.reader(open(path_to_file, "r"), delimiter=";")
     index = 1
     #loop through csv list

@@ -6,6 +6,7 @@ from constantes import *
 import pandas as pd
 import numpy as np
 
+
 def fitness_operationnel(df_classement):
     # evalue un score (ou fitness) de 3 indicateurs opérationnels aggrégés :
     # moyenne_heures_perdues, min_pot_perdu et last_cravate
@@ -14,7 +15,7 @@ def fitness_operationnel(df_classement):
     df_RWS = df_classement
     
     # on récupère les poids des indicateurs
-    df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
+    df_poids = pd.read_csv( 'poids_indicateurs.csv', sep=";",header=0,index_col=0)
     
     df_RWS["fitness_ope"] = np.zeros(len(df_RWS))
     
@@ -33,17 +34,21 @@ def fitness_ope_indiv(solution):
     # moyenne_heures_perdues, min_pot_perdu et last_cravate pour un individu 
     # normalisée dans l'ordre de grandeur des deux premiers critères
     
+    df_poids = pd.read_csv( 'poids_indicateurs.csv', sep=";",header=0,index_col=0)
+    
     if isinstance(solution, dict): # si l'input est un dictionnaire
-        f_value = - 0.5*solution["moy_pot_perdu"] + 0.3*10*solution["min_pot_perdu"] - 0.2*solution["last_cravate"]
+        f_value = - solution["moy_pot_perdu"]*(df_poids.loc["moy_pot_perdu","poids"]) \
+            + solution["min_pot_perdu"]*(df_poids.loc["min_pot_perdu","poids"]) \
+            - solution["last_cravate"]*(df_poids.loc["last_cravate","poids"]) 
     
     else :
         if isinstance(solution, str): # si l'input est le nom de l'individu
-            df_indics = pd.DataFrame.from_csv(paths.indicateurs_path + "indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
+            df_indics = pd.DataFrame.from_csv("indicateurs/indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
         else:
             df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         
-        # Calcul de l'indic aggrégé opérationnel : à maximiser  
-        f = - 0.5*df_indics.loc["moy_pot_perdu"] + 0.3*10*df_indics.loc["min_pot_perdu"] - 0.2*df_indics.loc["last_cravate"]
+        # Calcul de l'indic aggrégé opérationnel : à maximiser
+        f = - (df_poids.loc["moy_pot_perdu","poids"])*df_indics.loc["moy_pot_perdu"] + (df_poids.loc["min_pot_perdu","poids"])*df_indics.loc["min_pot_perdu"] - (df_poids.loc["last_cravate","poids"])*df_indics.loc["last_cravate"]
         f_value = f.loc[1]
         
     return f_value
@@ -71,19 +76,21 @@ def fitness_lis_indiv(solution):
     # evalue un score (ou fitness) de 2 indicateurs liés à la maintenance et
     # aggrégés : maint_var, delta_maint, pour les individus d'une même génération
 
+    df_poids = pd.read_csv('poids_indicateurs.csv',sep=";",header=0,index_col=0)
+
     if isinstance(solution, dict): # si l'input est un dictionnaire
-        f_value = - 0.5*solution["var_maint"] - 0.5*solution["delta_maint"] 
+        f_value = - df_poids.loc["var_maint","poids"]*solution["var_maint"] - df_poids.loc["delta_maint","poids"]*solution["delta_maint"] 
     
     else :
         if isinstance(solution, str): # si l'input est le nom de l'individu
-            df_indics = pd.DataFrame.from_csv(paths.indicateurs_path +"indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
+            df_indics = pd.DataFrame.from_csv("indicateurs/indicateurs"+solution[8:10].replace(".","")+".csv", header=None, sep=';', index_col=0)
         else:
             df_indics = solution # si l'input est déjà le dataframe des indicateurs de la solution
         # Calcul de l'indic aggrégé de maintenance : à maximiser  
-        f = - 0.5*df_indics.loc["var_maint"] - 0.5*df_indics.loc["delta_maint"]
+        f = - df_poids.loc["var_maint","poids"]*df_indics.loc["var_maint"] - df_poids.loc["delta_maint","poids"]*df_indics.loc["delta_maint"]
         f_value = f.loc[1]
-    return f_value   
-    
+    return f_value
+
 
 def Roulette_wheel_selection(df_classement, N, ope): 
     # input : dataframe classée de façon décroissante par fitness

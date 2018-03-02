@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from main import programme
-from ecriture import nom_fichier_sortie
 import time
 from constantes import paths
 from selection_operator import fitness_ope_indiv, fitness_lis_indiv
