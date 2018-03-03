@@ -1,4 +1,5 @@
 import csv
+import os
 from objects import mission, avion, maintenance
 from constantes import parametre
 import pandas as pd
@@ -119,3 +120,14 @@ def lecture_fichier(p):
         for row in reader:
             liste_nom.append(row[1])
     return liste_nom
+
+#Suppression du contenu d'un dossier
+def emptyFolder(path):
+    for the_file in os.listdir(path):
+        file_path = os.path.join(path, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            #elif os.path.isdir(file_path): shutil.rmtree(file_path)
+        except Exception as e:
+            print(e)

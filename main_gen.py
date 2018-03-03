@@ -7,16 +7,18 @@ Created on Tue Jan 23 14:45:59 2018
 """
 import os
 import time
+import shutil
 import pandas as pd
 from initialisation  import initialisation
 from classement_population import rankings, choix_indiv_rg
-from Pareto import drawPareto, addGeneration
+from Pareto import drawPareto, addGeneration, is_pareto_efficient
 from main import programme
-from ecriture import nom_fichier_sortie
+from ecriture import nom_fichier_sortie, resetDonneeLecture
 from mutation import type_mutation
 from crossover import crossover
 from transf import dico_transf_init
 from constantes import paths
+from lecture import emptyFolder
 
 def programme_gen(max_iter, max_time, mut_type):
     print("Lancement du programme génétique")
@@ -28,9 +30,19 @@ def programme_gen(max_iter, max_time, mut_type):
     
     if not os.path.exists(paths.indicateurs_path):
         os.mkdir(paths.indicateurs_path)
+        os.mkdir(paths.indicateurs_final_path)
         os.mkdir(paths.sitInits_path)
         os.mkdir(paths.solutions_path)
-        
+        os.mkdir(paths.solutions_final_path)
+    
+    #On vide les répertoires des précédentes solutions
+    print('Suppression archives')
+    emptyFolder(paths.indicateurs_path)
+    emptyFolder(paths.indicateurs_final_path)
+    emptyFolder(paths.sitInits_path)
+    emptyFolder(paths.solutions_path)
+    emptyFolder(paths.solutions_final_path)
+    
     # Initialisation des dictionnaires pour les conversions de fichiers
     dico_transf_init()
     # Initialisation : création des individus de la première génération
@@ -123,11 +135,22 @@ def programme_gen(max_iter, max_time, mut_type):
 
     print ("temps total", elapsed, "sec")
     
+
     ### AFFICHAGE et SAUVEGARDE du front de Pareto
     
     drawPareto(dataPareto)
     dataPareto.to_csv("dataPareto0.csv",sep=";",index=False,header=None)
-
+    
+    
+    #On determine les solutions pareto-optimales et on les deplace dans les répertoires _final
+    pareto_opti = is_pareto_efficient(dataPareto)
+    for ind in pareto_opti:
+            shutil.copy("solutions\solution"+ind+".csv", "solutions_final\solution"+ind+".csv")
+            shutil.copy("indicateurs\indicateurs"+ind+".csv", "indicateurs_final\indicateurs"+ind+".csv")
+            
+    #On remet à zéro le fichier de lecture des données
+    resetDonneeLecture()
+    
     return dataPareto
 
 pareto = programme_gen(3,100000,0)

@@ -67,3 +67,21 @@ def nom_fichier_sortie(generation, num_in_gen):
         # Ecrase les anciennes lignes par les nouvelles
         writer = csv.writer(f)
         writer.writerows(new_rows)
+        
+def resetDonneeLecture(): #Remise à zro du fichier donnnes_lecture
+
+    new_rows = [] # liste des lignes du fichier ré-écrit
+
+    with open('donnees_lecture.csv', 'r') as f:
+        reader = csv.reader(f, delimiter=';')
+        for row in reader:    # pour chaque ligne
+            new_row = row     # on copie la ligne
+            if row[0] == 'csv solution':      #Si c'est la ligne "solution"
+                new_row[1] = 'solution0.csv'  #On reset le path correspondant
+            new_rows.append(new_row)
+            
+    with open('donnees_lecture.csv', 'w', newline='') as f:
+        # Ecrase les anciennes lignes par les nouvelles
+        writer = csv.writer(f, delimiter=';')
+        writer.writerows(new_rows)
+        

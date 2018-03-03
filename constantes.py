@@ -22,4 +22,6 @@ class parametre:
 class paths:
     solutions_path = os.getcwd() + "\solutions\ ".replace(" ","")
     indicateurs_path = os.getcwd() + "\indicateurs\ ".replace(" ","")
+    solutions_final_path = os.getcwd() + "\solutions_final\ ".replace(" ","")
+    indicateurs_final_path = os.getcwd() + "\indicateurs_final\ ".replace(" ","")
     sitInits_path = os.getcwd() + "\sitInits\ ".replace(" ","")    
