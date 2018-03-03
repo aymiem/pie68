@@ -22,4 +22,5 @@ def initialisation() :
         
         nom_fichier_sortie(1, i)
 
-        programme(True, 0)
+        indic, d = programme(True, 0)
+    return d

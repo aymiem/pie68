@@ -84,17 +84,6 @@ def listeMaint(listeMaintenance,a): # renvoie la liste des maintenances correspo
     return l_maint
 
 def affectMaint(a, t, df, listeMaintenance):
-    if a.type_avion == "2000_C":
-        l_maint = listeMaintenance[0:6]
-    if a.type_avion == "2000_D":
-        l_maint = listeMaintenance[6:12]
-    if a.type_avion == "2000_5":
-        l_maint = listeMaintenance[12:18]
-    if a.type_avion == "2000_B":
-        l_maint = listeMaintenance[18:24]
-    return l_maint
-
-def affectMaint(a, t, df, listeMaintenance):
     if t > 1:  #! str()
         if isinstance(df.xs(t)[a],str):
             if df.xs(t)[a][0] == "V" :
@@ -107,14 +96,6 @@ def affectMaint(a, t, df, listeMaintenance):
                                 a.pot_horaire = l_maint[i].gain_heures
                                 a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
                                 break
-                else:
-                    l_maint=listeMaint(listeMaintenance, a)
-                    for i in range(0, len(l_maint)):
-                        if a.proch_maint == l_maint[i].nom:
-                            a.pot_mois = l_maint[i].gain_mois
-                            a.pot_horaire = l_maint[i].gain_heures
-                            a.proch_maint = l_maint[(i + 1) % len(l_maint)].nom
-                            break
                             
         else:  # maintenance programmé par l'algorithme
             l_maint=listeMaint(listeMaintenance, a)
@@ -126,6 +107,7 @@ def affectMaint(a, t, df, listeMaintenance):
                     a.pot_horaire = l_maint[i].gain_heures
                     a.proch_maint = l_maint[(i+1)%len(l_maint)].nom
                     break
+    
     if t==1 : #! str()
         if isinstance(df.xs(t)[a],str):
             if df.xs(t)[a][0] == "V": # maintenance à la main

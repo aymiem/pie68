@@ -1,5 +1,6 @@
 import csv
 from constantes import paths
+import pandas as pd
 
 # Ecriture de la solution de sortie de l'algorithme glouton dans le csv de sortie
 def solution_to_csv(df,nom_fichier):
@@ -84,4 +85,18 @@ def resetDonneeLecture(): #Remise à zro du fichier donnnes_lecture
         # Ecrase les anciennes lignes par les nouvelles
         writer = csv.writer(f, delimiter=';')
         writer.writerows(new_rows)
-        
+
+def addDollars(path, d): #Fonction qui copie le csv solution pour le recréer avec les potentiels des missions
+    dfDol=pd.read_csv(path,sep=';',header= None)
+    dfDol.as_matrix()
+
+    for i in range(1,len(dfDol)):
+        for j in range(1,len(dfDol.columns)):
+            if isinstance(dfDol.xs(i)[j],str):
+                if (((dfDol.xs(i)[j])[0]) != "V" and (dfDol.xs(i)[j] != "BL") and (dfDol.xs(i)[j])[0] != "S" and (dfDol.xs(i)[j])[0] != "-") :
+                    for m in d["listeMission"]:
+                        if dfDol.xs(i)[j] == m.nom:
+                            dfDol.xs(i)[j] = dfDol.xs(i)[j] +"$"+str(int(m.pu))
+    dfDol.xs(0)[0] = ""
+    dfDol.to_csv(path, sep=';', index =0,header = None)
+    return dfDol

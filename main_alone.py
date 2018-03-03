@@ -52,13 +52,14 @@ def programme():
 #        reader = csv.reader(csv_file)
 #        MpotH = dict(reader)
     
+    addDollars("solutions\solution0.csv", d)
+    
     shutil.copy("solutions\solution0.csv", "solutions_final\solution0.csv")
     shutil.copy("indicateurs\indicateurs0.csv", "indicateurs_final\indicateurs0.csv")
 
     
     print(time.time() - tt )
-
-
+    
 def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     
     # Initialisation du dataframe d'affectation avions en mission
@@ -74,6 +75,9 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     print("init avions_affectes",time.time() - tt)
 
     for t in range(1, d["temps"] - 3):
+        
+        print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
+        
         h,mi,mip= 0,0,0
         # h: nombre d'heures de vol à l'instant t
         # mi: nombre d'avions en stockage à l'instant t
@@ -89,8 +93,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         remplir_mission(d, t, df, opex, indic, avions_affectes) # Affectation des missions en métrople
         modif_mission(d, t, df, indic, mission_heures) # modification des potentiels missions
         remplir_maintenance(d, t, df, mi, mip) # Affectations des maintenances
-        remplir_autres(d, t, df, h, indic, mission_heures) # Gestion des avions qui ne sont ni en maint ni en mission
-        
+        remplir_autres(d, t, df, h, indic, mission_heures) # Gestion des avions qui ne sont ni en maint ni en mission        
     Remplir_Indicateurs_globaux(d, df, indic)
     
     return indic
@@ -204,20 +207,19 @@ def remplir_maintenance(d,t,df,mi,mip):
            #     if df.xs(t)[a][0] == "V":
            #         affectMaint(a, t, df, d["listeMaintenance"])
         # gestion des affectations automatisées en maintenance
-    if (a.pot_mois <= 1) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
-        affectMaint(a, t, df, d["listeMaintenance"])
-        mi = mi + 1
-        mip = mip + 1
-
-    # une fois les avions qui n'ont plus de pot calendaire affectés, on effecture un lissage supplémentaire si strategie choisie en csv
-    if mip < parametre.entreeSTKparMois and mi < parametre.stockageTotal and parametre.strategie==constantes.strategie_lissage:
-        liste = lissage(d)
-        for a in liste:
-            if a.pot_mois < parametre.anticipMaint and pd.isnull(
-                    df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
-                affectMaint(a, t, df, d["listeMaintenance"])
-                mi = mi + 1
-                mip = mip + 1
+        if (a.pot_mois <= 1) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
+            affectMaint(a, t, df, d["listeMaintenance"])
+            mi = mi + 1
+            mip = mip + 1
+    
+        # une fois les avions qui n'ont plus de pot calendaire affectés, on effecture un lissage supplémentaire si strategie choisie en csv
+        if mip < parametre.entreeSTKparMois and mi < parametre.stockageTotal and parametre.strategie==constantes.strategie_lissage:
+            liste = lissage(d)
+            for a in liste:
+                if a.pot_mois < parametre.anticipMaint and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
+                    affectMaint(a, t, df, d["listeMaintenance"])
+                    mi = mi + 1
+                    mip = mip + 1
                 
 def remplir_autres(d,t,df,h, indic, mission_heures):
     # fonction pour gerer les avions ni en mission ni en maintenances
@@ -261,11 +263,12 @@ def ecriture(d,df,indic):
 def dataframe(d):
     # Association entre la matrice de rebouclage (si non  vide) et le pas de temps
     ndarraySitInit = d["df1"].as_matrix()
+    dfrm = pd.DataFrame(index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
     if ndarraySitInit.any() == True:
-        dfrm = pd.DataFrame(index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
+        True
     else:
         d_temps = d["temps"] + 2
         dfrm = pd.DataFrame(ndarraySitInit[1:d_temps,5:], index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
     return dfrm
 
-programme()
+d = programme()

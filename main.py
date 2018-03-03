@@ -31,7 +31,7 @@ def programme(is_init, dataframe_gen):
 #        reader = csv.reader(csv_file)
 #        MpotH = dict(reader)
     print("Execution glouton et creation solutionXX en", time.time() - tt )
-    return indic, df
+    return indic, d
 
 def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     
@@ -43,15 +43,14 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         for t in range(d['temps']):
             if isinstance(df.xs(t+1)[avion],str):
                 if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-":
-                    print(avion)
-                    print(t)
-                    print(df.xs(t+1)[avion])
-                    print(avions_affectes[df.xs(t+1)[avion]][t])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
                     
     #print("init avions_affectes",time.time() - tt)
 
     for t in range(1, d["temps"] - 3):
+        
+        print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
+        
         h,mi,mip= 0,0,0
         # h: nombre d'heures de vol à l'instant t
         # mi: nombre d'avions en stockage à l'instant t
