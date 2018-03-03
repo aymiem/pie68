@@ -4,6 +4,6 @@
 solution0 : solution avec avions triés par cravate dans "choixAvion" + lisage
 solution10 à solution19 : solutions avec avions triés de façon random dans "choixAvion" + lissage
 
-   2eme génération
+   i-eme génération
 
-solution20 à solution29 : solutions élaborées par mutation de la population initiale
+solutioni0 à solutioni9 : solutions élaborées par mutation de la population initiale

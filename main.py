@@ -43,10 +43,10 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
         for t in range(d['temps']):
             if isinstance(df.xs(t+1)[avion],str):
                 if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-":
-                    #print(avion)
-                    #print(t)
-                    #print(df.xs(t+1)[avion])
-                    #print(avions_affectes[df.xs(t+1)[avion]][t])
+                    print(avion)
+                    print(t)
+                    print(df.xs(t+1)[avion])
+                    print(avions_affectes[df.xs(t+1)[avion]][t])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
                     
     #print("init avions_affectes",time.time() - tt)
