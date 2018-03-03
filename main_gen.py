@@ -28,12 +28,17 @@ def programme_gen(max_iter, max_time, mut_type):
     
     ### INITIALISATION
     
+    #On remet à zéro le fichier de lecture des données
+    resetDonneeLecture()
+    
+    
     if not os.path.exists(paths.indicateurs_path):
         os.mkdir(paths.indicateurs_path)
         os.mkdir(paths.indicateurs_final_path)
         os.mkdir(paths.sitInits_path)
         os.mkdir(paths.solutions_path)
         os.mkdir(paths.solutions_final_path)
+    
     
     #On vide les répertoires des précédentes solutions
     print('Suppression archives')
@@ -153,4 +158,4 @@ def programme_gen(max_iter, max_time, mut_type):
     
     return dataPareto
 
-pareto = programme_gen(3,100000,0)
+programme_gen(3,100000,0)
