@@ -138,7 +138,7 @@ def calculs(sols):
 #Creation des nouveaux sitInit.cscv
 def new_sitInit(plane,n,planing,dic,gen):
     #read csv, and split on "," the line
-    path_to_file = 'sitInit2000D.csv'
+    path_to_file = 'sitInitD.csv'
     csv_file = csv.reader(open(path_to_file, "r"), delimiter=";")
     index = 1
     #loop through csv list
