@@ -28,12 +28,17 @@ def programme_gen(max_iter, max_time, mut_type):
     
     ### INITIALISATION
     
+    #On remet à zéro le fichier de lecture des données
+    resetDonneeLecture()
+    
+    
     if not os.path.exists(paths.indicateurs_path):
         os.mkdir(paths.indicateurs_path)
         os.mkdir(paths.indicateurs_final_path)
         os.mkdir(paths.sitInits_path)
         os.mkdir(paths.solutions_path)
         os.mkdir(paths.solutions_final_path)
+    
     
     #On vide les répertoires des précédentes solutions
     print('Suppression archives')
@@ -116,9 +121,10 @@ def programme_gen(max_iter, max_time, mut_type):
         nom_fichier_sortie(gen, 6)
         os.rename("solutions\solution"+sols_ope["best"]+".csv", "solutions\solution"+gen_str+"6"+".csv")
         os.rename("indicateurs\indicateurs"+sols_ope["best"]+".csv", "indicateurs\indicateurs"+gen_str+"6"+".csv")
-        nom_fichier_sortie(gen, 7)
-        os.rename("solutions\solution"+sols_lis["best"]+".csv", "solutions\solution"+gen_str+"7"+".csv")
-        os.rename("indicateurs\indicateurs"+sols_lis["best"]+".csv", "indicateurs\indicateurs"+gen_str+"7"+".csv")
+        if sols_ope["best"] != sols_lis["best"] :
+            nom_fichier_sortie(gen, 7)
+            os.rename("solutions\solution"+sols_lis["best"]+".csv", "solutions\solution"+gen_str+"7"+".csv")
+            os.rename("indicateurs\indicateurs"+sols_lis["best"]+".csv", "indicateurs\indicateurs"+gen_str+"7"+".csv")
 
         # Classement de la nouvelle génération et ajout au front de Pareto
         ranked = rankings(gen_str)

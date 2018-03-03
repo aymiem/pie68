@@ -102,8 +102,8 @@ def calculs(sols):
     av = 0
     
 
-    while (len(dic_chg) == 0):
-        print("step recherche with avion",av + 1)
+    while (len(dic_chg) == 0) and (av < 20):
+        #print("step recherche with avion",av + 1)
         av = av + 1
         avion_val = dif_sorted[av]
         avion = df[sols["best"]].iloc[avion_val[0]]
@@ -152,9 +152,10 @@ def new_sitInit(plane,n,planing,dic,gen):
     shutil.copy(path_to_file, "sitInittemp.csv")
     df = pd.read_csv("sitInittemp.csv",sep=";",header=None)
     
-    for i in range(n):
-        key=random.choice(list(dic))
-        df.loc[index-1,int(key)]= int(key)
+    if len(dic)!=0:
+        for i in range(n):
+            key=random.choice(list(dic))
+            df.loc[index-1,int(key)]= int(key)
     
     dataframe = transf_NumbtoMission(df)
     
