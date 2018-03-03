@@ -1,4 +1,5 @@
 import time
+import numpy as np
 import pandas as pd
 from classement_population import rankings, choix_indiv_rg
 from Pareto import drawPareto, addGeneration
@@ -6,6 +7,8 @@ from mutation import type_mutation
 from transf import dico_transf_init
 from constantes import constantes
 from ecriture import nom_fichier_sortie
+from main import programme
+from selection_operator import fitness_lis_indiv, fitness_ope_indiv
 
 ### ATTENTION : inscrire "solutionTest.csv" dans le fichier "donnees_lecture.csv"
 
@@ -130,4 +133,79 @@ def test_mutation_cravate(num):
     
     dataPareto.to_csv("ParetoTestCravate.csv",sep=";",index=False,header=None)
 
+
+
+# INSCIRE "solutionTest.csv" dans "donnees_lecture.csv"
+
+def test_pareto_optimalite(nb_iter):
+    
+    # 0: mutation_arriere, 1: mutation_DSP, 2: mutation_i_aleatoire
+    indice_mutation = [0, 1, 2]
+    
+    scores_cumules =  pd.DataFrame(np.nan, index = range(4), columns = range(nb_iter))
+    scores_cumules.index = ["mut_arr", "mut_DSP", "mut_i_al", "no_mut"]
+    
+    fitness =  pd.DataFrame(np.nan, index = range(8), columns = range(nb_iter))
+    fitness.index = ["fit_ope_mut_arr", "fit_lis_mut_arr", "fit_ope_mut_DSP", \
+                     "fit_lis_mut_DSP", "fit_ope_mut_i_al", "fit_lis_mut_i_al",\
+                     "fit_ope_no_mut", "fit_lis_no_mut"]
+    
+    nb_solution_PO = 0
+    for i in range(nb_iter):
+        new_indic, new_df = programme(True, 0)
+        fitness.loc["fit_ope_no_mut"][i] = fitness_ope_indiv(new_indic)
+        fitness.loc["fit_lis_no_mut"][i] = fitness_lis_indiv(new_indic)
+
+        if is_Pareto_opt(fitness.loc["fit_ope_no_mut":"fit_lis_no_mut",:i].T,\
+                         fitness.loc["fit_ope_no_mut"][i], fitness.loc["fit_lis_no_mut"][i], "no_mut") :
+            nb_solution_PO += 1
+            scores_cumules.loc["no_mut"][i] = nb_solution_PO
+        print(scores_cumules)
+        
+    for mut_type in indice_mutation :
+        nb_solution_PO = 0
+        for it in range(nb_iter):
+            ranked = rankings("1")
+            sol = choix_indiv_rg(ranked, "1", "fitness_lis", 1)
+            mutation = type_mutation(mut_type)
+            mutation(0, sol, 0, True, 1)
+            # A chaque iteration on réécrit sur la solution test
+            nom_mut = scores_cumules.index[indice_mutation[mut_type]]
+            print(nom_mut)
+            fitness.loc["fit_ope_"+nom_mut][it] = fitness_ope_indiv("solutionTest.csv")
+            fitness.loc["fit_lis_"+nom_mut][it] = fitness_lis_indiv("solutionTest.csv")
+
+            if is_Pareto_opt(fitness.loc["fit_ope_"+nom_mut:"fit_lis_"+nom_mut,:it-1].T,\
+                         fitness.loc["fit_ope_"+nom_mut][it], fitness.loc["fit_lis_"+nom_mut][it],nom_mut) :
+                nb_solution_PO += 1
+                scores_cumules.loc[nom_mut][it] = nb_solution_PO
+            print(scores_cumules)
+
+    return fitness, scores_cumules
+            
+def is_Pareto_opt(fit_values_df, new_score_ope, new_score_lis, nom_m):
+    print(fit_values_df, type(new_score_ope), new_score_lis, nom_m)
+    
+    if len(fit_values_df.index) == 1 :
+        return True
+    else :
+        meilleures_sol = fit_values_df.loc[(fit_values_df['fit_ope_'+nom_m] >= new_score_ope) \
+                                | (fit_values_df['fit_lis_'+nom_m] >= new_score_lis)]
+        print(meilleures_sol,len(meilleures_sol))
+        res = True
+        if len(meilleures_sol) < 1 :
+            return res
+        else :
+            for row in meilleures_sol.index :
+                print(row)
+                if (fit_values_df['fit_ope_'+nom_m][row] >= new_score_ope) and \
+                    (fit_values_df['fit_lis_'+nom_m][row] >= new_score_lis):
+                    res = False
+                    break     
+            return res
+    
+    
+    
+    
+    
     
