@@ -140,7 +140,7 @@ def mutation_del_some_planes(parents_gen, parent_num, child_num, ope, nb_iter):
     print(time.time() - tt, "secondes pour la mutation del_some_planes !")
     return changes
 
-def mutation_i_aléatoire(parents_gen, parent_num, child_num, ope, nb_iter):
+def mutation_i_aleatoire(parents_gen, parent_num, child_num, ope, nb_iter):
     # Ici, la mutation est réalisée sur l'intégralité des avions (ou 
     # chromosomes). Pour un avion A donné on choisit aléatoirement un pas de
     # temps "i_A" à partir duquel s'opère la mutation du chromosome "A"
@@ -213,10 +213,10 @@ def type_mutation(num):
     if num == 0 :
         return mutation_arriere
     elif num == 1 :
-        return mutation_avant
-    elif num == 2 :
         return mutation_del_some_planes
+    elif num == 2 :
+        return mutation_i_aleatoire
     elif num == 3 :
-        return mutation_i_aléatoire
+        return mutation_avant
     else : 
         return mutation_arriere
