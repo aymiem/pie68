@@ -18,7 +18,7 @@ def programme(is_init, dataframe_gen):
     d=lectureEntrees(x)# Lecture des fichiers d'entrées
     if is_init == False :
         d["df1"] = dataframe_gen.transpose()
-    print("creation df")
+    #print("creation df")
     df=dataframe(d)  # Création du dataframe
     
     mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
@@ -30,7 +30,7 @@ def programme(is_init, dataframe_gen):
 #        with open('dict.csv', 'rb') as csv_file:
 #        reader = csv.reader(csv_file)
 #        MpotH = dict(reader)
-    print(time.time() - tt )
+    print("Execution glouton et creation solutionXX en", time.time() - tt )
     return indic, df
 
 def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
@@ -49,7 +49,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
                     #print(avions_affectes[df.xs(t+1)[avion]][t])
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
                     
-    print("init avions_affectes",time.time() - tt)
+    #print("init avions_affectes",time.time() - tt)
 
     for t in range(1, d["temps"] - 3):
         h,mi,mip= 0,0,0
@@ -239,9 +239,13 @@ def ecriture(d,df,indic):
 def dataframe(d):
     # Association entre la matrice de rebouclage (si non  vide) et le pas de temps
     ndarraySitInit = d["df1"].as_matrix()
+    ndarraySitInit.shape
     if ndarraySitInit.any() == True:
         dfrm = pd.DataFrame(index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
     else:
         d_temps = d["temps"] + 2
-        dfrm = pd.DataFrame(ndarraySitInit[1:d_temps,5:], index=list(range(1, d["temps"] + 2)), columns=d["listeAvion"])
+        dfrm = pd.DataFrame(ndarraySitInit[1:d_temps,5:], index=list(range(1, d_temps)), columns=d["listeAvion"])
     return dfrm
+
+if __name__ == '__main__':
+    programme(True,0)
