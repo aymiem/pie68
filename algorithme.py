@@ -61,12 +61,12 @@ def affectationMission(m, listeAvion, avions_aff, data, nb, t, listeMission, i, 
 # la modification des potentiels s'effectue separement de l'affectation (pour prendre en compte le rebouclage)
 # la fonction modifPot permet de modifier le pot. Elle enlève du potentiel la valeur indiquée dans la cellule
 # correspandate dans le dataframe.
-def modifPot(m,data,a,t, indic, m_h):
+def modifPot(m,data,a,t, indic, dict_pots):
     #for a in listeAvion:
     #!  if str(df.xs(t)[a]).split("$")[0] == m.nom:
     if data.xs(t)[a] == m.nom:  #!            
         #! a.pot_horaire -= int((data.xs(t)[a]).split("$")[1])
-        a.pot_horaire -= m_h[m.nom]
+        a.pot_horaire -= dict_pots[m.nom][0]
         a.pot_mois -= 1
         indic["nbrAvionMission"][t-1] += 1 
             #if (a.nom)=='D602':

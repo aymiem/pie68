@@ -21,7 +21,8 @@ def programme(is_init, dataframe_gen):
     #print("creation df")
     df=dataframe(d)  # Création du dataframe
     
-    mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
+    mission_heures = {m.nom: [m.pu, str(int(m.pu))] for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
+    print(mission_heures)
     indic = dict()
     indic = Init_Indicateurs(d, indic)
     indic = remplir(d,df,indic, mission_heures) # remplissage du dataframe
@@ -49,7 +50,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
 
     for t in range(1, d["temps"] - 3):
         
-        print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
+        #print(str(int(t / (d["temps"] - 3) * 100)) + '% ')  # Pourcentage avancement dans les calculs
         
         h,mi,mip= 0,0,0
         # h: nombre d'heures de vol à l'instant t

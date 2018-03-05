@@ -31,7 +31,7 @@ def programme_gen(max_iter, max_time, mut_type):
     #On remet à zéro le fichier de lecture des données
     resetDonneeLecture()
     
-    
+    # Si les dossiers n'existent pas on les recrée
     if not os.path.exists(paths.indicateurs_path):
         os.mkdir(paths.indicateurs_path)
         os.mkdir(paths.indicateurs_final_path)

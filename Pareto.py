@@ -95,7 +95,8 @@ def is_pareto_efficient(data):
             if data['fitness_lis'][i] == data['fitness_lis'][j] and data['fitness_ope'][i] == data['fitness_ope'][j] and j in is_better3 and j != i:
                 better = 1
             if better == 1:
-                is_better4.remove(str(min(int(j),int(i))))
+                if str(min(int(j),int(i))) in is_better4 :
+                    is_better4.remove(str(min(int(j),int(i))))
     
     return is_better4
 
