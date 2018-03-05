@@ -1,9 +1,14 @@
 debut;;;;;;;;;;
 categorie1;**;parametre de la simulation;;;;;;;;
 moisInit;1;;;;;;;;;
-anInit;2016;;;;;;;;;
+anInit;2017;;;;;;;;;
 moisFin;12;;;;;;;;;
-anFin;2025;;;;;;;;;
+anFin;2016;;;;;;;;;
+puParMois;18;
+stockageTotal;18;
+stockageTotal;4;
+strategie;2;
+anticipMaint;3;
 categorie2;**;liste des avions;;;;;;;;
 D602;2000_D;9;649.00;3273.00;4895.41;V30;0;;;
 D603;2000_D;9;379.00;3081.00;5609.97;V15;MIDS;EPAVEWAY;ROVER;SCARABE_COMSEC;;;
