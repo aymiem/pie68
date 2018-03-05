@@ -1,3 +1,3 @@
 @ECHO OFF
 CD %1
-"C:\Users\ay_me\Anaconda3\python.exe" main.py
+"C:\Users\ay_me\Anaconda3\python.exe" main_alone.py
