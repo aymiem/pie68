@@ -181,21 +181,21 @@ def remplir_maintenance(d,t,df,mi,mip):
            #     if df.xs(t)[a][0] == "V":
            #         affectMaint(a, t, df, d["listeMaintenance"])
         # gestion des affectations automatisées en maintenance
-    if (a.pot_mois <= 1) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
-        affectMaint(a, t, df, d["listeMaintenance"])
-        mi = mi + 1
-        mip = mip + 1
-
-    # une fois les avions qui n'ont plus de pot calendaire affectés, on effecture un lissage supplémentaire si strategie choisie en csv
-    if mip < parametre.entreeSTKparMois and mi < parametre.stockageTotal and parametre.strategie==constantes.strategie_lissage:
-        liste = lissage(d)
-        for a in liste:
-            if a.pot_mois < parametre.anticipMaint and pd.isnull(
-                    df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
-                affectMaint(a, t, df, d["listeMaintenance"])
-                mi = mi + 1
-                mip = mip + 1
-                
+        if (a.pot_mois <= 1) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
+            affectMaint(a, t, df, d["listeMaintenance"])
+            mi = mi + 1
+            mip = mip + 1
+    
+        # une fois les avions qui n'ont plus de pot calendaire affectés, on effecture un lissage supplémentaire si strategie choisie en csv
+        if mip < parametre.entreeSTKparMois and mi < parametre.stockageTotal and parametre.strategie==constantes.strategie_lissage:
+            liste = lissage(d)
+            for a in liste:
+                if a.pot_mois < parametre.anticipMaint and pd.isnull(
+                        df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
+                    affectMaint(a, t, df, d["listeMaintenance"])
+                    mi = mi + 1
+                    mip = mip + 1
+                    
 def remplir_autres(d,t,df,h, indic, mission_heures):
     # fonction pour gerer les avions ni en mission ni en maintenances
     for a in d["listeAvion"]:

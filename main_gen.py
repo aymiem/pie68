@@ -136,8 +136,6 @@ def programme_gen(max_iter, max_time, mut_type):
         
         nom_fichier_sortie(gen, 8)
         nom_fichier_sortie(gen, 9)
-        
-        drawPareto(dataPareto)
 
     
     
@@ -150,7 +148,7 @@ def programme_gen(max_iter, max_time, mut_type):
     
     #On determine les solutions pareto-optimales et on les deplace dans les répertoires _final
     
-   
+    print("Selection des solutions pareto-optimales")
     pareto_opti = is_pareto_efficient(dataPareto)
     for ind in pareto_opti:
             shutil.copy("solutions\solution"+ind+".csv", "solutions_final\solution"+ind+".csv")
