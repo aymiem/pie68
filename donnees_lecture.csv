@@ -1,5 +1,5 @@
 nom des fichiers de lecture;
-csv param;paramInit2000D.csv
-csv situation initiale;sitInit2000D.csv
+csv param;paramInitD.csv
+csv situation initiale;sitInitD.csv
 csv solution;solution0.csv
 fin;

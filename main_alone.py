@@ -42,17 +42,15 @@ def programme():
     d=lectureEntrees(x)# Lecture des fichiers d'entrées
     df=dataframe(d)  # Création du dataframe
     
-    mission_heures = {m.nom: m.pu for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
+    mission_heures = {m.nom: [m.pu, str(int(m.pu))] for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
+    print(mission_heures)
     indic = dict()
     indic = Init_Indicateurs(d, indic)
     indic = remplir(d,df,indic, mission_heures) # remplissage du dataframe
     
     df = ecriture(d,df,indic) # export des données en CSV
-#        with open('dict.csv', 'rb') as csv_file:
-#        reader = csv.reader(csv_file)
-#        MpotH = dict(reader)
     
-    addDollars("solutions\solution0.csv", d)
+    addDollars("solutions\solution0.csv", d, mission_heures)
     
     shutil.copy("solutions\solution0.csv", "solutions_final\solution0.csv")
     shutil.copy("indicateurs\indicateurs0.csv", "indicateurs_final\indicateurs0.csv")
@@ -111,10 +109,10 @@ def lectureEntrees(path):
     return dictionnaire
 
 
-def modif_mission(d,t,df, indic, m_h):
+def modif_mission(d,t,df, indic, missions_pots):
     for a in d["listeAvion"]:
         for m in d["listeMission"]:
-            modifPot(m, df, a, t, indic, m_h)  # modification des potentiels (avions affectés manuellement inclus)
+            modifPot(m, df, a, t, indic, missions_pots)  # modification des potentiels (avions affectés manuellement inclus)
 
 
 def remplir_mission(d,t,df,opex,indic, avions_affectes):

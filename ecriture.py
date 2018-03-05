@@ -86,17 +86,25 @@ def resetDonneeLecture(): #Remise à zro du fichier donnnes_lecture
         writer = csv.writer(f, delimiter=';')
         writer.writerows(new_rows)
 
-def addDollars(path, d): #Fonction qui copie le csv solution pour le recréer avec les potentiels des missions
+def addDollars(path, d, missions_pots): 
+    # Fonction qui copie un csv solution pour le recréer avec ajout des 
+    # potentiels des missions stockés dans missions_pots
+    
     dfDol=pd.read_csv(path,sep=';',header= None)
-    dfDol.as_matrix()
+    dict_to_replace = { k : k+"$"+v[1] for k,v in missions_pots.items()}
+    dfDol.replace(dict_to_replace, inplace=True)
+#    dfDol.as_matrix()
 
-    for i in range(1,len(dfDol)):
-        for j in range(1,len(dfDol.columns)):
-            if isinstance(dfDol.xs(i)[j],str):
-                if (((dfDol.xs(i)[j])[0]) != "V" and (dfDol.xs(i)[j] != "BL") and (dfDol.xs(i)[j])[0] != "S" and (dfDol.xs(i)[j])[0] != "-") :
-                    for m in d["listeMission"]:
-                        if dfDol.xs(i)[j] == m.nom:
-                            dfDol.xs(i)[j] = dfDol.xs(i)[j] +"$"+str(int(m.pu))
+#    for i in range(1,len(dfDol)):
+#        for j in range(1,len(dfDol.columns)):
+#            if isinstance(dfDol.xs(i)[j],str):
+#                if (((dfDol.xs(i)[j])[0]) != "V" and (dfDol.xs(i)[j] != "BL") and (dfDol.xs(i)[j])[0] != "S" and (dfDol.xs(i)[j])[0] != "-") :
+##                    for m in d["listeMission"]:
+##                        if dfDol.xs(i)[j] == m.nom:
+#                    print (dfDol.xs(i)[j], missions_pots[dfDol.xs(i)[j]][1])
+#                    dfDol.xs(i)[j] = dfDol.xs(i)[j] + "$" + missions_pots[dfDol.xs(i)[j]][1]
+                            #dfDol.xs(i)[j] = dfDol.xs(i)[j] +"$"+str(int(m.pu))
+    
     dfDol.xs(0)[0] = ""
     dfDol.to_csv(path, sep=';', index =0,header = None)
     return dfDol
