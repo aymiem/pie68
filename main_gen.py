@@ -17,7 +17,7 @@ from ecriture import nom_fichier_sortie, resetDonneeLecture, addDollars
 from mutation import type_mutation
 from crossover import crossover
 from transf import dico_transf_init
-from constantes import paths
+from constantes import*
 from lecture import emptyFolder
 
 def programme_gen(max_iter, max_time, mut_type):
@@ -60,7 +60,7 @@ def programme_gen(max_iter, max_time, mut_type):
     gen = 1 
     # Itialisation de l'opérateur de mutation
     mutation = type_mutation(mut_type)
-    
+
     
     ### EVOLUTION par CROSSOVER et MUTATION
     
@@ -151,6 +151,7 @@ def programme_gen(max_iter, max_time, mut_type):
     print("Selection des solutions pareto-optimales")
     pareto_opti = is_pareto_efficient(dataPareto)
     for ind in pareto_opti:
+            print("Sélection du planning" + ind)
             shutil.copy("solutions\solution"+ind+".csv", "solutions_final\solution"+ind+".csv")
             addDollars("solutions\solution"+ind+".csv",d) #On aoute les dollars pour l'excel
             shutil.copy("indicateurs\indicateurs"+ind+".csv", "indicateurs_final\indicateurs"+ind+".csv")
@@ -158,5 +159,4 @@ def programme_gen(max_iter, max_time, mut_type):
     
     print ("temps total", elapsed, "sec")
     return dataPareto
-
-programme_gen(3,100000,0)
+pareto = programme_gen(3,100000,0)

@@ -86,7 +86,7 @@ def resetDonneeLecture(): #Remise à zro du fichier donnnes_lecture
         writer = csv.writer(f, delimiter=';')
         writer.writerows(new_rows)
 
-def addDollars(path, d, missions_pots): 
+def addDollars(path, missions_pots): 
     # Fonction qui copie un csv solution pour le recréer avec ajout des 
     # potentiels des missions stockés dans missions_pots
     
