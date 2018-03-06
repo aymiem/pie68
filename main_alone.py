@@ -205,7 +205,7 @@ def remplir_maintenance(d,t,df,mi,mip):
            #     if df.xs(t)[a][0] == "V":
            #         affectMaint(a, t, df, d["listeMaintenance"])
         # gestion des affectations automatisées en maintenance
-        if (a.pot_mois <= 1) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
+        if ((a.pot_mois <= max(2, parametre.anticipMaint-2)) or (a.pot_horaire <= 2*parametre.puParMois)) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
             affectMaint(a, t, df, d["listeMaintenance"])
             mi = mi + 1
             mip = mip + 1

@@ -52,7 +52,9 @@ def programme_gen(max_iter, max_time, mut_type):
     dico_transf_init()
     # Initialisation : création des individus de la première génération
     d = initialisation()  # Pour avoir un accès aux caractéristiques des missions
+    miss_pots = {m.nom: [m.pu, str(int(m.pu))] for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
     ranked = rankings("1") # Classement de la premiere génération
+    
     # Initialisation des données du Front de Pareto
     dataPareto = pd.DataFrame() 
     dataPareto = addGeneration(ranked, dataPareto) 
@@ -144,7 +146,7 @@ def programme_gen(max_iter, max_time, mut_type):
 
     ### AFFICHAGE et SAUVEGARDE du front de Pareto
     
-    #drawPareto(dataPareto)
+    drawPareto(dataPareto)
     dataPareto.to_csv("dataPareto0.csv",sep=";",index=False,header=None)
     
     
@@ -154,7 +156,7 @@ def programme_gen(max_iter, max_time, mut_type):
     pareto_opti = is_pareto_efficient(dataPareto)
     for ind in pareto_opti:
             shutil.copy("solutions\solution"+ind+".csv", "solutions_final\solution"+ind+".csv")
-            addDollars("solutions\solution"+ind+".csv",d) #On aoute les dollars pour l'excel
+            addDollars("solutions\solution"+ind+".csv",d, miss_pots) #On aoute les dollars pour l'excel
             shutil.copy("indicateurs\indicateurs"+ind+".csv", "indicateurs_final\indicateurs"+ind+".csv")
             
     

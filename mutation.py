@@ -25,7 +25,7 @@ def mutation_arriere(parents_gen, parent_num, child_num, ope, nb_iter):
                          header=0, index_col=0)
         
         # Choix aléatoire oriente de la taille de la zone des mutations
-        changes_size = np.random.randint(40,min(len(df.index),len(df.columns)))
+        changes_size = np.random.randint(50,min(len(df.index),len(df.columns)))
         kept_height_size = len(df.index) - changes_size
         kept_length_size = len(df.columns) - changes_size
         

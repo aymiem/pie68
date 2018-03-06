@@ -22,7 +22,7 @@ def programme(is_init, dataframe_gen):
     df=dataframe(d)  # Création du dataframe
     
     mission_heures = {m.nom: [m.pu, str(int(m.pu))] for m in d["listeMission"]} # Dico des missions et leur potentiel horaire
-    print(mission_heures)
+    #print(mission_heures)
     indic = dict()
     indic = Init_Indicateurs(d, indic)
     indic = remplir(d,df,indic, mission_heures) # remplissage du dataframe
@@ -43,7 +43,7 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     for avion in d["listeAvion"]:
         for t in range(d['temps']):
             if isinstance(df.xs(t+1)[avion],str):
-                if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-":
+                if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-" and df.xs(t+1)[avion][0] : #not in ['0','1','2','3','4','5','6','7','8','9']:
                     avions_affectes[df.xs(t+1)[avion]][t] += 1
                     
     #print("init avions_affectes",time.time() - tt)
@@ -182,7 +182,7 @@ def remplir_maintenance(d,t,df,mi,mip):
            #     if df.xs(t)[a][0] == "V":
            #         affectMaint(a, t, df, d["listeMaintenance"])
         # gestion des affectations automatisées en maintenance
-    if (a.pot_mois <= 1) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
+    if ((a.pot_mois <= max(2, parametre.anticipMaint-2)) or (a.pot_horaire <= 2*parametre.puParMois)) and pd.isnull(df.xs(t)[a]) and mi < parametre.stockageTotal and mip < parametre.entreeSTKparMois:
         affectMaint(a, t, df, d["listeMaintenance"])
         mi = mi + 1
         mip = mip + 1
