@@ -43,8 +43,9 @@ def remplir(d, df, indic, mission_heures): # Fonction pour remplir le dataframe
     for avion in d["listeAvion"]:
         for t in range(d['temps']):
             if isinstance(df.xs(t+1)[avion],str):
-                if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-" and df.xs(t+1)[avion][0] : #not in ['0','1','2','3','4','5','6','7','8','9']:
-                    avions_affectes[df.xs(t+1)[avion]][t] += 1
+                if df.xs(t+1)[avion][0] != "V" and df.xs(t+1)[avion][0] != "-" and df.xs(t+1)[avion][0] not in ['0','1','2','3','4','5','6','7','8','9']:
+                    X = df.xs(t+1)[avion].replace(".0","")
+                    avions_affectes[X][t] += 1
                     
     #print("init avions_affectes",time.time() - tt)
 

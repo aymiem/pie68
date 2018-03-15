@@ -43,10 +43,10 @@ def programme_gen(max_iter, max_time, mut_type):
     #On vide les répertoires des précédentes solutions
     print('Suppression archives')
     emptyFolder(paths.indicateurs_path)
-    emptyFolder(paths.indicateurs_final_path)
+    #emptyFolder(paths.indicateurs_final_path)
     emptyFolder(paths.sitInits_path)
     emptyFolder(paths.solutions_path)
-    emptyFolder(paths.solutions_final_path)
+    #emptyFolder(paths.solutions_final_path)
     
     # Initialisation des dictionnaires pour les conversions de fichiers
     dico_transf_init()
@@ -154,6 +154,7 @@ def programme_gen(max_iter, max_time, mut_type):
     
    
     pareto_opti = is_pareto_efficient(dataPareto)
+    print(pareto_opti)
     for ind in pareto_opti:
             shutil.copy("solutions\solution"+ind+".csv", "solutions_final\solution"+ind+".csv")
             addDollars("solutions\solution"+ind+".csv",d, miss_pots) #On aoute les dollars pour l'excel
